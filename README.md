@@ -13,8 +13,8 @@ Per una visualizzazione ottimale con formattazione completa, rendering delle for
 	- **Ufficio**:Ufficio: 5-049 DII, Largo Lucio Lazzarino 1
 	- **Ricevimento:** su TEAMS su appuntamento
 
-**E-mail:** [giuseppe.anastasi@unipi.it](mailto:giuseppe.anastasi@unipi.it)
-**Linkedin del professore:** [https://www.linkedin.com/in/giuseppe-anastasi-5660b37](https://www.linkedin.com/in/giuseppe-anastasi-5660b37)
+- **E-mail:** [giuseppe.anastasi@unipi.it](mailto:giuseppe.anastasi@unipi.it)
+- **Linkedin del professore:** [https://www.linkedin.com/in/giuseppe-anastasi-5660b37](https://www.linkedin.com/in/giuseppe-anastasi-5660b37)
 
 
 **Bibliografia:** 
