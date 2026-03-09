@@ -155,7 +155,7 @@ I servizi di comunicazione su internet sono il protocollo `TCP` e quello `UDP`.
 
 <div class="grid2">
 <div class="top">
-<div class="p"><code>Servizio `TCP`</code></div>
+<p class="p"><code>Servizio `TCP`</code></p>
 
 È un protocollo di trasporto **affidabile** nei processi di invio e ricezione.
 
@@ -167,7 +167,7 @@ Non da garanzie sul delay, sul throughput minimo né sulla sicurezza, ma si orie
 
 </div>
 <div class="top">
-<div class="p"><code>Servizio `UDP`</code></div>
+<p class="p"><code>Servizio `UDP`</code></p>
 
 È un servizio di trasferimento "non affidabile", ovvero che non prevede l'affidabilità delle comunicazioni. I dati possono arrivare non in ordine o affetti da errore.
 
@@ -226,7 +226,7 @@ Infatti i protocolli che mantengono uno stato sono più complessi, in quanto ric
 Le connessioni `HTTP` si classificano in due tipologie
 <div class="grid2">
 <div class="top">
-<div class="p"><code>HTTP non persistente</code></div>
+<p class="p"><code>HTTP non persistente</code></p>
 
 Questa tipologia:
 1. Apre una connessione `TCP`
@@ -237,7 +237,7 @@ Questo implica che l'invio di più oggetti richiede tante connessioni quanti son
 
 </div>
 <div class="top">
-<div class="p"><code>HTTP persistente</code></div>
+<p class="p"><code>HTTP persistente</code></p>
 
 Questa tipologia invece:
 1. Apre la connessione `TCP` con il server
@@ -587,7 +587,7 @@ Esistono due modi per effettuare le richieste di traduzione. Immaginiamo di aver
 
 <div class="grid2">
 <div class="top">
-<div class="p">Query Iterativa</div>
+<p class="p">Query Iterativa</p>
 
 
 Quando si effettua una richiesta il `lDNSs` (se questo non ha la traduzione), lui chiede al server di _root_.
@@ -601,7 +601,7 @@ La richiesta del `lDNSs` a `DNSs umass.edu` può essere **authorative** che rest
 
 </div>
 <div class="top">
-<div class="p">Query Ricorsiva</div>
+<p class="p">Query Ricorsiva</p>
 
 Funziona in maniera simile a quella delle query iterative, ma sono i `DNSs` stessi a effettuare le richieste per i livelli inferiori.
 
@@ -622,7 +622,7 @@ I meccanismi di aggiornamento e di notifica sono descritti dallo standard `IETF`
 
 Abbiamo detto che il `DNS` è un database disribuito che conserva _resource records_ `RR`.
 Il loro formato è il seguente:
-<div class="p"><code>(name, value, type, ttl)</code></div><br>
+<p class="p"><code>(name, value, type, ttl)</code></div>p>
 
 A seconda del `type` gli altri parametri (tranne il `ttl`) hanno significati diversi:
 

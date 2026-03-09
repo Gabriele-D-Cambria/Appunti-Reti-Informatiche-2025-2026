@@ -191,7 +191,7 @@ La sequenza trasmessa sarà quindi: `<D, R> = 101 110 011`
 
 Gli standard internazionali hanno sono stati definiti per generatori a `8-`, `12-`, `16-` e `32-`bit.
 Lo standard `CRC-32` a `32bit`, utilizzato nella maggior parte dei protocolli a livello `link`, utilizza il generatore:
-<div class="p"><code>GCRC-32=100000100110000010001110110110111</code></div>
+<p class="p"><code>GCRC-32=100000100110000010001110110110111</code></p>
 
 Ogni standard `CRC` permette di rilevare errori di bit consecutivi per gruppi inferiori a `r+1` bit
 
@@ -271,11 +271,11 @@ Questo protocollo segue una politica di _stop-and-wait_. Infatti il trasmettitor
 Le due macchine a stati finiti per questo protocollo sono le seguenti:
 <div class="grid2">
 <div class="">
-<div class="p">Trasmettitore</div>
+<p class="p">Trasmettitore</p>
 <img class="75" src="./images/drn/rdt2-fsm-sender.png">
 </div>
 <div class="">
-<div class="p">Ricevitore</div>
+<p class="p">Ricevitore</p>
 <img class="50" src="./images/drn/rdt2-fsm-receiver.png">
 </div>
 </div>
@@ -288,11 +288,11 @@ Il trasmettitore non avrebbe idea dello stato del ricevitore, e la mera ritrasmi
 Le **macchine a stati finiti si complicano**:
 <div class="grid2">
 <div class="">
-<div class="p">Trasmettitore</div>
+<p class="p">Trasmettitore</p>
 <img class="75" src="./images/drn/rdt21-fsm-sender.png">
 </div>
 <div class="">
-<div class="p">Ricevitore</div>
+<p class="p">Ricevitore</p>
 <img class="75" src="./images/drn/rdt21-fsm-receiver.png">
 </div>
 </div>
@@ -418,15 +418,15 @@ Possiamo vedere le **macchine a stati finiti** e un esempio:
 
 <div class="grid3">
 <div class="">
-<div class="p">Trasmettitore</div>
+<p class="p">Trasmettitore</p>
 <img class="100" src="./images/drn/rdt3-GBN-sender.png">
 </div>
 <div class="">
-<div class="p">Ricevitore</div>
+<p class="p">Ricevitore</p>
 <img class="100" src="./images/drn/rdt3-GBN-receiver.png">
 </div>
 <div class="">
-<div class="p">Esempio</div>
+<p class="p">Esempio</p>
 <img class="100" src="./images/drn/rdt3-GBN-example.png">
 </div>
 </div>

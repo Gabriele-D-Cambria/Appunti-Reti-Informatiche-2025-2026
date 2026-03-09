@@ -1032,7 +1032,7 @@ ssize_t recv_from(itn sockfd, const void *buf, size_t len, int flags, struct soc
 Possiamo vedere un esempio di codice:
 <div class="grid2">
 <div class="top">
-<div class="p">Server</div>
+<p class="p">Server</p>
 
 ```c
 int main () {
@@ -1059,7 +1059,7 @@ int main () {
 ```
 </div>
 <div class="top">
-<div class="p">Client</div>
+<p class="p">Client</p>
 
 ```c
 int main() {

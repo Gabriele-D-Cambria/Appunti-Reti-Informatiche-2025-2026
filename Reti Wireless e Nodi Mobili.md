@@ -484,7 +484,7 @@ Infatti la tecnologia `4G` è utilizzata per il $97\%$ del tempo in Corea e più
 
 <div class="grid2">
 <div class="">
-<div class="p">Similitudini con Internet Cablato</div>
+<p class="p">Similitudini con Internet Cablato</p>
 
 Effettua una distinzione tra dispositivi di _edge_ e _core_, ma entrambi appartengono alla stessa famiglia.
 
@@ -494,7 +494,7 @@ Inoltre è anch'essa una _rete di reti_, e sfrutta molti protocolli che abbiamo 
 
 </div>
 <div class="">
-<div class="p">Differenze con Internet Cablato</div>
+<p class="p">Differenze con Internet Cablato</p>
 
 Ha un diverso _wireless link layer_ e ha come obiettivo primario quello della mobilità.
 

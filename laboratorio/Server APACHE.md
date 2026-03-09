@@ -33,7 +33,7 @@ Nel 2022 l'evoluzione in `HTTP 3` ha mirato a migliorare l'efficienza, passando 
 Vediamo degli esempi di messaggi `HTTP`:
 <div class="grid2">
 <div class="top">
-<div class="p">Richiesta</div>
+<p class="p">Richiesta</p>
 
 ```log
 :method: GET
@@ -45,7 +45,7 @@ accept: */*
 ```
 </div>
 <div class="top">
-<div class="p">Risposta</div>
+<p class="p">Risposta</p>
 
 ```log
 HTTP/3 200 OK

@@ -196,7 +196,7 @@ Statisticamente la seconda opzione è quella più utilizzata.
 
 <div class="grid3">
 <div class="top">
-<div class="p">Client Side</div>
+<p class="p">Client Side</p>
 
 Per creare un oggetto socket:
 ```c
@@ -223,7 +223,7 @@ Il client attende adesso l'_ack_ dal server. Quando lo riceve farà la `ESTAB` d
 <img class="100" src="./images/tl/TCP-handshake-example.png">
 </div>
 <div class="top">
-<div class="p">Server Side</div>
+<p class="p">Server Side</p>
 
 Per creare un oggetto socket:
 ```c

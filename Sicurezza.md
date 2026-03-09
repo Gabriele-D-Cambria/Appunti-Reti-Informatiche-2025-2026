@@ -299,11 +299,11 @@ Di seguito possiamo vedere come può avvenire l'invio e la ricezione di un messa
 
 <div class="grid2">
 <div class="top">
-<div class="p">Invio</div>
+<p class="p">Invio</p>
 <img class="80" src="./images/ns/digita-signature-sending.png">
 </div>
 <div class="top">
-<div class="p">Verifica nella ricezione</div>
+<p class="p">Verifica nella ricezione</p>
 <img class="80" src="./images/ns/digita-signature-receiving.png">
 </div>
 </div>
