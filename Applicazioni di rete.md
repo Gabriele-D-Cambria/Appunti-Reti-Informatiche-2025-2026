@@ -652,8 +652,7 @@ Sono presenti poi altre 4 sezioni di `16bit` che identificano il numero di:
 
 </div>
 <div class="">
-<img class="75" src="./images/webapp/DNS-protocol-message.png">
-
+<img class="40" src="./images/webapp/DNS-protocol-message.png">
 </div>
 </div>
 
@@ -662,7 +661,7 @@ Sui sistemi windows è presente il comando:
 nslookup
 ```
 
-Che permette di richiedere traduzioni
+Che permette di richiedere traduzioni da terminale.
 
 ### 3.4.2. Registrazione di un nuovo record di dominio
 
@@ -742,18 +741,18 @@ D'altra parte ogni client deve scaricare la risorsa. Il _client_ più lento impi
 
 Il tempo totale per distribuire a tutti i _client_ il file sarà:
 $$
-D_{cs} \ge \max{\Biggl\{N\frac{F}{u_s}, \frac{F}{d_min}\Biggr\}}
+	D_{cs} \ge \max{\Biggl\{N\frac{F}{u_s}, \frac{F}{d_{min}}\Biggr\}}
 $$
 
-Ipotizzando invece un approccio _P2P_, il "server" che contine il file dovrà caricare solamente una copia, impiegando un tempo di $F \over u_s$.
+Ipotizzando invece un approccio _P2P_, il "server" che contine il file dovrà caricare solamente una copia in quanto i _peer_ possono re-distribuire i bit tra di loro, impiegando un tempo di $F \over u_s$.
 
-I _client_ dovranno comunque scaricare il file, impiegando sempre un tempo di $F \over d_{min}$
+I _peer_ dovranno comunque scaricare il file, con il più lento che impiegherà sempre un tempo di $F \over d_{min}$.
 
-Tutti i _client_ nel complesso dovranno scaricare $NF$ bit, e per farlo impiegheranno un tempo di $\frac{NF}{u_s + \sum{u_i}}$.
+Poiché ogni _peer_ pià re-distribuire i dati, possiamo considerare la capacità totale di upload del sistema come $u_{tot} = u_s + \sum_i^N{u_i}$. Poiché il sistema, nel complesso, deve comunque consegnare $NF$ bit, abbiamo un tempo di distribuzione minimo di almeno $\frac{NF}{u_s + \sum{u_i}}$.
 
-In totale il tempo necessario sarà:
+In totale il tempo di distribuzione necessario sarà:
 $$
-D_{P2P} \ge \max{\Biggl\{\frac{F}{u_s}, \frac{F}{d_min}, \frac{NF}{u_s + \sum_i^N{u_i}}\Biggr\}}
+D_{P2P} \ge \max{\Biggl\{\frac{F}{u_s}, \frac{F}{d_{min}}, \frac{NF}{u_s + \sum_i^N{u_i}}\Biggr\}}
 $$
 
 Nel caso di _client-server_ abbiamo che il tempo cresce linearmente con il numero di _client_, mentre nel caso di _P2P_ invece la crescita lineare cresce sì con il numero di _client_, ma è attenutata dalla loro capacità di upload complessiva.
@@ -789,7 +788,7 @@ Nel **torrent**, in un certo istante troviamo tre tipi di _peer_:
 - **Feeders**: coloro che hanno completato il _download_ del file. Potrebbero egoisticamente uscire dal torrent, ma decidono, altruisticamente, di rimanere per alimentare
 - **Free Riders**: sono coloro che sono solo interessati a scaricare i file, senza fornire la possibilità di caricare i loro file
 
-Con l'introduzione dei **torrent** si introducono anche un **tracker**, che ha come compito quello di tracciare i _peer_ che in un certo istante fanno parte del _torrent_.
+Con l'introduzione dei **torrent** si introducono anche dei **tracker**, che hanno come compito quello di tracciare i _peer_ che in un certo istante fanno parte del _torrent_.
 
 
 Quando un _peer_ desidera ottenere un file, per prima cosa deve ottenere l'`IP` del _tracker_, richiedendolo ad un **Torrent Server** specificando il contenuto che desidera.
@@ -809,7 +808,6 @@ Mentre il _peer_ scarica i _chunk_ dai suoi vicini, questi potrebbero richiederg
 Si decide di dare priorità a quei vicini che, nell'unità di tempo, mi inviano più dati. Questo scoraggia i _Free Riders_, e incentiva i vari _peers_ di contribuire al torrent.
 
 In particolare si inviano dati ai **_top-four providers_**, che tendenzialmente sono coloro che hanno una capacità di carico simile a quella del _peer_. Per ovviare a questa limitazione, ogni 30 secondi si seleziona casualmente un altro **vicino** e vi si inviano dei _chunk_, sperando che questo abbia una velocità di trasmissione maggiore a quella dell'attuale _top-four_.
-
 
 # 5. Applicazioni di comunicazione in tempo reale
 
