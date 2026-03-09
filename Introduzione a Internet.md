@@ -10,13 +10,12 @@ title: Introduzione a Internet
 - [4. Network Edge](#4-network-edge)
 	- [4.1. Rete di Accesso: DSL](#41-rete-di-accesso-dsl)
 	- [4.2. Fibra Ottica](#42-fibra-ottica)
-	- [4.3. Wireless Access Networs](#43-wireless-access-networs)
+	- [4.3. Wireless Access Networks](#43-wireless-access-networks)
 	- [4.4. Trasmissione dei pacchetti](#44-trasmissione-dei-pacchetti)
 - [5. Network Core](#5-network-core)
 	- [5.1. Packet Switching](#51-packet-switching)
 	- [5.2. Circuit Switching](#52-circuit-switching)
 	- [5.3. Packet Vs. Circuit](#53-packet-vs-circuit)
-	- [Forwarding Tables e Protocolli di _Routing_](#forwarding-tables-e-protocolli-di-routing)
 	- [5.4. Struttura del Network di Network](#54-struttura-del-network-di-network)
 - [6. Performance](#6-performance)
 	- [6.1. Ritardi e Instradamento](#61-ritardi-e-instradamento)
@@ -27,20 +26,20 @@ title: Introduzione a Internet
 
 # 2. Che cos'è internet
 
-Non esiste una risposta univoca a questa domanda, ma **dipende dal punto di vista**.
+Non esiste una risposta univoca alla domanda _"Che cos'è internet?"_, ma **dipende dal punto di vista**.
 
 <div class="grid2">
 <div class="">
 <p class="p">Dall'interno</p>
 
 Se si guarda dall'interno, possiamo definirlo come:
-> Un sistema che connette milardi di dispositivi attraverso link di comunicazione. Questi si dividono in:
-> - _Host_: alla periferia della rete
+> Un sistema che connette milardi di dispositivi attraverso link di comunicazione che si dividono in:
+> - _Host_: si trovano alla "periferia" della rete
 > - _Packet Switches_: inviano pacchetti di reti
 
-Possiamo quindi dire che è una _rete di reti_ che connette miliardi di _host_ sui quali girano le applciazioni.
+Possiamo quindi dire che Internet è una _rete di reti_ che connette miliardi di _host_ sui quali girano le applicazioni.
 
-Quando parliamo di _host_ non intendiamo solamente dei _calcolatori_, infatti oggigiorno la maggior parte dei dispositivi connessi oggi sono di tutti i tipi (smartwatch, telecamenre, pacemaker, tostapane, lavatrici, occhiali AR). Questa nuova modulaizone del mondo è chiamata **Internet of Things**, dove ogni oggetto può essere collegato e interrogato tramite internet.
+Quando parliamo di _host_ non intendiamo solamente dei _calcolatori_,  ma tutte le tipologie di dispositivi connessi (smartwatch, telecamenre, pacemaker, tostapane, lavatrici, occhiali AR). Questa nuova modulaizone del mondo è chiamata **Internet of Things**, dove ogni oggetto può essere collegato e interrogato tramite internet.
 
 Internet segue una serie di **protocolli** di standardizzazione che permettono la corretta comunicazione tra più _host_.
 Gli istituti di standardizzazione sono diversi, uno ad esempio è `IETF` (_Internet Engineering Task Force_) che pubblica documenti chiamati `RFC` (_Request For Comments_). Questi documenti sono analizzati e approvati, andando a generare i **protocolli**.
@@ -81,10 +80,10 @@ I protocolli utilizzati nel _web_ sono del tutto analoghi con quelli umani
 <div class="">
 
 
-Il _Network Edge_ (_Periferia di Internet_) si trovano gli _host_, ovvero i _device_ che eseguono le applicazioni che si connettono ad Internet.
+Il _Network Edge_ (_Periferia di Internet_) rappresenta quella porzione di Internet dove si trovano gli _host_, ovvero i _device_ che eseguono le applicazioni che si connettono ad Internet.
 
 In un modello **client-server** gli _host_ si dividono in:
-- _Client_: l'_host_ che chiede un servizio
+- _Client_: l'_host_ che chiede e utilizza un servizio
 - _Server_: l'_host_ che produce e distribuisce un servizio
 
 Per _client_/_server_ si intendono dei processi, e non la _macchina client/server_, che è il _device_ sul quale si trova il processo.
@@ -92,7 +91,7 @@ Per _client_/_server_ si intendono dei processi, e non la _macchina client/serve
 I server si trovano tipicamente in dei **Data Center**, grossi centri che contengono molte **macchine server**.
 
 Gli _host_ si connettono ad internet tramite le **reti di accesso**, che si trovano proprio nella parte più esterna di internet.
-In resto è chiamato **Network Core**: un'infrastuttura di distribuzione delle informazioni, per direzionarla alla rete di accesso corretta.
+Il resto è chiamato _**Network Core**_, un'infrastuttura di distribuzione delle informazioni che si occupa di direzionarla alla rete di accesso corretta.
 
 Per connettersi alle _reti di accesso_ si possono utilizzare diversi metodi:
 - _Rete di accesso residenziale_: permette l'accesso alla rete in un'appartamento
@@ -130,7 +129,7 @@ Ne esistono diversi tipologie, in europa le più comuni sono le seguenti:
 
 <img class="40" src="./images/internet/fiber-types.png">
 
-## 4.3. Wireless Access Networs
+## 4.3. Wireless Access Networks
 
 Si dividono in diverse categorie in base alle loro dimensioni:
 - **Wireless local area networks**: tipicamente delle dimensioni di un edificio
@@ -142,13 +141,13 @@ Nelle reti istituzionali, ovvero quelle utilizzare dalle aziende, università, e
 
 L'_host_ possiede due funzioni, quella di invio dati e quella di ricezione dati.
 
-Quando un _host_ deve inviare un messaggio ad un altro _host_, lo divide in tante sezioni, chiamati **pacchetti**, ognuno di lunghezza $L \text{bits}$.
+Quando un _host_ deve inviare un messaggio ad un altro _host_, lo divide in tante sezioni, chiamati **pacchetti**, ognuno di lunghezza $L \text{ bits}$.
 
 Le informazioni digitali salvate nei `bit` di informazione, vengono trasformati in segnali fisici che vengono trasmessi attraverso delle connessioni fisiche.
-Ogni segnale fisico, per essere generato e trasmesso, necessita del tempo, chiamato _bit-rate_ $R \text{bits/s}$.
+Ogni segnale fisico, per essere generato e trasmesso, necessita del tempo, chiamato _bit-rate_ $R \text{ bits/s}$.
 Questo valore è messo in rapporto con la lunghezza dei pacchetti per ottenere il _ritardo di trasmissione_, ovvero il tempo necessario per trasferire $L$ bit attraverso la connessione:
 $$
-	{L \over R}\text{s}
+	\quad {L \over R}\text{ s} \quad
 $$
 
 
@@ -162,7 +161,7 @@ Alcuni esempi di mezzi guidati sono:
 - **Doppino telefonico** (_Twisted Pair_): consiste in due fili di rame all'interno di un isolante schermante. A seconda della schermatura e della qualità di rame utilizzato si possono avere più categorie:
   - _Categoria 5_: trasmette da `100Mbps` fino a `1Gbps`
   - _Categoria 6_: trasmette fino a `10Gbps`
-- **Cavo coassiale**: è formato da due conduttori di rame concentrici. Permette più comunicazioni bidirezionali in parallelo, permettendo una comunciazione in banda comune. Veniva ad esempio utilizzato per la televisione, dove ogni canale riusciva a trasmettere nell'ordine delle `100s Mbps`
+- **Cavo coassiale**: è formato da due conduttori di rame concentrici. Permette più comunicazioni bidirezionali in parallelo, permettendo una comunicazione in banda comune. Veniva ad esempio utilizzato per la televisione, dove ogni canale riusciva a trasmettere nell'ordine delle `100s Mbps`
 - **Fibre Ottiche**: i bit sono qui codificati in impulsi di luce, che si propaga molto più velocemente rispetto ai segnali elettrici. Questi mezzi hanno due grossi vantaggi rispetto agli altri:
   - Non vengono influenzati da segnali elettromagnetici, mantenendo quindi un basso _error rate_ anche tra ripetitori molto lontani. Nei conduttori di rame questo valore è $O(10^{-6})$ mentre nelle fibre ottiche è $O(10^{-11})$.
   - Permette comunicazioni point-to-point fino alle `100s Gbps`
@@ -173,10 +172,10 @@ Sono susciettibili ad effetti ambientali, quali riflessioni, interferenze e ostr
 
 Ne esistono di diversi tipi:
 - **Microonde**: canali che trasmettono fino a `45Mbps`
-- **Wireless LAN (Wi-Fi)**:
+- **Wireless LAN (Wi-Fi)**: velocità che variano da `300 Mbps` fino a oltre `10 Gbps`
 - **Wide Area**:
   - _4G_: nell'ordine delle `decine di Mbps`
-  - _5G_: nell'ordine delle ``
+  - _5G_: nell'ordine dei `Gbps`, con latenza ridotta sotto i `10ms`
 - **Satellite**: anch'essi fino a `45Mbps` ma con tempi di _delay_ nell'ordine dei `270ms`
 
 # 5. Network Core
@@ -222,7 +221,7 @@ I pacchetti vengono quindi salvati in una coda interna al _router_ in attesa di 
 
 Possono quindi verificarsi due casi:
 - Il pacchetto subisce un ritardo chiamato proprio _queue delay_
-- La coda si satura: avviene quindi una perdita dei pacchetti più recenti che non possono più essere salvati, generando una **congestione dello _switch_**
+- La coda si satura: avviene quindi una perdita dei pacchetti più recenti che non possono più essere salvati, generando una **congestione del _router_**
 
 Un modo per evitare le congestioni è quello di fornire ai _router_ **più link** in uscita, ognuno dedicato ad una comunicazione possibile. Questa configurazione si chiama **_circuit switching_**. In questo modo sono presenti connessioni _end-to-end_ per ogni possibile connesione, che rimane _idle_ quando i due _host_ non stanno comunicando
 
@@ -247,11 +246,9 @@ Ogni utente è attivo il 10% del tempo ad un rate di `100Mbps`
 </figcaption>
 </figure>
 
-Se immaginiamo il **circuit-switching**, per quanto sia vero che non abbiamo _congestioni_ con 10 utenti.
+Se immaginiamo il **circuit-switching**, per quanto sia vero che non abbiamo _congestioni_ con 10 utenti, nel momento in cui gli utenti aumentano la congestione è garantita.
 
 Se immaginiamo il **packet-switching** invece la probabilità che più di 10 persone siano attive allo stesso momento, necessario per saturare la connessione in uscita dal router, è di $\frac{1}{2500} = 0.0004$.
-
-## Forwarding Tables e Protocolli di _Routing_
 
 ## 5.4. Struttura del Network di Network
 
@@ -272,13 +269,13 @@ Possiamo quindi rappresentarla come una gerarchia:
 Abbiamo già iniziato a vedere come possono avvenire le _perdite di packetti_ e i vari _delay_.
 
 Il ritardo complessivo di un pacchetto è influenzato da 4 fattori:
-- $d_{\text{proc}}$: _ritardo di processing_ nel nodo, tempo impiegato dal router per analizzare il pacchetto e decidere come instradarlo.Tendenzialmente è nell'ordine di millisecondi e spesso trascurabile
+- $d_{\text{proc}}$: _ritardo di processing_ nel nodo, tempo impiegato dal router per analizzare il pacchetto e decidere come instradarlo. Tendenzialmente è nell'ordine di millisecondi e spesso trascurabile
 - $d_{\text{queue}}$: _ritardo di queueing_, non è prevedibile e dipende dal livello di congestione del _router_
 - $d_{\text{trans}}$: _ritardo di trasmissione_, calcolato come $\frac{L}{R}$
-- $d_{\text{prop}}$: _ritardo di _propagazione_, se la lunghezza del link è $l$ e la velocità di propagazione è $s$ si calcola come $\frac{l}{s}$
+- $d_{\text{prop}}$: _ritardo di propagazione_, se la lunghezza del link è $l$ e la velocità di propagazione è $s$ si calcola come $\frac{l}{s}$
 
 $$
-d_{\text{nodal}} = d_{\text{proc}} + d_{\text{queue}} + d_{\text{trans}} + d_{\text{prop}}
+	\quad d_{\text{nodal}} = d_{\text{proc}} + d_{\text{queue}} + d_{\text{trans}} + d_{\text{prop}} \quad
 $$
 
 <div class="grid2">
@@ -293,7 +290,7 @@ E variando $a$, ovvero il numero di pacchetti medi inviati
 Il rate totale sarà quindi $a \cdot \frac{L}{R}$ e può valere:
 - $\approx 0$: se il ritardo di _queueing_ è piccolo
 - $\approx 1$: se il ritardo di _queueing_ è grosso
-- $\gg 1$: abbiamo più pacchetti in entrata che in uscita, geenrando un ritardo infinito!
+- $\gg 1$: abbiamo più pacchetti in entrata che in uscita, generando un ritardo infinito!
 </div>
 <div class="">
 <img class="" src="./images/internet/packet-queueing-delay-graph.png">
@@ -333,13 +330,14 @@ Questo effetto è chiamato _bottolneck link_.
 
 In generale se ci sono $n$ link ognuno con **throughput medio** $R_i$, il **throughput medio** della connessione sarà:
 $$
-	R_{\text{avg}} = \min_{i \in [1, n]}\frac{{R_i}}{n}
+	R_{\text{avg}} = \min_{i \in [1, n]}{\frac{R_i}{n}}
 $$
 
 # 7. Sicurezza
 
 Il mondo andava molto bene quando non c'erano gli _hacker_:
 > Persone che non hanno niente da fare che si divertono a danneggiare gli altri. [...]  cattivi ragazzi
+> 
 > cit. professore Anastasi
 
 Tuttavia oggi ci sono, ed è quindi importante capire a quali possibili attacchi potremmo essere susciettibili:
@@ -348,7 +346,7 @@ Tuttavia oggi ci sono, ed è quindi importante capire a quali possibili attacchi
   - _Worm_:  infezione che si auto-replica passivamente ricevendo oggetti che si eseguono da soli
 - **Spyware Malware**: può registrare alcune informazioni del dispositivo, come i tasti della tastiera cliccati o i siti web visitati, e salvare questi dati in quelli detti _collection site_
 
-Alcuni tipi di attaccchisono:
+Alcuni tipi di attacchi sono:
 - **Denial of Service (DoS)**: gli attaccanti rendono le risorse di connessione dell'obiettivo inutilizzabili, sovraccaricandole con traffico inutile, sfruttando degli _host_ compromessi precedentemente da _botnet_
 - **Packet Sniffing**: principalmente su mezzi broadcast (wireless, ethernet condiviso, ...) permette di leggere tutto il traffico sulla rete copiandoli e analizzandoli.
 - **IP Snooping**: è possibile inviare pacchetti ad un destinatario modificando il sorgente, così da far credere al destinatario che il sorgente sia diverso da quello reale.
@@ -356,27 +354,27 @@ Alcuni tipi di attaccchisono:
 # 8. Protocolli e Servizi
 
 Vediamo adesso com'è organizzato il protocollo che gestisce la comunicazione tra due _host_.
-Le comunicazioni sono infatti sono intrinsecamente complesse. CIò è dovuto anche dlla struttura dei _network_, che comprendono molte componenti diverse tra loro, ad esempio:
+Le comunicazioni sono infatti sono intrinsecamente complesse. Ciò è dovuto anche dlla struttura dei _network_, che comprendono molte componenti diverse tra loro, ad esempio:
 - _host_
 - _router_
 - _link_ diversi
 - _app_
 - protocolli
-- _herdware_ e _software_
+- _hardware_ e _software_
 
 Si cerca quindi un modo di organizzare la struttura del _network_, o perlomeno di cercare di organizzare le _comunicazioni su network_.
 
-Priam di cercare di astrarre ciò che succede sul web, facciamo un esempio di quello che accade quando qualcuno prova a mandare una lettera.
+Prima di cercare di astrarre ciò che succede sul web, facciamo un esempio di quello che accade quando qualcuno prova a mandare una lettera.
 
 Se un operatore $O_1$ vuole mandarla all'operatore $O_2$ questi sono i passaggi che avvengono:
 - $O_1$ fornisce il messaggio ad un operatore alle Poste
 - Le Poste lo trasferiscono al servizio di logistica
 - Un corriere prenderà la lettere e la porterà fino ad un centro di sistamente
 - Il centro di smistamento lo indirizzerà al centro di smistamento più vicino ad $O_2$
-- Dal nuovo centor di smistamento un nuovo corriere lo porta al centro di logistica delle poste vicine ad $O_2$
+- Dal nuovo centro di smistamento un nuovo corriere lo porta al centro di logistica delle poste vicine ad $O_2$
 - Un operatore lo recupererà e lo porterà a $O_2$
 
-Per $O_1$ tutte queste oeprazioni sono sconosciute, e quello che vede è semplicemente che ha portato la lettera alle poste e questa è arrivata a $O_2$.
+Per $O_1$ tutte queste operazioni sono sconosciute, e quello che vede è semplicemente che ha portato la lettera alle poste e questa è arrivata a $O_2$.
 Possiamo notare come il percorso di questa lettera sia simmetrica: **I primi 4 step sono gli stessi degli ultimi 4, ma percorsi in due versi diversi**
 
 Possiamo quindi classificarli in due momenti diversi:
@@ -398,12 +396,12 @@ I **livelli** di internet sono:
 - **Applicazione**: supportano le applicazioni di rete. Su questo livello si trovano _client_ e _server_.
   Su questo livello si performano gli scambi tra _client_ e _server_, infatti proprio in questo _layer_ si possono generare richieste `HTTP`, `IMAP`, `SMTP`, ...
 
-- **Trasporto**: trasforma i messaggi dei processi applicativo per trasferire i dati. Può farli con più protocolli: `TCP`, `UDP`, ...
+- **Trasporto**: trasforma i messaggi dei processi applicativi in _datagrammi_, per permetterne il trasferirento. Può farlo con più protocolli: `TCP`, `UDP`, ...
 
 - **Rete**: direziona i messaggi (datagrammi) dal sorgente alla desinazione.
-  A questo livello sono contenute le informaizoni relative ai _protocolli di routing_ e i vari indirizzi `IP`
+  A questo livello sono contenute le informazioni relative ai _protocolli di routing_ e i vari indirizzi `IP`
 
-- **Connessione**: conserva le informazioni che permettono il trasferimento dei dati tra elementi vicini tra loro. Alcune tecnologie che si affidano alle informazioni contenute in questo livello sono l'`ethernet`, le comunicazioni `802.11 (Wi-Fi)`, `PPP`
+- **Connessione**: conserva le informazioni che permettono il trasferimento dei dati tra elementi vicini tra loro. Alcune tecnologie che si affidano alle informazioni contenute in questo livello sono l'`ethernet`, le comunicazioni `802.11 (Wi-Fi)`, `P2P`
 
 - **Fisico**: È la comunicazione fisica dei `bit` nei cavi
 
@@ -416,15 +414,14 @@ In realtà Internet oggi non segue esattamente questo modello, ma diverse azioni
 <div>
 
 Il modello di internet si basa sul **_modello ISO/OSI_**, rimuovendone però due strati:
-- **Presentazione**: permette l'interpretazioni del significato dei dati (_encryption_, compressione, convenzioni macchina specifiche, ...)
+- **Presentazione**: permette le interpretazioni del significato dei dati (_encryption_, compressione, convenzioni macchina specifiche, ...)
 - **Sessione**: Gestiva la _sincronizzazione_, i checkpoint e il _recovery_ dello scambio di dati
 
-Internet non supporta nativamente questi step, che se fossero necessari devono estere implementati nel livello **applicazione**.
+Internet non supporta nativamente questi step, che se fossero necessari devono essere manunalmente implementati nel livello **applicazione**.
 
 </div>
 <div>
 <img class="20" src="./images/internet/iso-osi-layers.png">
-
 </div>
 </div>
 
@@ -432,9 +429,10 @@ Quello che succede quando si invia una richiesta è qualcosa del genere:
 
 <img class="40" src="./images/internet/encapsulation-scheme.png">
 
-Il messaggio `M` viene **_incapsulato_**, aggiungendo tanti _header_ quanti sono i livelli del modello, appesi sempre in testa, generando il _frame_
+Il messaggio `M` viene **_incapsulato_**, aggiungendo tanti _header_ quanti sono i livelli del modello, appesi sempre in testa, generando il _frame_.
 Gli _switch_ andranno a leggere **solo** i primi due header per deciderne l'istradamento.
-Quando il _frame_ arriva al _router_, questo va a leggere anche il 3° header per capire a quale dispositivo interno alla rete va trasmesso il _frame_.
-Il _router_ instrada il frame internamente alla rete verso la destinazione.
+
+Quando il _frame_ arriva ad un _router_, questo andrà a leggere anche il 3° header per capire a quale dispositivo interno alla rete va trasmesso il _frame_, intradandolo internamente alla rete verso la destinazione.
+
 La destinazione decodificherà il _frame_ (diverso nel livello _datalink_ modificato dal _router_), leggendone ad uno ad uno gli header, fino a capire qual'è il processo destinatario.
 Il processo destinatario riceve quindi il messaggio `M`.
