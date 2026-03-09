@@ -91,23 +91,23 @@ All'interno dello stesso host, due processi possono comunicare tra di loro utili
 
 Affinché due processi di _host_ diversi possano comunicare, lo fanno scambiandosi messaggi.
 
-In applicazione `P2P` le applicazioni hanno sia _processi client_ che _processi server_.
+In applicazioni `P2P` le applicazioni hanno sia _processi client_ che _processi server_.
 
 ## 2.4. Sockets
 
-Per poter scambiare messaggi si utilizzano le _socket_.
+Per poter scambiare messaggi si utilizzano i _socket_.
 
-Le _socket_ sono strutture fisicamente reali, che gestiscono le comunicazioni come se fossero delle porte.
-I processi che inviano messaggi li fanno uscire dalla _socket_. Questi processi si affidano sull'infrastruttura "dall'altro lato della porta" per consegnar ecorrettamente il messaggio all'altro _socket_.
+I _socket_ sono strutture fisicamente reali, che gestiscono le comunicazioni come se fossero delle porte.
+I processi che inviano messaggi li fanno uscire dal _socket_. Questi processi si affidano all'infrastruttura "dall'altro lato della porta" per consegnare correttamente il messaggio all'altro _socket_.
 
 <img class="" src="./images/webapp/socket.png">
 
 
-Quando un messaggio viene inviato attraverso una `SEND`, questa sfrutta le _socket_ per riuscire a inviare e trasmetterlo.
+Quando un messaggio viene inviato attraverso una `SEND`, questa sfrutta i _socket_ per riuscire a inviare e trasmetterlo.
 
-Per ricevere i messaggi ogni processi deve avere un **identificatore**, che nei dispositivi _host_ è:
-- `IP` **unico** a `32bit` (`IPv4`) o `64bit` (`IPv6`) definisce il calcolatore
-- _Numero di porta_ associato al processo dell'host
+Per ricevere i messaggi ogni processo deve avere un **identificatore**, che nei dispositivi _host_ è:
+- `IP` **unico** a `32bit` (`IPv4`) o `128bit` (`IPv6`): questo numero definisce il calcolatore nella rete
+- _Numero di porta_: questo numero definisce il processo all'interno del calcolatore, così da poter avere più processi che comunicano in rete in parallelo
 
 # 3. Applicazioni client-server
 
@@ -115,21 +115,25 @@ Esistono tantissipi tipi diversi di applicazioni, e ognuna di esse segue uno o p
 
 Un protocollo di livello applicazione definisce il formato dei messaggi che l'applicazione invia e riceve.
 La sintassi del messaggio comprende:
-- Tipo del messaggio scambiato: `Request` in caso di richieste o `Response` per le risposte
-- Sintassi del messaggio: quali campi sono presenti e come sono delineati
-- Semantica del messaggio: comprende il significato dell'informazioni nei campi
-- Regole di comportamento: sanciscono come l'applicazione deve comportarsi prima, durante e dopo lo scambio del messaggio.
+- **Tipo del messaggio scambiato**: `Request` in caso di richieste o `Response` per le risposte
+- **Sintassi del messaggio**: quali campi sono presenti e come sono delineati
+- **Semantica del messaggio**: comprende il significato dell'informazioni nei campi
+- **Regole di comportamento**: sanciscono come l'applicazione deve comportarsi prima, durante e dopo lo scambio del messaggio.
 
 Di questi protocolli ce ne sono tanti, di diverse forme:
-- _Open Protocols_: sono protocolli messi a disposizione di chiunque, definiti attraverso `RFC` ufficiali o testi di riferimento non ufficiali. Permettono l'interoperabilità. Alcuni esemppi sono l'`HTTP` e l'`SMTP`
+- _Open Protocols_: sono protocolli messi a disposizione di chiunque, definiti attraverso `RFC` ufficiali o testi di riferimento non ufficiali. Permettono l'interoperabilità. Alcuni esempi sono l'`HTTP` e l'`SMTP`
 - _Protocolli proprietari_: sono protocolli privati esclusivi degli ideatori. Un esempio era il protocollo utilizzato da Skype
 
-Per sviluppare un applicazione dobbiamo prima capire come i dati vengono trasferiti. Infatti alcune applicazioni hanno necessità di garanzie sull'**integrità dei dati**. Se infatti durante l'invio di un file si verificassero molti errori, il file risulterebbe _corrotto_, incorretto o addirittura inutilizzabile. Altre applicazioni invece non necessitano la correttezza al 100% dei dati ma tollerano alcuni errori. Un esempio sono le applicazioni che si occupano di trasmissione di audio e/o video, dove piccole perdite dei dati non influiscono sulla qualità del prodotto finale.
+Per sviluppare un applicazione dobbiamo prima capire come i dati vengono trasferiti.
+
+Alcune applicazioni hanno infatti necessità di garanzie l'**integrità dei dati** trasmessi. Se infatti durante l'invio di un file si verificassero molti errori, il file risulterebbe _corrotto_, incorretto o addirittura inutilizzabile.
+
+Altre applicazioni invece possono tollerare alcuni errori, non necessitando della correttezza dei dati al 100%. Un esempio sono le applicazioni che si occupano di trasmissione di audio e/o video, dove piccole perdite dei dati non influiscono sulla qualità del prodotto finale.
 
 È inoltre importante stabilire le esigenze sul _delay_ di invio e ricezione messaggi.
 Per applicazioni _real-time_, come i _live streaming_ o giochi online, è richiesto infatti un _delay_ basso per essere efficace, per applicazioni _asincrone_ invece è tollerabile anche un _delay_ più ampio.
 
-Anche il _throughput_ per alcune app, come ad esempio quelle multimediali o di streaming, è necessario rispetti un certo minimo per renderle efficaci. Altre app invece, dette **elastiche**, possono utilizzare qualsiasi _throughput_.
+Alcune app, come ad esempio quelle multimediali o di streaming, per essere efficaci necessitano invece che il _throughput_ rispetti un certo minimo, altre invece, dette **elastiche**, possono utilizzare qualsiasi _throughput_.
 
 Ultimo, ma non meno importante, è invece la **sicurezza** che l'applicazione richiede. Alcune applicazioni infatti maneggiano informaizoni sensibili per i quali vogliamo che i dati siano sempre al sicuro, altre invece che non maneggiano alcuna informazione si possono accontentare di sicurezze minori.
 
@@ -140,7 +144,7 @@ Una tabella che mostra alcuni requisiti per applicazioni comuni è la seguente:
 |        Applicazione         | Perdita Dati |                    Throughput                     | Sensibilità al delay |
 | :-------------------------: | :----------: | :-----------------------------------------------: | :------------------: |
 | Trasferimento file/Download |      No      |                     Elastico                      |       Nessuna        |
-|            email            |      No      |                     Elastico                      |       Nessuna        |
+|            Email            |      No      |                     Elastico                      |       Nessuna        |
 |        Documenti Web        |      No      |                     Elastico                      |       Nessuna        |
 |    Audio/Video real-time    |  Tollerante  | audio: `5Kbps`-`1Mbps`<br>video: `10Kbps`-`5Mbps` |        `10ms`        |
 |    Streaming Audio/Video    |  Tollerante  | audio: `5Kbps`-`1Mbps`<br>video: `10Kbps`-`5Mbps` |      pochi `ms`      |
@@ -155,19 +159,17 @@ I servizi di comunicazione su internet sono il protocollo `TCP` e quello `UDP`.
 
 <div class="grid2">
 <div class="top">
-<p class="p"><code>Servizio `TCP`</code></p>
+<p class="p"><code>Servizio TCP</code></p>
 
 È un protocollo di trasporto **affidabile** nei processi di invio e ricezione.
 
-Permette di controllare il flusso di comunicazioni, così da non sovraccaricare di messaggi il ricevitore.
+Permette di controllare il flusso di comunicazioni, così da non sovraccaricare di messaggi il ricevitore, implementando servizi di controllo delle congestioni quando il network è sovraccaricato.
 
-Implementa servizi di controllo delle congestioni, ... quando il network è sovraccaricato.
-
-Non da garanzie sul delay, sul throughput minimo né sulla sicurezza, ma si orienta sulla connessione: è infatti necessario un setup tra i processi client e quelli server.
+Non fornisce garanzie sul delay, sul throughput minimo né sulla sicurezza, ma si orienta sulla connessione: è infatti necessario un setup tra i processi client e quelli server.
 
 </div>
 <div class="top">
-<p class="p"><code>Servizio `UDP`</code></p>
+<p class="p"><code>Servizio UDP</code></p>
 
 È un servizio di trasferimento "non affidabile", ovvero che non prevede l'affidabilità delle comunicazioni. I dati possono arrivare non in ordine o affetti da errore.
 
@@ -183,22 +185,24 @@ Di seguito vediamo quale protocollo utilizzano comunemente le applicazioni web:
 <div class="flexbox" markdown="1">
 
 |        Applicazione         |          Application Layer Protocol           | Protocollo di trasporto |
-| :-------------------------: | :-------------------------------------------: | ----------------------: |
-| Trasferimento file/Download |                 FTP [RFC 959]                 |                   `TCP` |
-|           e-mail            |                SMTP [RFC 5321]                |                   `TCP` |
-|        Documenti Web        |              HTTP 1.1 [RFC 7320]              |                   `TCP` |
-|     Telefonia Internet      | SIP [RFC 3261], RTP [RFC 3550] o proprietario |           `UDP` o `TCP` |
-|    Streaming Audio/Video    |             HTTP [RFC 7320], DASH             |           `TCP` o `UDP` |
-|     Giochi Interattivi      |            WOW, FPS (proprietario)            |           `UDP` o `TCP` |
+| :-------------------------: | :-------------------------------------------: | :---------------------: |
+| Trasferimento file/Download |                 FTP [RFC 959]                 |          `TCP`          |
+|           e-mail            |                SMTP [RFC 5321]                |          `TCP`          |
+|        Documenti Web        |              HTTP 1.1 [RFC 7320]              |          `TCP`          |
+|     Telefonia Internet      | SIP [RFC 3261], RTP [RFC 3550] o proprietario |      `UDP` o `TCP`      |
+|    Streaming Audio/Video    |             HTTP [RFC 7320], DASH             |      `TCP` o `UDP`      |
+|     Giochi Interattivi      |            WOW, FPS (proprietario)            |      `UDP` o `TCP`      |
+
+
 </div>
 
-I _socket_ `TCP` e `UDP` di base non forniscono alcuna _encryption_, infatti trasmettono anche dati sensibili, come le password, come `cleartext`.
+I _socket_ `TCP` e `UDP` di base non forniscono alcuna _encryption_, infatti trasmettono anche dati sensibili, come le password, come `plaintext`.
 
 Per poter garantire l'encriptazione dei dati si utilizza il servizio `TLS` (_Transport Layer Security_). Questo servizio permette di utilizzare connessioni `TCP` criptate che garantiscono non solo l'integrità dei dati, ma anche un autenticazione end-point.
 
 Il protocollo deve però essere implementato dalle applicazioni, che utilizzano librerie `TLS` sulle connessioni `TCP`.
 
-Inoltre fornisce delle `TLS socket API` che criptano il `cleartext` fornito alla _socket_ prima di inviarlo su internet. Vedremo meglio come funziona più avanti.
+Inoltre fornisce delle `TLS socket API` che criptano il `plaintext` fornito alla _socket_ prima di inviarlo su internet. Vedremo meglio come funziona più avanti.
 
 ## 3.2. Web e `HTTP`
 
@@ -207,12 +211,12 @@ Prima di vedere le applicazioni web facciamo prima un breve ripasso.
 Le pagine web consistono di **oggetti**, che possono essere salvati su web server differenti. Questi oggetti possone essere file `HTML`, immagini `JPEG`, _applet_ `Java`, file audio `mp3`, ...
 
 In genrale:
-> Una pagina web consiste in un file `HTML` di base che include diversi riferimenti ad oggetti, recuperabili attraverso `URL`
+> Una pagina web consiste in un file `HTML` di base che include diversi riferimenti ad oggetti, recuperabili attraverso un `URL` &emsp;
 $$
 \underbrace{\text{www.someschool.edu}}_{\textit{host name}}\text{/}\underbrace{\text{someDept/pic.gif}}_{\textit{path name}}
 $$
 
-La sigla `HTTP` sta per _hypertext transfer protocol_, ed è un protocollo di livello **applicazione**.
+La sigla `HTTP` sta per _HyperText-Transfer-Protocol_, ed è un protocollo di livello **applicazione**.
 Si basa sul modello _client/server_:
 - _client_: tipicamente un browser che richiede, riceve e mostrare gli _Web object_
 - _server_: tipicamente un web server che invia _Web object_ in risposta alle richieste
@@ -221,7 +225,7 @@ Il protocollo `HTTP` utilizza comunicazioni `TCP`. In particolare il client, qua
 Al termine la connessione `TCP` viene chiusa.
 
 Questo protocollo si dice _stateless_, infatti il server **non salva alcuna informazione sulle precedenti richieste di un client**.
-Infatti i protocolli che mantengono uno stato sono più complessi, in quanto richiedono non solo il salvataggio degli stati con ciascuno dei client, ma anche unasincronizzazione tra le informazioni del client e del server qual'ora uno dei due crashasse e gli stati diventassero incosistenti.
+Infatti i protocolli che mantengono uno stato sono più complessi, in quanto richiedono non solo il salvataggio degli stati con ciascuno dei client, ma anche una sincronizzazione tra le informazioni del client e del server qual'ora uno dei due crashasse e gli stati diventassero incosistenti.
 
 Le connessioni `HTTP` si classificano in due tipologie
 <div class="grid2">
@@ -255,13 +259,13 @@ Definiamo il `RTT` (_Round Trip Time_):
 Nel caso di `HTTP non persistente`, per ogni oggetto abbiamo:
 - 1 `RTT` per inizializzare la connessione `TCP`
 - 1 `RTT` per la richiesta `HTTP` e l'attesa dei primi byte della risposta
-- Tempo di trasmissione de file/oggetto
+- Tempo di trasmissione del file/oggetto
 
 In totale il tempo di risposta è $2\text{RTT} + \text{tempo di trasmissione oggetto}$
 
 Con questo approccio l'unico modo per migliorare le prestazioni è effettuare **più connessioni `TCP` parallele** per ognuno degli oggetti da recuperare.
 
-Utilizzando invece connessioni `HTTP presistenti` (`HTTP1.1`) ilserver lascia la connessione aperta dopo aver inviato la prima risposta. Di conseguenza i messaggi `HTTP` tra gli stessi client/server sono inviati sulla stessa connessione, ogni qual volta che il client incontra il riferimento ad un nuovo oggetto. Abbiamo quindi che nel caso minimo abbiamo un sono `RTT` per tutti gli oggetti, _dimezzando il tempo di risposta_.
+Utilizzando invece connessioni `HTTP presistenti` (`HTTP1.1`) il server lascia la connessione aperta dopo aver inviato la prima risposta. Di conseguenza i messaggi `HTTP` tra gli stessi client/server sono inviati sulla stessa connessione, ogni qual volta che il client incontra il riferimento ad un nuovo oggetto. Abbiamo quindi che nel caso minimo abbiamo un solo `RTT` per tutti gli oggetti, _dimezzando il tempo di risposta_.
 
 ### 3.2.1. Formato messaggi `HTTP`
 
@@ -272,14 +276,14 @@ Le `request HTTP` sono scritte in formato `ASCII`.
 <div class="grid3">
 <div class="">
 
-Ogni riga è divisa dai caratteri `\r\n` di ritorno a carrello e nuova riga
+Ogni riga è divisa dai caratteri di ritorno a carrello e nuova riga `\r\n`.
 
-La prima riga rappresenta la _request line_ che può utilizzare tre comandi:
+La prima riga rappresenta la _request line_ che può utilizzare diversi comandi:
 - `GET`: per inviare dati al server. Include i dati dell'user direttamente nell'`URL` della richiesta `HTTP`, inserite subito dopo il carattere `?`
   - `www.somesite.com/animalsearch?monkeys&banana`
 - `POST`: invia oltre la pagina web anche gli input di un form, inviati in un corpo identità chiamato `HTTP POST request message`
 - `HEAD`: richiede solamente gli header, senza gli oggetti. È spesso utilizzato durante le fasi implementative
-- `PUT`: permette di caricare nuovi file/oggetti al server rimpiazzando completamente il file che esiste nell'`URL` specificato con il contenuto della `POST HTTP request message`
+- `PUT`: permette di caricare nuovi file/oggetti al server rimpiazzando completamente il file che esiste nell'`URL` specificato con il contenuto della `HTTP POST request message`
 
 Successivamente abbiamo gli le righe di _header_ che contengono diverse informazioni.
 
@@ -348,18 +352,18 @@ Host: gaia.cs.umass.edu
 # Dopo aver effettuato un doppio invio questa breve richiesta GET viene effettuata al server
 ```
 La risposta del server è questa:
-> HTTP/1.1 200 OK
-> Date: Wed, 01 Oct 2025 14:05:18 GMT
-> Server: Apache/2.4.6 (CentOS) OpenSSL/1.0.2k-fips PHP/7.4.33 mod_perl/2.0.11 Perl/v5.16.3
-> X-Powered-By: PHP/7.4.33
-> Set-Cookie: DevMode=0
-> Transfer-Encoding: chunked
-> Content-Type: text/html; charset=UTF-8
->
-> 398b
->
-> &lt;!DOCTYPE HTML&gt;
-> &lt;html&gt;
+> HTTP/1.1 200 OK <br>
+> Date: Wed, 01 Oct 2025 14:05:18 GMT <br>
+> Server: Apache/2.4.6 (CentOS) OpenSSL/1.0.2k-fips PHP/7.4.33 mod_perl/2.0.11 Perl/v5.16.3 <br>
+> X-Powered-By: PHP/7.4.33 <br>
+> Set-Cookie: DevMode=0 <br>
+> Transfer-Encoding: chunked <br>
+> Content-Type: text/html; charset=UTF-8 <br>
+> <br>
+> 398b <br>
+> <br>
+> &lt;!DOCTYPE HTML&gt; <br>
+> &lt;html&gt; <br>
 > ...
 
 
@@ -370,7 +374,7 @@ Ricordando che le interazioni tramite `HTTP GET/` sono _stateless_, non abbiamo 
 Si utilizzano quindi i _Cookies_. I _Cookies_ permettono di rendere **stateful** il protocollo _stateless_.
 
 In questo modo, quando l'utente lo desidera, è possibile conservare lo stato attraverso gli step della transizione.
-Permettono inoltre di recuperare le transizione parzialmente completate.
+Permettono inoltre di recuperare le transizioni parzialmente completate.
 
 Il meccanismo dei cookies ha 4 componenti:
 - Inserimento della **cookie header line** del messaggio `HTTP response`
@@ -386,34 +390,32 @@ I _cookie_ possono essere utilizzati per diversi scopi:
 - Concessione di autorizzazioni
 - Mantenimento di carrelli di acquisti
 - Raccomandazioni e preferenze
-- User sessione state
+- User session state
 - ...
 
 Il meccanismo dei cookie non è l'unico con il quale è possibile mantenere lo stato. Infatti è possibile implementare anche diversi _endpoints protocol_ per ottenere lo stesso risultato.
 
-I _cookies_ permettono ai siti di apprendere molte informazioni relative all'utente che naviga su un dato sito. In particolare esistono i _third party persistent cookies_ che sono dei _cookies di tracciamento_ che permettono di associare ad un itente un identità comune tracciabile attraverso diversi siti web.
+I _cookies_ permettono ai siti di apprendere molte informazioni relative all'utente che naviga su un dato sito. In particolare esistono i _third party persistent cookies_ che sono dei _cookies di tracciamento_ che permettono di associare ad un utente un identità comune tracciabile attraverso diversi siti web.
 
 ### 3.2.3. Proxy Servers
 
 I tempi di risposta nelle applciazioni devono rispettare dei vincoli di tempo sotto i quali è impossibile andare.
 
-Si è cercato quindi di dei metodi per soddisfare le richieste dei _client_ senza contattare direttamente **il server di origine**.
+Nel tempo si sono quindi cercato delle metodologie per soddisfare le richieste dei _client_ senza contattare direttamente **il server di origine**.
 
-Per fare ciò si utilizza un protoccolo simile a quello utilizzato nei processori. Infatti anche in questo caso possiamo applciare i principi di località, spaziale e temporale.
+Per fare ciò si utilizza un protocollo simile a quello utilizzato nei processori, andando ad applicare i principi di località spaziale e temporale.
 
 Ha quindi senso pensare ad una _web cache_ che permette di evitare le richieste già effettuate in precedenza.
 
-In questo modo, l'utente configura il proprio browser a consultare una _Web Cache_ (**Proxy**), che verrà adesso consultata per tutte le richieste:
+L'utente deve solamente configurare il proprio browser affinché per ogni richiesta consulti prima una _Web Cache_ (**Proxy**):
 - Se gli oggetti richiesti sono nella cache vengono restituiti immediatamente, tagliando di molto i tempi di risposta
 - Se gli oggetti non sono presenti, il _server proxy_ effettua la richiesta al server di origine e salva localmente la risposta prima di restituirla al _client_.
 
-I **proxy** agiscono:
-- da client quanto effettuano le richiesta ai server originali
-- da server quando inviano le informazioni già ottenute al client
+I **proxy** hanno quindi un doppio ruolo:
+- _Client_ quanto effettuano le richiesta ai server originali
+- _Server_ quando inoltrano le informazioni già ottenute al client
 
-Tipicamente queste _web cache_ sono installate direttamente dalle `ISP`
-
-Grazie al _proxy_ si raggiungono diversi vantaggi:
+Tipicamente queste _web cache_ sono installate direttamente dalle `ISP`, e permettono di raggiungere diversi vantaggi:
 - Diminuisce il tempo di risposta al _client_, data proprio la vicinanza
 - Diminuisce il traffico all'access link degli `ISP`
 - Diminuisce il traffico su internet, diminuendo le probabilità di congestione
@@ -430,15 +432,14 @@ Questo è possibile con l'introduzione di un nuovo parametro `if-modified-since:
 
 Fin'ora abbiamo parlato dello _standard_ `HHTP1.0`.
 
-Nella versione `1.1` venne aggiornato l'algoritmo di _scheduling_ introducendo l'algoritmo `FCFS` (_FIrst-Come-First-Serve_).
-In questo modo è stata introdotta la possibilità di effettuare richieste `GET` **multiple e in pipeline**.
+Nella versione `1.1` venne aggiornato l'algoritmo di _scheduling_ introducendo l'algoritmo `FCFS` (_Frst-Come-First-Serve_).
+In questo modo è stata introdotta la possibilità di effettuare richieste `GET` **multiple in pipeline**.
 
-Infatti adesso il server risponde in ordine, tuttavia si verificano problem idi `HOL blocking` (_Head-of-Line blocking_), dove oggetti più massicci possono bloccare oggetti più piccoli.
+Seppur adesso il server sia impostato per rispondere in ordine di arrivo si verificano problemi di `HOL blocking` (_Head-of-Line blocking_), ovvero oggetti più massicci che  bloccano oggetti più piccoli.
 Inoltre i processi di recupero pacchetti persi, bloccano la trasmissione degli oggetti.
 
-Con l'introduzione di `HTTP/2` ([RFC 7540,2015]) è stata aumentata la flessibilità con il quale i _server_ inviano gli oggetti al client.
-Con questo protocollo tutti gli oggetti vengono **divisi in _frame_**. In questo modo è possibile per il server comunicare i gli oggetti in base alla priorità che il client gli assegna. 
-Dividendo infatti gli oggetti in frame, il server invia ogni frame in base alla priorità, magari interromplendo l'invio di un oggetto con l'invio di un altro.
+Con l'introduzione di `HTTP/2` [RFC 7540,2015] è stata aumentata la flessibilità con il quale i _server_ inviano gli oggetti al client.
+Con questo protocollo tutti gli oggetti vengono **divisi in _frame_**. In questo modo è possibile per il server comunicare i gli oggetti in base alla priorità che il client gli assegna. Quando arriverà un frame a priorità più alta, il server procederà con il suo invio, magari interromplendo l'invio dell'oggetto attuale.
 
 <img class="" src="./images/webapp/http2-hol-mitigation.png">
 
@@ -450,16 +451,13 @@ Più informazioni su questo metodo si vedranno nei corsi magistrali.
 
 ## 3.3. Email e protocolli
 
-Quando parliao di posta elettronica ci sono 3 attori principali:
-- L'user agent
-- I server di posta elettronica
+Quando parliamo di posta elettronica ci sono 3 attori principali:
+- **User agent**: il software che permette di accedere e inviare la posta elettronica
+- **I server di posta elettronica (mail-server)**: contengono i messaggi (codificati in `7-bit ASCII`) in entrata all'interno della _mailbox_
 - Il _Simple Mail Transfer Protocol_ `SMTP`
 
-L'user agent corrisponde al software che permette di accedere e inviare la posta elettronica.
-
-I mail server contengono i messaggi (codificati in `7-bit ASCII`) in entrata all'interno della _mailbox_.
 I messaggi, quando vengono inviati, vengono inseriti in una coda di messaggi da mandare.
-LO stesso _mail server_ si comporta da:
+Lo stesso _mail server_ si comporta da:
 - Client: quando invia dei messaggi che ha ricevuto
 - Server: quando riceve dei messaggi inviati da altri _web server_
 
@@ -487,19 +485,19 @@ Facciamo quindi un esempio per vedere come avviene il trasferimento di posta ele
 Possiamo immaginare che il protocollo `SMTP` sia qualcosa del genere (S server, C client):
 ```log
 S: 220 hamburger.edu
-C: HELO crepes.fr
-S: 250  Hello crepes.fr, pleased to meet you 
-C: MAIL FROM: <alice@crepes.fr> 
-S: 250 alice@crepes.fr... Sender ok 
-C: RCPT TO: <bob@hamburger.edu> 
-S: 250 bob@hamburger.edu ... Recipient ok 
-C: DATA 
-S: 354 Enter mail, end with "." on a line by itself 
-C: Do you like ketchup? 
-C: How about pickles? 
-C: . 
-S: 250 Message accepted for delivery 
-C: QUIT 
+C: HELLO crepes.fr
+S: 250  Hello crepes.fr, pleased to meet you
+C: MAIL FROM: <alice@crepes.fr>
+S: 250 alice@crepes.fr... Sender ok
+C: RCPT TO: <bob@hamburger.edu>
+S: 250 bob@hamburger.edu ... Recipient ok
+C: DATA
+S: 354 Enter mail, end with "." on a line by itself
+C: Do you like ketchup?
+C: How about pickles?
+C: .
+S: 250 Message accepted for delivery
+C: QUIT
 S: 221 hamburger.edu closing connection
 ```
 
@@ -519,7 +517,7 @@ Il protocollo `SMTP` e quello `HTTP` sono simili:
 | **Comportamento**         |                           _command/response_                           |                 _request/response_                  |
 | **Tipo** di comunicaizone |                                 _push_                                 |                       _pull_                        |
 | **Comunicazione**         |                              persistente                               |
-| **Formato Oggetti**       | Più oggetti inviati in un singolo messaggio, codifica to `7-bit ASCII` | Ogni messaggio incapsulato in un messaggio apposito |
+| **Formato Oggetti**       | Più oggetti inviati in un singolo messaggio, codificato `7-bit ASCII` | Ogni messaggio incapsulato in un messaggio apposito |
 
 </div>
 
@@ -537,7 +535,7 @@ Per recuperare le mail dal proprio _mail server_ esistono altri due protocolli:
 - `IMAP` (_Internet Mail Access Protocol_): definito in `RFC 3501`, i messaggi rimangono salvati sul server. Il protocollo permette il recupero, l'eliminazione e l'incartellamento dei messaggi sul server. Sull'_UA_ si hanno dei riferimenti ai messaggi nella _mailbox_.  Più client diversi vedono quindi sempre tutta la stessa posta.
 - `POP`: i messaggi vengono _"poppati"_, ovvero estratti dal _mail server_, spostandoli permanentemente su un _client_. Con questo protocollo se un _client_ accede al _mail server_ dopo un'altro, non vede la posta già visualizzato dal primo.
 
-Oggi esistono tantissime interfacce web basate su `SMTP`/`IMAP`(`POP`) per inviare e reucperare le email. (gmail, Hotmail, Yahoo!Mail,)
+Oggi esistono tantissime interfacce web basate su `SMTP`/`IMAP`(`POP`) per inviare e recuperare le email. (gmail, Hotmail, Yahoo!Mail, ...).
 
 ## 3.4. DNS
 
@@ -570,16 +568,16 @@ Se un client vuole trovare l'`IP` di `www.amazon.com`, possiamo approssimare la 
 - Query al server `DNS` dei `.com` per trovare il server `DNS` per `amazon.com`
 - Query al server `DNS` di `amazon.com` per trovare l'`IP`di `www.amazon.com`
 
-Esistono 13 server di _root_ sparsi per il mondo (nessuno in Italia), ognuno implementato da _server factory_. 
+Esistono 13 server di _root_ sparsi per il mondo (nessuno in Italia), ognuno implementato da _server factory_.
 Questi server sono in realtà contattati come _last-resort_ dai server di dominio che non riescono ad effettuare la traduzione.
 Questi hanno però un **_importanza incredibile_** per il funzionamento di internet.
 
-I server `DNS` si dicono **authoritative** se sanno tradurre l'_url_ in indirizzo `IP` invece di rimandare ad altri `DNS` server.
+I server `DNS` si dicono **authoritative** se sanno tradurre _url_ in indirizzi `IP` invece di rimandare ad altri server `DNS`.
 I server `TLD` sono **authorative** per i domini come: `.com`, `.org`, `.net`, `.edu`, `.aero`, `.jobs`, `.museums` e tutti i `CCTLD` come: `.it`, `.uk`, `.fr`, `.ca`, `.jp`, `.cn`.
 
-Esiste un `local DNS server` che potrebbe non rispettare la gerarchia (in realtà cc'è anche un secondario per affidabilità). Sono forniti dagli `ISP` (o dalle organizzazioni private), e sono conosciuti anche sotto al nome di _default name server_.
+In realtà esiste un `local DNS server` che potrebbe non rispettare la gerarchia (in realtà c'è anche un secondario per affidabilità). Questi sono forniti dagli `ISP` (o dalle organizzazioni private), e sono conosciuti anche sotto al nome di _default name server_.
 
-Il suo ruolo è quello di agire da _proxy_, quando un host richiede un a traduzione, il risultato viene prima salvato nella _cache_ dal `lDNSs`, così da non dover rieffettuare la richiesta in un secondo momento.
+Il loro ruolo è quello di agire da _proxy_ quando un host richiede una traduzione, il risultato viene prima salvato nella _cache_ dal `lDNSs`, così da non dover rieffettuare la richiesta in un secondo momento.
 
 Esistono due modi per effettuare le richieste di traduzione. Immaginiamo di avere:
 - host: `enineering.nyu.edu`
@@ -605,9 +603,9 @@ La richiesta del `lDNSs` a `DNSs umass.edu` può essere **authorative** che rest
 
 Funziona in maniera simile a quella delle query iterative, ma sono i `DNSs` stessi a effettuare le richieste per i livelli inferiori.
 
-In questa orchitettura sono quindi necessari più _cache level_ per ogni `DNSs` così da diminuirne il carico.
+In questa architettura sono quindi necessari più _cache level_ per ogni `DNSs` così da diminuirne il carico.
 
-<img class="" src="./images/webapp/recursive-dns.png">
+<img class="60" src="./images/webapp/recursive-dns.png">
 
 </div>
 </div>
@@ -622,7 +620,7 @@ I meccanismi di aggiornamento e di notifica sono descritti dallo standard `IETF`
 
 Abbiamo detto che il `DNS` è un database disribuito che conserva _resource records_ `RR`.
 Il loro formato è il seguente:
-<p class="p"><code>(name, value, type, ttl)</code></div>p>
+<p class="p"><code>(name, value, type, ttl)</code></p>
 
 A seconda del `type` gli altri parametri (tranne il `ttl`) hanno significati diversi:
 
@@ -664,7 +662,7 @@ Sui sistemi windows è presente il comando:
 nslookup
 ```
 
-Che permette di richiedere traduzioni 
+Che permette di richiedere traduzioni
 
 ### 3.4.2. Registrazione di un nuovo record di dominio
 
@@ -788,7 +786,7 @@ Prima di fare ciò definiamo:
 
 Nel **torrent**, in un certo istante troviamo tre tipi di _peer_:
 - **Leachers**: coloro che devono ancora completare di scaricare il file
-- **Feeders**: coloro che hanno completato il _download_ del file. Potrebbero egoisticamente uscire dal torrent, ma decidono, altruisticamente, di rimanere per alimentare 
+- **Feeders**: coloro che hanno completato il _download_ del file. Potrebbero egoisticamente uscire dal torrent, ma decidono, altruisticamente, di rimanere per alimentare
 - **Free Riders**: sono coloro che sono solo interessati a scaricare i file, senza fornire la possibilità di caricare i loro file
 
 Con l'introduzione dei **torrent** si introducono anche un **tracker**, che ha come compito quello di tracciare i _peer_ che in un certo istante fanno parte del _torrent_.

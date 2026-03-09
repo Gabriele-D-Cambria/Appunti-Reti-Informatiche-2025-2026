@@ -80,7 +80,7 @@ Il corso verterà allo sviluppo ad un progetto.
 ## 📖 Ordine di Studio Consigliato
 
 1. [Introduzione a Internet](./Introduzione%20a%20Internet)
-2. [Applicazioni di Rete](./Applicazioni%20di%20Rete)
+2. [Applicazioni di Rete](./Applicazioni%20di%20rete)
 3. [Reti a Connessione Diretta](./Reti%20a%20Connessione%20Diretta)
 4. [Reti a Commutazione di pacchetto](./Reti%20a%20Commutazione%20di%20pacchetto)
 5. [Interconnessioni di reti (Internet)](./Interconnessioni%20di%20reti%20(Internet))

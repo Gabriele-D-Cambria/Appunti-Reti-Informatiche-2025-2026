@@ -337,7 +337,7 @@ $$
 
 Il mondo andava molto bene quando non c'erano gli _hacker_:
 > Persone che non hanno niente da fare che si divertono a danneggiare gli altri. [...]  cattivi ragazzi
-> 
+>
 > cit. professore Anastasi
 
 Tuttavia oggi ci sono, ed è quindi importante capire a quali possibili attacchi potremmo essere susciettibili:
