@@ -553,7 +553,7 @@ Successivamente sarà l'host stesso a ridirezionare il messaggio nelle varie sot
 
 <img class="" src="./images/internetworking/route-aggregation-example.png">
 
-Nel caso in cui un organizzazione cambiasse il proprio `ISP` ma volesse mantenere il proprio indirizzo `IP` sarà quidni sufficiente inserire nella _tabella di forwarding_ del nuovo `ISP` la condizione che sia presente proprio l'indirizzo specifico dell'organizzazione.
+Nel caso in cui un organizzazione cambiasse il proprio `ISP` ma volesse mantenere il proprio indirizzo `IP` sarà quindi sufficiente inserire nella _tabella di forwarding_ del nuovo `ISP` la condizione che sia presente proprio l'indirizzo specifico dell'organizzazione.
 
 
 Affinché un `ISP` possa ottenere un blocco di indirizzi deve chiedere a sua volta ad un altro `ISP`. 
@@ -594,7 +594,7 @@ All'interno delle reti che utilizzano `NAT` i dispositivi credono di essere gli 
 
 Nell'esempio sulla destra possiamo vedere che i dispositivi nella rete credono di essere nella rete `10.0.0.0/24`.
 
-Il router di uscita avrà quidni:
+Il router di uscita avrà quindi:
 - **Un indirizzo privato**: con la quale più comunicare con gli _host_ interni
 - **Un indirizzo pubblico**: con il quale può comunicare con l'esterno
 
@@ -738,7 +738,7 @@ Nel caso di reti distribuite la situazioen è un po' più complessa.
 - Indirizzo `IP` di `B`
 - Indirizzo `MAC` di `R`
 
-Quando `R` otterrà il pacchetto da inoltrare, farà lui una richiesta `ARP` sulla rete successiva a partire dall'indirizzo `IP` di `B`. Procederà quidni a modificare il contenuto dell'indirizzo `MAC` di destinazione con la nuova corrispondenza e inoltrerà il messaggio.
+Quando `R` otterrà il pacchetto da inoltrare, farà lui una richiesta `ARP` sulla rete successiva a partire dall'indirizzo `IP` di `B`. Procederà quindi a modificare il contenuto dell'indirizzo `MAC` di destinazione con la nuova corrispondenza e inoltrerà il messaggio.
 
 Questo accade finché il pacchetto non raggiunge l'ultima rete, dalla quale, tramite richiesta `ARP` otterrà l'effettivo `MAC` di `B`. Il router finale inoltrerà quindi correttamente il messaggio.
 

@@ -138,7 +138,7 @@ Inoltre il fatto che i dispositivi sono mobili, può influenzare direttamente il
 
 Sono inoltre introdotti due nuovi problemi. Per esporli immaginiamo di avere **3 nodi** (`A`, `B` e `C`) che comunicano tra di loro tramite rete wireless.
 
-Il primo è il **problema del Nodo nascosto**. Immaginiamo di avere un ostacolo tra `A` e `C` (ad esmepio un muro schermante). In questo contesto `B` riesce a comunicare con entrambi, mentre `A` e `C` non si "vedono".
+Il primo è il **problema del Nodo nascosto**. Immaginiamo di avere un ostacolo tra `A` e `C` (ad esempio un muro schermante). In questo contesto `B` riesce a comunicare con entrambi, mentre `A` e `C` non si "vedono".
 Può quindi accadere che sia `A` che `C` comunichino in contemporanea con `B` che riceve due segnali sovrapposti.
 Questa collisione non è rilevata né da `A` che da `C`.
 

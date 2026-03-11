@@ -42,7 +42,7 @@ title: Reti a Connessione Diretta
 
 Vedremo adesso come i dati sono trasferiti tra noti adiacenti.
 
-Le **reti a connessione diretta** sono il più semplice tipo di connessione tra host, e consiste nella connessione attravero un _link_ fisico. Tuttavia, il _link_ fisico non è intrinsecamente affidabile, in quanto può generare degli errori nella trasmissione dei dati.
+Le **reti a connessione diretta** sono il più semplice tipo di connessione tra host, e consiste nella connessione attraverso un _link_ fisico. Tuttavia, il _link_ fisico non è intrinsecamente affidabile, in quanto può generare degli errori nella trasmissione dei dati.
 Vedremo quindi delle tecniche che rendono la comunicazione su questo _link_ inaffidabile, affidabile. Successivamente indagheremo su come ampliare questi concetti a reti più ampie.
 
 Un _link_ fisico permette la trasmissione di bit di dati attraverso l'invio di segnali (elettrici, eletromagnetici o ottici) che lo attraversano. È connesso a dei **trasmettitori**/**ricevitori** che permettono di effettuare le codifiche/decodifiche tra segnali fisici e bit logici attraverso protocolli specifici.
@@ -65,7 +65,8 @@ Sarà quindi necessario introdurre una serie di servizi che permetteranno di ren
 <div class="">
 
 Uno dei servizi che introduciamo è il **framing**. Questo servizio incapsula il _datagramma_ all'interno di più _frames_/_trame_.
-Ogni _frame_ è incapsulato in due informazioni di controllo, che forniscono informazioni sul singolo frame per permettono al ricevitore di successivamente ricreare correttamente il frame:
+
+Ogni _frame_ è incapsulato in due informazioni di controllo, che forniscono informazioni sul singolo frame per permettere al ricevitore di ricostruire correttamente il frame:
 - _Header_: contiene diverse informazioni sul _frame_
 - _Payload_ (contenuto)
 - _Trailer_: contiene altre informazioni sul _frame_
@@ -91,9 +92,10 @@ Gli altri servizi che vedremo saranno quindi:
 
 Il _link-layer_ si trova all'interno di **_tutti gli host_**. È implementato nel `NIC` (_Network Interface Card_) sui chip, che implementano il _physical layer_.
 
-Il `NIC` Si attacca al bus dell'host di sistema, ed opera sfruttando una combinazione di _hardware_, _software_ e _firmware_.
+Il `NIC` si attacca al bus dell'host di sistema, ed opera sfruttando una combinazione di _hardware_, _software_ e _firmware_.
 
 Durante una trasmissione la parte che invia si occupa di **incapsulare il datagrama in _frames_** e aggiunge gli _header_/_trailer_ inserendovi _error-checking-bits_, _reliable-data-transfer_, _flow-control_, ...
+
 Il ricevitore controllerà che non vi siano errori e, in caso positivo, estrarrà il datagramma fornendolo al layer superiore.
 
 <img class="" src="./images/drn/interfaces-communicating.png">
@@ -110,7 +112,7 @@ Prima di iniziare cominciamo subito dicendo che **_non esiste un sistema di erro
 <img class="60" src="./images/drn/error-detection-scheme.png">
 <figcaption>
 
-La sfida del ricevitore è valutare se `D'` e `D` coincidono, valutando `R'` (anch'esso potenialmente corrotto)
+La sfida del ricevitore è valutare se `D'` e `D` coincidono, valutando `R'` (anch'esso potenzialmente corrotto)
 </figcaption>
 </figure>
 
@@ -119,24 +121,24 @@ Vediamo quindi tre tecniche per rilevare errori nei dati.
 
 ### 3.1.1. Parity Checking
 
-È probabilmente la forma di _erro detection_ più semplice.
+È probabilmente la forma di _error detection_ più semplice.
 Permette di scovare errori nel messaggio attraverso un **singolo parity bit** `P`.
 
 Ciò significa che in un messaggio di $d$ bit, il messaggio finale sarà di lunghezza $d+1$ bit.
 
 Questo bit è codificato così:
-> **Even Parity**: Se il numero di `1` all'interno del messaggio è dipari allora `P = 1`, altrimenti `P = 0` <br>
-> **Odd Parity**: Se il numero di `1` all'interno del messaggio è dipari allora `P = 0`, altrimenti `P = 1`
+> **Even Parity**: Se il numero di `1` all'interno del messaggio è dispari allora `P = 1`, altrimenti `P = 0` <br>
+> **Odd Parity**: Se il numero di `1` all'interno del messaggio è dispari allora `P = 0`, altrimenti `P = 1`
 
 In parole povere, rende pari/dispari il numero di `1` all'interno del messaggio.
 
-Il trasmettitore doverà semplicemente contare il nuemro di bit settati all'interno del messaggio per valutarne la correttezza.
+Il trasmettitore dovrà semplicemente contare il numero di bit settati all'interno del messaggio per valutarne la correttezza.
 
 Si vede subito che questo metodo, per quanto semplice, è fallace in caso di errori multipli in numero pari sul singolo messaggio.
 
 Nel caso infatti di `01101|1` $\to$ `11111|1` non verrebbe rilevato alcun errore in quanto in entrambi i casi il numero di bit settati è **pari**.
 
-Se è vero che la porbabilità di errore su un bit è bassa, quella che più bit _consecutivi_ lo siano dovrebbe essere ancora più bassa. Tuttavia, vari esperimenti hanno mostrato che gli errori hanno la tendenza di raggrupparsi in gruppo. Varie misurazioni hanno stimato che la probabilità di errore con questa tecnica è vicina al $50\%$.
+Se è vero che la probabilità di errore su un bit è bassa, quella che più bit _consecutivi_ lo siano dovrebbe essere ancora più bassa. Tuttavia, vari esperimenti hanno mostrato che gli errori hanno la tendenza di raggrupparsi in gruppo. Varie misurazioni hanno stimato che la probabilità di errore con questa tecnica è vicina al $50\%$.
 
 ### 3.1.2. Metodi di Checksum
 
@@ -160,12 +162,12 @@ Il `CRC` (_Cycilc Redundancy Check_) è l'algoritmo di _error detection_ più po
 Introduciamo un nuovo parametro:
 - `G`: _Generator_, bit pattern dato di $r+1$ bit tale per cui il `MSD = 1`
 
-L'obiettivo di questo algoritmo è di scegliere $r$ `CRC` bit `R` tali che $<D, R> = D\cdot 2^r \text{XOR} R$ sia esattamente divisibile per `G` in modulo 2.
+L'obiettivo di questo algoritmo è di scegliere $r$ `CRC` bit `R` tali che $\langle D, R\rangle = D\cdot 2^r \text{XOR} R$ sia esattamente divisibile per `G` in modulo 2.
 
-Il altre parole:
+In altre parole:
 $$
-	D \cdot 2^r \text{XOR} R = nG \\
-	D \cdot 2^r = nG \text{XOR} R
+	D \cdot 2^r \text{ XOR } R = nG \\
+	D \cdot 2^r = nG \text{ XOR } R
 $$
 
 <div class="grid2">
@@ -177,10 +179,10 @@ Possiamo vedere di lato un semplice calcolo con:
 
 Per valutare `R` utilizziamo la seconda equazione ottenuta:
 $$
-	D \dot 2^r = nG \text{XOR} R
+	D \cdot 2^r = nG \text{ XOR } R
 $$
 
-Ed effettuiamo la divisione $D \dot 2^r \over G$. Il resto di questa operazione sarà proprio `R`, mentre il quoziente sarà `n`.
+Ed effettuiamo la divisione $D \cdot 2^r \over G$. Il resto di questa operazione sarà proprio `R`, mentre il quoziente sarà `n`.
 
 La sequenza trasmessa sarà quindi: `<D, R> = 101 110 011`
 </div>
@@ -189,8 +191,7 @@ La sequenza trasmessa sarà quindi: `<D, R> = 101 110 011`
 </div>
 </div>
 
-Gli standard internazionali hanno sono stati definiti per generatori a `8-`, `12-`, `16-` e `32-`bit.
-Lo standard `CRC-32` a `32bit`, utilizzato nella maggior parte dei protocolli a livello `link`, utilizza il generatore:
+Sono stati definiti standard internazionali per generatori a 8, 12, 16 e 32 bit, con lo standard `CRC-32` a `32bit`, utilizzato nella maggior parte dei protocolli a livello `link`, che utilizza il seguente generatore:
 <p class="p"><code>GCRC-32=100000100110000010001110110110111</code></p>
 
 Ogni standard `CRC` permette di rilevare errori di bit consecutivi per gruppi inferiori a `r+1` bit
@@ -204,12 +205,14 @@ Sono algoritmi che permettono non solo di identificare se c'è stato un errore, 
 <div class="">
 
 Un modo per migliorare il _parity checking_ è introdurre un _2-dimention parity checking_. Invece di valutare i messaggi come un array lineare, li rendiamo un array bidimensionale quadrato. A questo punto effettuiamo il _parity check_ **sia sulle colonne che sulle righe**.
+
 In questo modo possiamo non solo individuare gli errori sui singoli bit, ma anche localizzarli nella griglia e correggerli.
+
 Permette inoltre di migliorare significatamente la probabilità di rilevare errori multipli, ma non sempre si riesce a correggerli.
 
 </div>
 <div class="">
-<img class="" src="./images/drn/2d-parity-check.png">
+<img class="30" src="./images/drn/2d-parity-check.png">
 </div>
 </div>
 
@@ -235,11 +238,9 @@ Il protocollo avrà "impacchettato" i dati con l'header di protezione durante l'
 </div>
 </div>
 
-Svilupperemo questo protocollo in maniera incrementale, in maniera chiara e non ambigua, basandoci su alcune assunzioni.
-
-Consideremo solamente trasferimenti dati unidirezionali, permettendo però il controllo in entrambe le direzioni.
-
-Per specificare i mittenti e i destinatari utilizzeremo le **macchine e stati finiti** (già viste e ampiamente utilizzate nel corso di Reti Logiche).
+Svilupperemo questo protocollo in maniera incrementale, in maniera chiara e non ambigua, basandoci su alcune assunzioni:
+- Consideremo solamente trasferimenti unidirezionali, permettendo però il controllo in entrambe le direzioni.
+- Per specificare i mittenti e i destinatari utilizzeremo le **macchine e stati finiti** (già viste e ampiamente utilizzate nel corso di Reti Logiche).
 
 ### 3.3.1. rdt1.0
 
@@ -262,7 +263,7 @@ Ipotizziamo adesso che il canale sottostante possa **invertire bit in gruppi**.
 Dobbiamo però adesso scegliere un modo per **gestire gli errori**.
 Abbiamo più modi:
 - `ACKs` (_ACKnowledgements_): il ricevitore informa esplicitamente il trasmettitore che il pacchetto ricevuto è `OK`
-- `NAKs` (_Negative AcKnowledgements_): il ricevitore informa esplicitamente il trasmettitoche che il pacchetto ricevuto **_presenta errori_**
+- `NAKs` (_Negative AcKnowledgements_): il ricevitore informa esplicitamente il trasmettitore che il pacchetto ricevuto **_presenta errori_**
 
 Quando il trasmettitore riceve un `NAK` procede a _**ritrasmettere il pacchetto incriminato**_.
 
@@ -297,7 +298,7 @@ Le **macchine a stati finiti si complicano**:
 </div>
 </div>
 
-Il _trasmettitore_ adesso aggiunge ai vari pacchetti un numero di sequenza che ne indica la posizione. In realtà per implementare questa funzionalità è sufficiente **un solo bit**. Questo bit verrà invertito dopo l'invio di ogni pacchetto. Se il trasmettitore riceverà due volte di fila un pacchetto con lo stesso bit sequenza, interpreterà l'ultimo come duplicato del pacchetto precedentemente ottenuto, in quanto non ha informazioni riguardanti la ricezione del messaggio di `ACK`/`NAK`.
+Il _trasmettitore_ adesso aggiunge ai vari pacchetti un numero di sequenza che ne indica la posizione. In realtà per implementare questa funzionalità è sufficiente **un solo bit**. Questo bit verrà invertito dopo l'invio di ogni pacchetto. Se il trasmettitore riceverà due volte di fila un pacchetto con lo stesso bit sequenza, interpreterà l'ultimo come duplicato del pacchetto precedentemente ottenuto, ipotizzando che il trasmettitore abbia interpretato il precedente `ACK` come `NAK` e lo abbia ritrasmesso.
 
 Questo però complica la nostra macchina a stati finiti per il _trasmettitore_, in quanto è necessario ricordarsi adesso il valore dell'ultimo bit di sequenza, andando di fatto a raddoppiare gli stati.
 
@@ -305,9 +306,13 @@ Questo però complica la nostra macchina a stati finiti per il _trasmettitore_, 
 
 È un ulteriore implementazione del `rdt2.1`, che utilizza **_esclusivamente gli `ACK`_**.
 
-Invece di utilizzare un `NAK`, il ricevitore invia `ACK`  multipli per segnalare di ritrasmettere l'ultimo pacchetto inviato, inludendo esplicitamente il bit di sequenza all'interno del messaggio di `ACK`.
+Invece di utilizzare un `NAK`, il ricevitore invia `ACK`  multipli per segnalare di ritrasmettere l'ultimo pacchetto inviato, includendo esplicitamente il bit di sequenza all'interno del messaggio di `ACK`.
 
-Molti protocolli, incluso quello `TCP`, utilizzano questo approccio per evitare l'utilizzo dei `NAK`
+È ancora una volta sufficiente un solo bit per indicare a quale pacchetto facciamo riferimento, infatti ipotizzando che il trasmettitore abbia inviato un pacchetto `0`:
+- Se riceve `<ACK, 0>` allora il pacchetto è stato ricevuto correttamente
+- Se riceve `<ACK, 1>` è come se il ricevitore dicesse _"Ho ricevuto correttamente il pacchetto di prima, non questo"_, quindi il trasmettitore lo reinvia
+
+Molti protocolli, incluso quello `TCP`, utilizzano questo approccio per evitare l'utilizzo dei `NAK`.
 
 
 ### 3.3.4. rtd3.0
@@ -346,7 +351,7 @@ Ipotizziamo il seguente caso:
 
 Il tempo necessario a trasferire un pacchetto attraverso il canale è di:
 $$
-	D_{\text{trans}} = \frac{L}{R} = \frac{8000\;\text{bits}}{10^9\;\text{bits/sec}} = 8 \mu s
+	D_{\text{trans}} = \frac{L}{R} = \frac{8000\text{ bits}}{10^9\text{ bits/sec}} = 8\;\mu s
 $$
 
 Prima di inviare il pacchetto successivo, il nostro protocollo richiede però l'arrivo dell'`ACK`.
@@ -404,7 +409,7 @@ In questo protocollo gli `ACK` in realtà non sono relativi ai singoli pacchetti
 Infatti il messaggio di `ACK(n)` conterrà un numero di sequenza $n$, che indica **_l'ultimo pacchetto validato_**.
 Quando il trasmettitore riceverà `ACK(n)`, setterà `base = n+1`.
 
-È inoltre introdotto un _timer_. Se alla scadenza di questo timer non è arrivato alcun `ACK`, il trasmettitore procede a **_ritrasmettere tutti i pacchetti nell'intervallo `base, nexseqnum - 1]`_**.
+È inoltre introdotto un _timer_. Se alla scadenza di questo timer non è arrivato alcun `ACK`, il trasmettitore procede a **_ritrasmettere tutti i pacchetti nell'intervallo `[base, nexseqnum - 1]`_**.
 All'arrivo dell'`ACK(n)`, il trasmettitore resetterà il timer.
 
 
@@ -454,17 +459,18 @@ Possiamo vedere un esempio di `SR` in azione:
 <img class="40" src="./images/drn/rdt3-SR-example.png">
 
 
-Notiamo subito un problema. Infatti, quando arriverà `ACK(2)`, il trasmettitore non avrà ancora ricevuto né `ACK(3)` né `ACK(4)`, che nel nostro esempio sono stati persi.
-Allo scadere del _timer_, il trasmettitore invierà i pacchetti `4` e `5`. D'altro canto però, il ricevitore ha giàà ottenuto e segnato l'invio dell'`ACK` di `4` e `5` che quindi sono a tutti gli effetti **_inviati più volte_**.
+Con un po' di sforzo mentale è possibile notare però un problema. Se ipotizziamo che `ACK(3)` e `ACK(4)` siano andati persi, il trasmettitore riceverà `ACK(2)` e rimarrà in attesa. Allo scadere del _timer_, il trasmettitore, non avendo ottenuto i due _ACK_ successivi, invierà nuovamente i pacchetti `3` e `4`.
 
-Questo non sembrerebbe un problema, ma immaginiamo di avere una finestra di `3 pkg`, identificati in modulo 2 come `0`, `1`, `2`.
+Il ricevitore, che invece ha ricevuto `pkt3` e `pkt4` e segnato come inviati i rispettivi `ACK`, si vedrà arrivare due nuovi pacchetti con numero di sequenza `3` e `4`, non consapevole del fatto che questi sono ritrasmissioni di pacchetti già ricevuti e salvati.
+
+Questo potrebbe non sembrerebbe un grosso problema, ma immaginiamo di avere una finestra di `3 pkg` identificati in modulo 3 come `0`, `1`, `2`.
 
 <div class="grid2">
 <div class="">
 
 Immaginiamo quindi che vengano inviati i primi tre pacchetti **senza problemi**.
 
-Il ricevitore avrà segnato come ricevuti questi pacchetti, inviando i loro `ACK`. Sarà pronto a ricevere il nuemro `3`, `4`, e `5`, anch'essi identificati in modulo due come `0`, `1` e `2`.
+Il ricevitore avrà segnato come ricevuti questi pacchetti, inviando i loro `ACK`. Sarà pronto a ricevere il numero `3`, `4`, e `5`, anch'essi identificati come `0`, `1` e `2`.
 
 Ipotizziamo adesso che **_tutti gli `ACK` si perdano_**.
 
@@ -488,8 +494,8 @@ All'interno di reti ad alta velocità, il _lifetime_ massimo dato ai pacchetti i
 Le connessioni _point to point_ consistono in un singolo trasmettitore e in un singolo ricevitore.
 
 Il protocollo che disciplina questo tipo di connessioni permette:
-- **Packet Framing**: l'incapsulamento del datagramma nel _layer di rete_ in quello che abbiamo chiamato il _Data Link Frame_. Questo traspoera informazioni di livello di rete per ogni protocollo.
-- **Bit Transoarency**: il pacchetto deve trasportare tutti i pattern nel capo dati
+- **Packet Framing**: l'incapsulamento del datagramma nel _layer di rete_ in quello che abbiamo chiamato il _Data Link Frame_. Questo trasporterà informazioni di livello di rete per ogni protocollo.
+- **Bit Transparency**: il pacchetto deve trasportare tutti i pattern nel campo dati
 - **Connection Liveness**: permette di rilevare e segnalare fallimenti della connessione al layer di rete
 - **Network Layer Address Negotiation**: permette agli _endpoint_ di imparare e configurare gli uni gli indirizzi di rete degli altri
 
@@ -509,41 +515,36 @@ Il protocollo stabilisce che i messaggi siano così incapsulati:
 - **Flag**: sono delle sequenze di bit che fanno da delimitatore del _frame_
 - **Indirizzo**: è un campo inutile, ma è sempre costante. Venne inserito perché in principio si pensava di supportare anche la _point-to-multipoint_.
 - **Controllo**: non fa nulla. È stato inserito con l'ottica che in futuro possa contenere informazioni di controllo
-- **Protocollo**: specifica il protocollo del livello superiore (ad esmepio `IP`) attraverso il quale il pacchetto è inviato
-- **Info**: rappresenta i dati provenienti dai livelli superiori- La lunghezza è un parametro negoziabile, che va da $0$ a $1024$ Byte.
+- **Protocollo**: specifica il protocollo del livello superiore (ad esempio `IP`) attraverso il quale il pacchetto è inviato
+- **Info**: rappresenta i dati provenienti dai livelli superiori. La lunghezza è un parametro negoziabile, che va da $0$ a $1024$ Byte.
 - **Check**: rappresenta i bit che servono per il `CRC` per la _error detection_
 
 
 All'interno delle _info_ potrebbe però essere presente proprio la sequenza del **flag**.
-Per evitare che il ricevitore interpreti in maniera errata queti dati, trattandoli come _flag_ di terminazione, si introduce una **sequenza di escape**. `01111101`
+Per evitare che il ricevitore interpreti in maniera errata questi dati, trattandoli come _flag_ di terminazione, si introduce una **sequenza di escape**. `01111101`
 
 Il processo attraverso il quale il trasmettitore crea questa sequenza si chiama _byte stuffing_, mentre l'inverso compito dal ricevitore si chiama _byte unstaffing_.
 
 Le trasmissioni delle seguenti sequenze vengono quindi tradotte:
 $$
-\begin{align*}
-	\textbf{Dati uguali al flag} &:
-	\begin{CD}
-		01111110 @>{\quad\text{Trasmettitore}\quad}>> 01111101\;01111110 	@>{\quad\text{Ricevitore}\quad}>> 01111110\\
-	\end{CD} \\[1em]
-	\textbf{Dati uguali alla sequenza di escape} &:
-	\begin{CD}
-		 01111101 @>{\quad\text{Trasmettitore}\quad}>> 01111101 01111101 @>{\quad\text{Ricevitore}\quad}>> 01111101
-	\end{CD}
+\begin{CD}
+	\overbrace{01111110}^{\textbf{Dati uguali al flag}} @>{\text{Trasmettitore}}>> 01111101|01111110 @>{\text{Ricevitore}}>> 01111110	\\
+	\\
+	\underbrace{01111101}_{\textbf{Dati uguali alla sequenza di escape}} @>{\text{Trasmettitore}}>> 01111101|01111101 @>{\text{Ricevitore}}>> 01111101
+\end{CD} \\
 
-\end{align*}
 $$
 
 # 5. Multiple Access Protocol
 
 Sono protocolli che permettono la trasmissione dei messaggi di tipo **_broadcast_**, ovvero _point-to-multipoint_.
 
-Alcuni sistemi basati su _broadcast_ sono: le reti cellulari, le reti wifi, il vecchio _Ethernet_. reti satellitari o, banalmente, le persone che si riuniscono e parlano.
+Alcuni sistemi basati su _broadcast_ sono: le reti cellulari, le reti wifi, il vecchio _Ethernet_, reti satellitari o, banalmente, le persone che si riuniscono e parlano.
 
-Le connessioni _broadcast_ hanno un problmea intrinseco alla loro natura. Dato che tutti i nodi condividono lo stesso mezzo, se due nodi iniziassero a comunicare insieme senza attendersi l'un l'altro si si verificherebbero delle **_collisioni_** che produrrebbero interferenze nella trasmissione.
+Le connessioni _broadcast_ hanno un problema intrinseco alla loro natura. Dato che tutti i nodi condividono lo stesso mezzo, se due nodi iniziassero a comunicare insieme senza attendersi l'un l'altro si verificherebbero delle **_collisioni_** che produrrebbero interferenze nella trasmissione.
 
 Il **Multiple Access Protocol**:
-> Implementa un algoritmo distribuito che determina come i nodi condividono il canale, determinando quando un nodo può comunicare.+
+> Implementa un algoritmo distribuito che determina come i nodi condividono il canale, determinando quando un nodo può comunicare.
 
 È importante sottolineare che le comuncazioni relative all'utilizzo del canale **_devono essere fatte sempre attraverso lo stesso canale_**.
 
@@ -551,12 +552,12 @@ Esistono diversi approcci attraverso il quale è possibile implementare le comun
 
 Un protocollo ideale, dato un canale multi-accesso (`MAC`) di banda $R$ bps, vorrebbe che:
 1. Se un nodo vuole trasmettere, lo può fare al rateo $R$
-2. Se $M$ nod vogliono trasmettere, lo possono fare con una velocità media $\frac{R}{M}$
+2. Se $M$ nodi vogliono trasmettere, lo possono fare con una velocità media $\frac{R}{M}$
 3. Non esiste un **nodo speciale** che coordina le comunicazioni, né degli strumenti di sincronizzazione o di prenotazione
 4. Deve essere semplice
 
 In generale esistono tre classi di protocollo:
-- **Channel Partitioning**: permettono di dividere un conale in _pezzi più piccoli_ (slot temporali, modulazione di frequenze, suddivisione di codice). Ad ogni nodo viene assegnato in maniera esclusiva **uno di questi nodi**
+- **Channel Partitioning**: permettono di dividere un canale in _pezzi più piccoli_ (slot temporali, modulazione di frequenze, suddivisione di codice). Ad ogni nodo viene assegnato in maniera esclusiva **uno di questi "pezzi"**
 - **Random Access**: non divide il canale, permettendo le collisioni. Tuttavia permette anche di _"guarire"_ da esse
 - **Taking Turns**: ogni nodo si prenota per un quanto di tempo, tendenzialmente proporzionale alla dimensione del messaggio che deve inviare.
 
@@ -583,9 +584,9 @@ Questo metodo non soddisfa i desideri del `MAC` ideale.
 
 ## 5.2. Random Access Protocols
 
-Questa politica sancisce che quanod un nodo ha dei pacchetti da trasferire lo fa **utilizzando tutto il canale**. Il protocollo inoltre **_non regola alcuna coordinazione a priori tra i nodi_**.
+Questa politica sancisce che quando un nodo ha dei pacchetti da trasferire lo fa **utilizzando tutto il canale**. Il protocollo inoltre **_non regola alcuna coordinazione a priori tra i nodi_**.
 
-Questo ultimo passaggio comporta che il protocollo è susciettibile a **collisioni**. Il protocollo a `random access MAC` specifica come rilevarle e recuperare gli errori.
+Questo ultimo passaggio comporta che il protocollo è susciettibile a **collisioni**. Il protocollo a `random access MAC` specifica come rilevare gli errori e sistemarli.
 Alcuni esempi di protocolli `MAC` sono:
 - `ALOHA` e `slotted ALOHA`
 - `CSMA`, `CSMA/CD`, `CSMA/CA`
@@ -597,7 +598,7 @@ Questo protocollo opera sotto le seguenti assunzioni:
 - La rete opera a $R$ bps
 - Il tempo è diviso in unità di $\frac{L}{R}$ s
 - I nodi iniziano a trasmettere i frame _solo all'inizio degli slot_
-- I nodi sono sincronizzati così che ogniun osa quando lo slot inizia
+- I nodi sono sincronizzati così che ogniuno sa quando lo slot inizia
 - Se due o più _frame_ collidono in uno slot, **tutti i nodi** rilevano la collisione prima che lo slot termini.
 
 Detta $p$ una probabilità $0 \le p \le 1$, le operazioni stabilite dal protocollo sono semplici:
@@ -626,20 +627,21 @@ Questo protocollo ha sia pro che contro.
 |                                     Pro                                      |                                                   Contro                                                    |
 | :--------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------: |
 |               Un singolo nodo attivo più trasmettere a $R$ bps               |                             Ci possono essere collisioni che sprecano gli slot                              |
-| È decentralizzato, poiché solo gli slot nei nodi devono essere sincronizzati |                                  Ci sono delgi slot _idle_ non utilizzati                                   |
+| È decentralizzato, poiché solo gli slot nei nodi devono essere sincronizzati |                                  Ci sono degli slot _idle_ non utilizzati                                   |
 |                                   Semplice                                   | I nodi potrebbero rendersi conto della collisione **dopo** che il pacchetto è stato completamente trasmesso |
 |                                                                              |                                    Necessità di sincronizzare il _clock_                                    |
+
 </div>
 
-Andiamo a calcolarne l'efficienza, ovvero **ill raporto tra _slot correttamente utilizzati_ sul _totale_**.
+Andiamo a calcolarne l'efficienza, ovvero **il raporto tra _slot correttamente utilizzati_ sul _totale_**.
 
-Supponendo di avere $N$ nodi, ogniuno con tanti _frame_ da inviare, ognuno con probabilità $p$ di essere trasmesso in uno slot:
+Supponendo di avere $N$ nodi. Ogni nodo ha tanti _frame_ da inviare, ogniuno con probabilità $p$ di essere trasmesso in un determinato slot:
 - Probabilità che un nodo invii correttamente un messaggio in uno slot: $p(1-p)^{N-1}$
 - Probabilità che un _qualsiasi_ nodo invii correttamente un messaggio in uno slot: $N\cdot p(1-p)^{N-1}$
-- Massima efficienza: troviamo $p^*$ che massimizza $N\cdot p(1-p)^{N-1} \to p^* = \frac{1}{N}$
-- Calcoliamo il limite di $\lim_{N\to\infty}{N\cdot p^*(1-p^*)^{N-1}}$
+- Massima efficienza: troviamo $p^\ast$ che massimizza $N\cdot p(1-p)^{N-1} \to p^\ast = \frac{1}{N}$
+- Calcoliamo il limite di $\lim_{N\to\infty}{N\cdot p^\ast(1-p^\ast)^{N-1}}$
 
-Non specificando i calcoli, l'efficienze massima è di $\frac{1}{e} = 0.37 \Rightarrow 37\%$
+Non specificando i calcoli, l'efficienza massima è di $\frac{1}{e} = 0.37 \Rightarrow 37\%$
 
 Quindi, **_nel caso migliore_**, utilizzeremo il canale solamente per poco più di un terzo del tempo.
 
@@ -653,14 +655,15 @@ Questo non fa altro che aumentare la probabilità di collisioni, infatti se invi
 
 Calcoliamo l'efficienza:
 $$
+\quad
 \begin{align*}
 	P(\text{successo di un dato nodo}) &= P(\text{trasmissione efficace}) \cdot P(\text{nessun altro nodo trasmette in } [t_0-1, t_0]) \cdot P(\text{nessun altro nodo trasmette in } [t_0, t_0+1]) \\
 	&= p \cdot (1-p)^{N-1} \cdot (1-p)^{N-1} \\
 	&= p \cdot (1-p)^{2(N-1)} \\
 	&\begin{CD}
-		@VV{p^* \text{ massimizza}}V
+		@VV{p^\ast \text{ massimizza}}V
 	\end{CD} \\
-	P(\text{successo di un dato nodo}) &= \lim_{N\to\infty}{p^* \cdot (1-p^*)^{2(N-1)}} = \frac{1}{2e} = \boxed{0.18}
+	P(\text{successo di un dato nodo}) &= \lim_{N\to\infty}{p^\ast \cdot (1-p^\ast)^{2(N-1)}} = \frac{1}{2e} = \boxed{0.18}
 \end{align*}
 $$
 
@@ -670,23 +673,23 @@ Otteniamo quindi un efficienza persino **peggiore dello _slotted ALOHA_**.
 
 Nei protocolli `ALOHA` abbiamo visto la decisione di un nodo di trasmettere è indipendente dall'attività degli altri nodi all'interno del canale. Il fatto che un altro nodo stia gia trasmettendo non ferma un altro nell'iniziare a trasmettere. Allo stesso modo, un nodo che sta già trasmettendo non si mette in pausa se un altro inizia a comunicare.
 
-Per migliorare questo sistema si utilizzano due regole utilizzate anche nella comunicazione umana:
-1. **_Ascolta prima di parlare_**: se qualcun altro sta parlando si attende che questo finisca prima di parlare. Nel mondo delle reti si chiama _carrier sensing_, un nodo ascolta il canale prima di trasmettere, e attende che non vi siano comunicazioni per un intervallo di tempo stabilito prima di iniziare a trasmettere.
-2. **_Se qualcuno inizia a parlare nello stesso momento, smetti_**: Nel mondo delle reti si chiama _collision detection_, un nodo sta in ascolto anche mentre sta trasmettendo. Se rilevau na collisione attende un tempo casuale prima di ripetere il ciclo di trasmissione
-
-Queste due regole sono alla base dei protocolli `CSMA` e `CSMA/CD` (con _collision detection_), regolamentati in `[Kleinrock 1975b; Metcalfe 1976; Lam 1980; Rom 1990]`.
-
 
 <div class="grid2">
 <div class="">
 
-Nonostante il _carrier sensing_ le collusioni **possono comunque avvenire**. Infatti il _delay_ di propagazione comporta che due nodi possano non sentirsi quando iniziano le trasmissioni.
+Per migliorare questo sistema si utilizzano due regole utilizzate anche nella comunicazione umana:
+1. **_Ascolta prima di parlare_**: se qualcun altro sta parlando si attende che questo finisca prima di parlare. Nel mondo delle reti si chiama _carrier sensing_, un nodo ascolta il canale prima di trasmettere, e attende che non vi siano comunicazioni per un intervallo di tempo stabilito prima di iniziare a trasmettere.
+2. **_Se qualcuno inizia a parlare nello stesso momento, smetti_**: Nel mondo delle reti si chiama _collision detection_, un nodo sta in ascolto anche mentre sta trasmettendo. Se rileva una collisione attende un tempo casuale prima di ripetere il ciclo di trasmissione
 
-Sulla destra possiamo vederre un esmepio di ciò.
+Queste due regole sono alla base dei protocolli `CSMA` e `CSMA/CD` (con _collision detection_), regolamentati in `[Kleinrock 1975b; Metcalfe 1976; Lam 1980; Rom 1990]`.
+
+Nonostante il _carrier sensing_ le collisioni **possono comunque avvenire**. Infatti il _delay_ di propagazione comporta che due nodi possano non sentirsi quando iniziano le trasmissioni.
+
+Sulla destra possiamo vederre un esempio di ciò.
 
 </div>
 <div class="">
-<img class="60" src="./images/drn/CSMA-propagation-delay.png">
+<img class="40" src="./images/drn/CSMA-propagation-delay.png">
 </div>
 <div class="">
 
@@ -697,32 +700,32 @@ Il grafico sopra diventa quindi quello sulla destra.
 
 In questo modo riusciamo a **_diminuire il tempo perso per via delle collisioni_**.
 
-Il segnale inviato durante le collisioni si chiama **_segnale di `JAM`_**. Questo server per rafforzare la collisione e renderne più semlice per gli altri nodi l'individuazione
+Il segnale inviato durante le collisioni si chiama **_segnale di `JAM`_**. Questo server per rafforzare la collisione e renderne più semplice per gli altri nodi l'individuazione
 
 </div>
 <div class="">
-<img class="60" src="./images/drn/CSMACD-collision-detection.png">
+<img class="40" src="./images/drn/CSMACD-collision-detection.png">
 </div>
 </div>
 
 Prima di analizzare il protocollo `CSMA/CD` riassiumiamo le operazioni che abbiamo appena descritto dal punto di vista del **NIC**:
-1. L'adattatore ottiene un datagramma dal _network layer_. Prepara quidni il _frame del link layer_ e prepara il _frame adapter buffer_
+1. L'adattatore ottiene un datagramma dal _network layer_. Prepara quindi il _frame del link layer_ e prepara il _frame adapter buffer_
 2. Il **NIC** si mette in ascolto sul canale:
    1. Se il canale è _idle_ (non c'è energia sul canale) **_inizia a trasmettere il frame_**
    2. Se il canale invece è occupato attende finché non si libera e poi inizia a trasmettere il frame
-3. Mentre sta trasmettendo, il **NIC** **_monitora la potenza energetica in entrata_** . Se è <u>significatamente</u> diversa da quella da lui trasmessa, significa che **_ci sono segnali provenienti da altri adattatori_** che comunicano sul canale _broadcast_
+3. Mentre sta trasmettendo, il **NIC** **_monitora la potenza energetica in entrata_** . Se è <u>significativamente</u> diversa da quella da lui trasmessa, significa che **_ci sono segnali provenienti da altri adattatori_** che comunicano sul canale _broadcast_
 4. Se il **NIC** ha trasmesso l'intero frame senza interruzioni, termina. Altrimenti esegue un _abort_ della trasmissione
 5. Dopo l'_abort_, il **NIC** **_attende un tempo casuale e riparte dal punto 2_**, entrando nel **_binary (exponential) backoff_**
-	- Dopo la $m$-esima collisione, il `NIC` genera un valore $K \in {0, 1, 2, 3, ..., 2^m-1}$ e attende $K \cdot 51,2 \;\mu$sec
+	- Dopo la $m$-esima collisione, il `NIC` genera un valore $K \in {0, 1, 2, 3, ..., 2^m-1}$ e attende $K \cdot 51,2$ $\mu s$
 
 
-Questo metodo non soddisfa i desideri del `MAC` ideale.
+Questo metodo soddisfa i desideri del `MAC` ideale:
 1. **SÌ**: Se un nodo deve trasmettere e il canale è libero, comunica al massimo della banda
 2. **SÌ**: Nessun nodo ha una corsia preferenziale
 3. **SÌ**: Non ci sono elementi di sincronizzazione, ed è _fully decentralized_
 4. **SÌ**: possiamo dire che è semplice
 
-Anche se questo protocollo sembra ottimo, ha un problema nel _throughput_ nel caso di un numero elevato di nodi, che aumenta la probabilità di collisioni, degradandolo.
+Anche se questo protocollo sembra quindi ottimo, ha un problema nel _throughput_ nel caso di un numero elevato di nodi, che aumenta la probabilità di collisioni, degradandolo.
 
 ## 5.3. Taking Turns MAC Protocols
 
@@ -739,8 +742,7 @@ Nel sistema con _polling_, si ha una **struttura centralizzata**, dove è presen
 
 Se non hanno messaggi da trasmettere questi inviano un messaggio `null` e il _master_ procede con il prossimo
 
-È tipicamente utilizzato con dispositivi "stupidi.
-Il protocollo Bluetooth si basa proprio sul _polling_.
+È tipicamente utilizzato con dispositivi "stupidi", come ad esempio il protocollo Bluetooth.
 
 Ha dei punti critici:
 - Si genera del _polling overhead_

@@ -309,6 +309,6 @@ In questo modo aumentiamo il numero di connessioni servibili contemporaneamente 
 Alcuni limiti globali sono:
 - `ThreadLimit`: limite massimo configurabile per il numero di _thread attivi per processo_.
   - `Worker(thread)`: `ThreadsPerChild <= ThreadLimit`
-- `ServerLimit`: limite massimo configurabile per il nuemro di **processi figli attivi**.
+- `ServerLimit`: limite massimo configurabile per il numero di **processi figli attivi**.
   - `Prefork`: `MaxRequestWorkers <= ServerLimit`
   - `Worker(thread)`: `MaxRequestWorkers <= ServerLimit * ThreadsPerChild`

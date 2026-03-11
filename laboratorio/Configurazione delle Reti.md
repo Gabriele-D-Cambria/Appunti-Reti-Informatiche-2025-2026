@@ -108,7 +108,7 @@ Nelle altre righe abbiamo:
 - Indirizzo `MAC` (in questo caso fittizio)
 - `inet`: indirizzo IPv4 di questo
 - `scope host lo`: valido sol ointerno al PC
-- `valid_lft forever preferredlft forever`: validità delgi indirizzi `IP` associati all'interfaccia
+- `valid_lft forever preferredlft forever`: validità degli indirizzi `IP` associati all'interfaccia
 
 Se invece prendiamo la seconda interfaccia:
 - `enpp0s3`: nome dell'interfaccia
@@ -339,7 +339,7 @@ L'host deve ricavare l'indirizzo `IP` a partire dal nome. Per fare ciò il siste
 131.114.73.85     unipi.it
 ```
 
-Se non trova corrispondenze all'interno del file utilizza il `DNS`, un database distribuito formato da una gerarchia di `DNS server`, che operano a livello applicazione per permettere l'interrogazione del database attravero il protocollo `UDP` nella porta `53`.
+Se non trova corrispondenze all'interno del file utilizza il `DNS`, un database distribuito formato da una gerarchia di `DNS server`, che operano a livello applicazione per permettere l'interrogazione del database attraverso il protocollo `UDP` nella porta `53`.
 
 Il _client_ effettua una richiesta a un server `DNS` che risponde con l'indirizzo `IP` se è di tipo **authorative** per quell'indirizzo, altrimenti inoltra la domanda ad un sevrer "più grande".
 
