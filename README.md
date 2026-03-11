@@ -71,11 +71,11 @@ Le esercitazioni di laboratorio verteranno su aspetti legati alle reti in un sis
 Si vedranno aspetto di teoria sul Routing.
 Il corso verterà allo sviluppo ad un progetto.
 
-1. [Configurazione delle Reti.md](./laboratorio/Configurazione%20delle%20Reti)
-2. [Socket.md](./laboratorio/Socket)
-3. [Server APACHE.md](./laboratorio/Server%20APACHE)
-4. [Firewall.md](./laboratorio/Firewall)
-5. [Algoritmi di Routing.md](./laboratorio/Algoritmi%20di%20Routing)
+1. [Configurazione delle Reti](./laboratorio/Configurazione%20delle%20Reti)
+2. [Socket](./laboratorio/Socket)
+3. [Server APACHE](./laboratorio/Server%20APACHE)
+4. [Firewall](./laboratorio/Firewall)
+5. [Algoritmi di Routing](./laboratorio/Algoritmi%20di%20Routing)
 
 ## 📖 Ordine di Studio Consigliato
 

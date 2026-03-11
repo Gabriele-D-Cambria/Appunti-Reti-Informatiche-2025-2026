@@ -825,19 +825,19 @@ L'utilizzo di un singolo mega-server comporterebbe problemi di _single-point-of-
 I _video_ sono:
 > Sequenze di immagini (_frame_) mostrate ad un rateo costante (_frame-rate_)
 
-Un singolo _frame_ è rappresentato come un **array di pixel**, ognuno rappresentato da una seguenza di 8bit.
+Un singolo _frame_ è rappresentato come un **array di pixel**, ognuno rappresentato da una sequenza di 8bit.
 
 Per diminuire il numero di bit da inviare si sfruttano le correlazioni presenti nelle sequenze video:
-- **Correlazione Spaziale**: due pixel vicini statisticamente sufficientemente simili da poter essere considerati uguali. È quindi sufficiente inviare due valori per una sequenza di pixel: il colore e quanti pixel consecutivi lo hanno.
-- **Correlazione Temporale**: due frame successivi avranno molti pixel uguali, quindi possiamo concentrarci ad inviare solamente i valori di coloro che sono effettivamente cambiati
+- **Correlazione Spaziale**: Avviene quando due o più pixel vicini sono sufficientemente simili da poter essere considerati uguali. Invece di inviare informazioni per ogniuno, è quindi sufficiente inviare solamente due valori: il colore e quanti pixel consecutivi lo hanno.
+- **Correlazione Temporale**: Avviene quando due frame successivi avranno molti pixel uguali. In questi casi possiamo quindi concentrarci ad inviare solamente i valori di colore esclusivamente per i pixel che sono effettivamente cambiati
 
 Esistono due tipi di codifica del video:
 - `CBR` (_Constant Bit Rate_): il rateo di encoding è fisso
-  - `MPEG 1`: utilizzato nei CD-ROM, p fisso a `1.5Mbps`
+  - `MPEG 1`: utilizzato nei CD-ROM, è fisso a `1.5Mbps`
 - `VBR` (_Variable Bit Rate_): il rateo di encoding è cambia a seconda delle situazioni
 
 
-Lo _streaming_ di un video è caratterizzato dalla visualizzazione di tale, prima che sia stato comlpetamente scaricato.
+Si dice _streaming_ di un video, la visualizzazione di tale prima che sia stato comlpetamente scaricato.
 
 In un mondo ideale, i video registrati a `30fps` vengono raccolti dal server e inviati con lo stesso rate. Il client li ottiene, dopo un certo delay, con lo stesso rate di invio e può visualizzarli senza problemi.
 
@@ -866,7 +866,7 @@ Lo streaming video moderno è quindi un unione di **codifica**, `DASH` e **playo
 
 I `CDN` sono _Content Distribution Networks_, e si occupano di decidere come effettuare lo streaming di milioni di video a centinaia di migliaia di utenti in simultanea.
 
-L'idea di un unico grosso "mega-server" non funziona per gli stessi motivi per il quale non ha funzionato fin'ora (_single-point-of-failure_, _congestion_, elevata distanza) e ma inoltre perché avrebbe da inviare più copie dello stesso video attraverso lo stesso link, rischiando di saturare la connessione in uscita.
+L'idea di un unico grosso "mega-server" non funziona per gli stessi motivi per il quale non ha funzionato fin'ora (_single-point-of-failure_, _congestion_, elevata distanza) oltre al fatto che avrebbe da inviare più copie dello stesso video attraverso lo stesso link, rischiando di saturare la connessione in uscita.
 
 Si utilizzano quindi i `CDN`, che permettono di distribuire le informazioni, salvandole e rendendole disponibili in più _sites_ geograficamente distributi.
 
@@ -874,7 +874,7 @@ Esistono due approcci per svilluppare un `CDN`:
 - **Enter deep**: carica più server `CDN` all'interno di diverse reti di accesso. Questo li "avvicina" agli utenti, ma è molto costoso. Un esempio è _Akamai_, che nel 2015 aveva più di 240.000 server distribuiti su più di 120 stati
 - **Bring Home**: crea un numero minore di cluster più grandi. Questi cluster si trovano in `POPs` vicini alle reti di accesso, ma non all'interno. Un esempio di servizio che utilizza questa infrastruttura è _Limelight_
 
-I `CDN` salvano copie dei contenuti all'interno dei nodi `CDN`. Quando un utente iscritto al servizio richiede un contenuto, viene direzionato ai server più vicini che contengono una copia. L'utente potrebbe inoltre richiedere copie diverse a server diversi, per ovviare la congestione dei percorsi.
+I `CDN` salvano copie dei contenuti all'interno dei nodi `CDN`. Quando un utente iscritto al servizio richiede un contenuto, viene direzionato ai server più vicini che contengono una copia. L'utente potrebbe inoltre richiedere copie diverse a server diversi, per ovviare alla congestione dei percorsi.
 
 Facciamo un esempio, ipotizzando che un client (Bob) richieda un video a `netcinema` per un servizio che mette a disposizione contenuti appoggiandosi ad un'altra azienda (`KingCDN`) che invece possiede i video sui propri server.
 
