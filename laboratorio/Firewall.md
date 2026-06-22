@@ -40,7 +40,7 @@ Nel caso di _firewall stateful_ sono presenti anche altri campi, ma non ci ponia
 Per ogni pacchetto il firewall compie tre azioni:
 1. Analizza l'header
 2. Scorre la tabella delle regole
-3. Se il pacchetto corrisponde alle caratteristiche delal regola, intrapende l'azione
+3. Se il pacchetto corrisponde alle caratteristiche della regola, intrapende l'azione
 
 
 Ipotizzando una rete locale `222.22.0.0/16` e vogliamo:
@@ -193,7 +193,7 @@ Le catene di `filter` e `nat` sono disposte in modo che `filter` **_veda indiriz
 
 # 5. Firewall Stateful
 
-Possiamo specificare nelal regola un criterio basato sullo stato della connessione TCP di cui un pacchetto fa parte.
+Possiamo specificare nella regola un criterio basato sullo stato della connessione TCP di cui un pacchetto fa parte.
 
 A esempio possiamo rendere accessibile via `ssh` (`port 22`) un host (`192.168.10.1`) _solo per il computer dell'amministratore_ (`192.168.10.5`), e che non possa farlo da solo:
 ```bash

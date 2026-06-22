@@ -788,7 +788,7 @@ Per testarlo sulla macchina virtuale è necessario cambiare le impostazioni di r
 
 Il comando si basa sul fatto che ogni pacchetto `IP` ha un campo `TTL` che i router decrementano di `1`. Quando questo campo scende a `0` il router scarta il pacchetto e invia al mittente un messaggio `ICMP TTL Exceeded`. `traceroute` invia alla destinazione pacchetti `UDP` _sonda_ con il campo `TTL` crescente.
 
-Ci rendiamo conto che la destinazione è stata raggiunta perché viene assegnata per ogni sonda un numero di porta **_alto_**, che sarà quasi sicuramente chiusa. L'_host_ finale, non avendo processi in ascolto su quelal porta, risponde con `ICMP Destination Unreachable, code Port Unreachable`, segnalando che abbiamo raggiunto la destinazione.
+Ci rendiamo conto che la destinazione è stata raggiunta perché viene assegnata per ogni sonda un numero di porta **_alto_**, che sarà quasi sicuramente chiusa. L'_host_ finale, non avendo processi in ascolto su quella porta, risponde con `ICMP Destination Unreachable, code Port Unreachable`, segnalando che abbiamo raggiunto la destinazione.
 
 Quando eseguiamo il comando può succedere che quanche _sonda_ non generi una risposta entro il _timeout_. Questo viene indicato tramite asterisco `*`.
 

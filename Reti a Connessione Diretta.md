@@ -694,13 +694,11 @@ Sulla destra possiamo vederre un esempio di ciò.
 <div class="">
 
 Questa versione però non performa _collision detection_, infatti sia $B$ che $D$ continuano a trasmettere i loro _frame_ anche se sanno che c'è stata una collisione.
-Il protocollo `CSMA/CD` sancisce che le comunicazioni siano terminate nel momento in cui si rileva una collisione.
-
-Il grafico sopra diventa quindi quello sulla destra.
+Il protocollo `CSMA/CD` sancisce che le comunicazioni siano terminate nel momento in cui si rileva una collisione, come raffigurato sulla destra.
 
 In questo modo riusciamo a **_diminuire il tempo perso per via delle collisioni_**.
 
-Il segnale inviato durante le collisioni si chiama **_segnale di `JAM`_**. Questo server per rafforzare la collisione e renderne più semplice per gli altri nodi l'individuazione
+Il segnale inviato durante le collisioni si chiama **_segnale di `JAM`_**. Questo è utilizzato per rafforzare la collisione e rendernme più semplice l'identificazione agli altri nodi.
 
 </div>
 <div class="">
@@ -716,8 +714,9 @@ Prima di analizzare il protocollo `CSMA/CD` riassiumiamo le operazioni che abbia
 3. Mentre sta trasmettendo, il **NIC** **_monitora la potenza energetica in entrata_** . Se è <u>significativamente</u> diversa da quella da lui trasmessa, significa che **_ci sono segnali provenienti da altri adattatori_** che comunicano sul canale _broadcast_
 4. Se il **NIC** ha trasmesso l'intero frame senza interruzioni, termina. Altrimenti esegue un _abort_ della trasmissione
 5. Dopo l'_abort_, il **NIC** **_attende un tempo casuale e riparte dal punto 2_**, entrando nel **_binary (exponential) backoff_**
-	- Dopo la $m$-esima collisione, il `NIC` genera un valore $K \in {0, 1, 2, 3, ..., 2^m-1}$ e attende $K \cdot 51,2$ $\mu s$
+	- Dopo la $m$-esima collisione, il `NIC` genera un valore $K \in \Set{0, 1, 2, 3, ..., 2^m-1}$ e attende $K \cdot 51.2$ $\mu s$
 
+La dimostrazione sul perché si prende come unità di tempo $51.2$ $\mu s$ [leggere il prossimo capitolo](#621-perdita-di-pacchetti-e-distanze-massime).
 
 Questo metodo soddisfa i desideri del `MAC` ideale:
 1. **SÌ**: Se un nodo deve trasmettere e il canale è libero, comunica al massimo della banda
@@ -777,14 +776,16 @@ Anche questo metodo ha dei punti critici:
 
 # 6. Local Area Network - `LAN`
 
-Le reti LAN sono leti a medio broadcast, che hanno un area di copertura limitata.
 
 <div class="grid2">
 <div class="">
 
-Permettono un _alto bit rate_ ma ha il difetto di, per sua natura, effettuare comunicazioni di tipo _broadcast_.
+Le reti LAN sono leti a medio broadcast, che hanno un area di copertura limitata.
+
+Permettono un _alto bit rate_ ma hanno il difetto intrinseco di effettuare comunicazioni di tipo _broadcast_.
 
 È quindi necessario avere un **Medium Access Control Protocol** introducendo un sistema di indirizzamento `MAC`.
+
 </div>
 <div class="">
 <figure class="90">
@@ -799,7 +800,7 @@ Alcune topologie di rete `LAN`. In ordine da in alto a sinistra a in basso a des
 
 ## 6.1. Indirizzi MAC
 
-Per poter comunicare privatamente su reti naturalmente broadcast, dobbiamo trovare un modo per riuscire a individuare **univocamente** ogni nodo all'interno della _rete locale_ nelal quale si trova.
+Per poter comunicare privatamente su reti naturalmente broadcast, dobbiamo trovare un modo per riuscire a individuare **univocamente** ogni nodo all'interno della _rete locale_ nella quale si trova.
 
 Per fare ciò si introducono gli **_indirizzi MAC_**. Questi indirizzi sono assegnati in maniera univoca dal **_produttore della scheda di rete_**. Vengono utilizzati **localmente** per permettere la trasmissione di _frame_ tra più interfacce sulla stessa rete locale.
 
@@ -811,15 +812,15 @@ Gli indirizzi `MAC` (o indirizzo fisico) **sono diversi** dagli indirizzi `IP`, 
 <img class="" src="./images/drn/mac-vs-ip-example.png">
 
 
-Esiste inolte un **_indirizzo di broadcast_** nel quale tutte le interfacce si identificano. L'indirizzo è il seguente `FF-FF-FF-FF-FF-FF`.
+Per permettere comunque la comunicazione broadcast esiste un indirizzo speciale, detto **_indirizzo di broadcast_**, nel quale tutte le interfacce si identificano. L'indirizzo è il seguente: `FF-FF-FF-FF-FF-FF`.
 
 ## 6.2. Ethernet
 
 È la tecnologia più popolare che implementa le **reti locali cablate**.
 
-La topologia tipica di questa tecnologia si è evoluta nel tempo. Negli anni '90 il collegamento più popolare era quello attraverso un **cavo coassiale** che si comportava da _bus_, generando un unico grande dominio per le collisioni.
+La topologia tipica di questa tecnologia si è evoluta nel tempo. Negli anni '90 il collegamento più popolare era quello attraverso un **cavo coassiale** che si comportava da _bus_, generando un unico grande dominio nel quale potevano avvenire collisioni.
 
-Oggi la topologia più comune è quella _a stella_, dove l'_hub_ viene identificato da uno **_switch_**. Questo _switch_ opera a livello 2 e, oltre a rigenerare i segnali come un comune _hub_, gestisce i _frame_ ridirezionandoli opportunamente solo ai nodi coinvolti. In questo modo è come se ogni connessione viaggiasse su un protocollo ethernet separato.
+Oggi la topologia più comune è quella _a stella_ con un nodo centrale detto _hub_, identificato da uno **_switch_**. Questo _switch_ opera a livello 2 e, oltre a rigenerare i segnali come un comune _hub_, gestisce i _frame_ ridirezionandoli opportunamente solo ai nodi coinvolti. In questo modo è come se ogni connessione viaggiasse su un protocollo ethernet separato.
 
 La tecnologia ethernet incapsula il datagramma `IP` in quello che chiamiamo **_Ethernet frame_**
 
@@ -827,16 +828,16 @@ La tecnologia ethernet incapsula il datagramma `IP` in quello che chiamiamo **_E
 
 Dove:
 - **Preambolo**: è utilizzato per _sincronizzare i clock del sender e del receiver_. È composto da `7 Bytes` di `10101010` seguiti da `1 byte` di `10101011`.
-- **Indirizzo**: sono `6 Byte` utilizzati per conservare gli indirizzi `MAC`:
-  - **Indirizzo Sorgnete**: indica il `MAC` del nodo che ha trasmesso il _frame_
-  - **Indirizzo Destinatario**: può indicare il `MAC` di un destinatario o un indirizzo speciale che indica la comunicazione _broadcast_. Se un pacchetto possiede un _dest. addr._ diverso dal proprio o dal _broadcast_, il nodo lo scarta e smette di stare in ascolto sul resto dei bit che stanno venendo trasmessi.
+- **Indirizzo**: sono due sequenze da `6 Byte` utilizzati per conservare gli indirizzi `MAC`:
+  - **Indirizzo Sorgente**: contiene il `MAC` del nodo che ha trasmesso il _frame_
+  - **Indirizzo Destinatario**: contiene il `MAC` del destinatario nella stesse rete (o l'indirizzo di broadcast). Quando un nodo riceve un pacchetto, se il proprio `MAC` è diverso da quello qui contenuto (sempre che non sia il _broadcast_) procede a **scartarlo** e smette di stare in ascolto sul resto dei bit che stanno venendo trasmessi.
 - **Type**: indica il protocollo di livello superiore utilizzato (`IP`, `Novell IPX`, `AppleTalk`, ...) su `2Byte`
 - **Bit di controllo** `CRC`: permettono la error-detection su `4Byte`
 - **Data(payload)**:  ha una dimensione minima di `48Byte` e una dimensione massima di `1500Byte`. Per sapere il perché della dimensione minima guardare il [capitolo successivo](#621-dinamica-delle-collissioni)
 
-Le connessioni _ethernet_ sono:
+Il protocollo _ethernet_ è:
 - **Senza connessioni**: non è infatti introdotto nessun _handshake_ tra l'invio e il ricevimento di informazioni tra `NIC`
-- **Inaffidabili**: chi riceve un pacchetto **non invia alcun messaggio di `ACK`**. I dati che possono andare persi per via di errori di comunicazione vengono recuperati **_solo se un livello superiore li vuole utilizzare_**, altrimenti rimangono perduti.
+- **Inaffidabile**: chi riceve un pacchetto **non invia alcun messaggio di `ACK`**. I dati che possono andare persi per via di errori di comunicazione vengono recuperati **_solo se un livello superiore li vuole utilizzare e richiede esplicitamente il reinvio_**, altrimenti rimangono perduti.
 
 Il protocollo `MAC` utilizzato dalle connessioni _ethernet_ è un **_unslotted `CSMA/CD` con backoff binario_**.
 
@@ -852,14 +853,14 @@ Assumendo connessioni Etehrnet a `10Mbps`, la trasmissione di `48bit` impiega un
 
 ### 6.2.1. Perdita di Pacchetti e Distanze Massime
 
-I cavi sono mezzi inaffidabili, che possono essere susciettibili a perdita di informazioni. I segnali fisici che passano in un mezzo fisico vanno infatti incontro a degradazione. Ad esempio, misurarono empiricamente che nei cavi coassiali la lunghezza massima era di $500m$ nel caso di cavi spessi, e di $250m$ nel caso di cavi fini.
+I cavi sono mezzi inaffidabili, che possono essere susciettibili a perdita di informazioni. I segnali fisici che passano in un mezzo fisico vanno infatti incontro a degradazione. Empiricamente, è stato misurato che nei cavi coassiali la lunghezza massima per non avere perdita di informazione certa era di $500m$ nel caso di cavi spessi, e di $250m$ nel caso di cavi fini.
 
-Per poter migliorare queste distanze si introducono i _repeater_, che non sono altro che **amplificatori e ripetitori** di segnale. Tuttavia anche questi sono susciettibili ad errori, ed è stato calcolato che **_il numero massimo di repeater in cascata è di_** $4$, successivamente si avranno sicuramente delle perdite.
+Per poter migliorare queste distanze sono stati introdotti i _repeater_, che non sono altro che **amplificatori e ripetitori** di segnale. Tuttavia anche questi sono susciettibili ad errori, ed è stato calcolato che **_il numero massimo di repeater in cascata è di_** $4$, successivamente si avranno sicuramente delle perdite.
 
 <div class="grid2">
 <div class="">
 
-Immaginiamo di avere, come in figura sulla destra, due interfacce che comunicano su uno stesso mezzo di rame (con velocità di propagazione $v \approx 200.000 m/s$) che possiede 4 _repeater_, che producono un ritardo di trasmissione di $\frac{\Delta_R}{4}$. Ipotizzando una connessione $R = 10$ Mbps.
+Immaginiamo di avere, come in figura sulla destra, due interfacce che comunicano su uno stesso mezzo di rame (con velocità di propagazione $v \approx 200.000 m/s$) che possiede 4 _repeater_, che producono un ritardo di trasmissione di $\frac{\Delta_R}{4}$ su una connessione con _bit-rate_ $R = 10$ Mbps.
 
 </div>
 <div class="">
@@ -867,7 +868,18 @@ Immaginiamo di avere, come in figura sulla destra, due interfacce che comunicano
 </div>
 </div>
 
-Ipotizzando che nell'istante $t_0 = 0$ l'interfaccia `A` inizi a trasmettere, e che nell'istante $t_1 = \tau$ lo faccia anche `B` si avrà una collisione che `A` intercetterà solo dopo un tempo di:
+
+Definiamo quindi _tempo di slot_ come:
+> Il tempo massimo necessario affinché un segnale viaggi **tra i due nodi più lontani della rete**, sommato al _tempo necessario per far viaggiare il segnale di colllisione al contrario_
+
+In pratica lo _slot-time_ viene calcolato nel Worst-Case, ovvero **due volte il tempo di propagazione massimo** $RTT = 2 \cdot \tau$:
+1. Un nodo `A` inizia a trasmettere al tempo $t = 0$
+2. Il segnale impiega quasi tutto il tempo $\tau$ per raggiungere un altro nodo `B` nell'altro estremo della rete
+3. Un attimo prima che il segnale arrivi $t = \tau - \varepsilon$, la stazione `B` ascolta il canale e, vedendolo libero, inizia a trasmettere
+4. Avviene una collisione immediata vicino a `B` che se ne accorge subito
+5. La stazione `A` non sa ancora nulla, poiché il segnale di collisione deve viaggare indietro fino ad `A`.
+
+L'interfaccia `A` intercetterà quindi il segnale dopo un tempo di:
 $$
 	t_{coll} = 2(\tau + \Delta_R) = 2\Bigl(\frac{l_{max}}{v} + \Delta_R\Bigr)
 $$
@@ -878,14 +890,15 @@ Immaginiamo che `A` stia inviando **_il più piccolo pacchetto possibile_** di l
 
 È quindi necessario che:
 $$
+\begin{matrix}
 	2\Bigl(\frac{l_{max}}{v} + \Delta_R\Bigr) \le \frac{L_{min}}{R} \\
 	L_{min} \ge 2R\Bigl(\frac{l_{max}}{v} + \Delta_R\Bigr)
+\end{matrix}
 $$
 
-Empiricamente fu scoperto che la $l_{max} \approx 2500m$, dal quale deriviamo che $\boxed{L_{min} = 72 Byte}$.
+Abbiamo detto che empiricamente è stata valutata $l_{max} \approx 2500m$, dal quale deriviamo che $\boxed{L_{min} = 74\; Byte}$.
 
-Rimuovendo tutte le informazioni di corredo (_preambolo_, _type_, _indirizzi_, _CRC_), otteniamo perché il datagramma **_deve essere almeno_** $48 Byte$.
-
+Rimuovendo i $26$ $Byte$ delle informazioni di corredo (_preambolo_, _type_, _indirizzi_, _CRC_), otteniamo quindi la _**dimensione minima del datagramma**_, ovvero $48 Byte$.
 
 ### 6.2.2. 802.3 Ethernet Standards
 
