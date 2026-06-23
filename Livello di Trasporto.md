@@ -28,7 +28,7 @@ Quello che però vogliamo fare noi non è far comunciare tra di loro due _host_,
 Il _transport layer_ si occupa proprio di permettere la comunicazione **process-to-process**, basandosi, e migliorando, i servizi di _network layer_.
 
 Si basa su alcuni principi:
-- **multiplexing** e **demultiplexing**
+- **Multiplexing** e **Demultiplexing**
 - **Trasferimento affidabile dei dati**
 - **Controllo di flusso**
 - **Controllo delle congestioni**
@@ -45,7 +45,7 @@ Il servizio di **multiplexing**/**demultiplexing** serve proprio per riuscire a 
 
 Fornisce il concetto di `pipe`, ovvero il canale logico di connessione tra:
 - _Processo Sorgente_: riceve un messaggio dall'_application layer_. Lo divide in diversi _segmenti_ aggiungendovi un **header**. Inoltra i segmenti al _network layer_
-- _Processo Destinatario_.: Riceve diversi segmenti dal _network layer_, e ne controlla i valori nell'**header**. Estrae i vari spezzoni del messaggio riassemblandolo, e lo _demultiplexa_ inoltrandolo all'_application layer_ attraverso un _socket_.
+- _Processo Destinatario_: Riceve diversi segmenti dal _network layer_, e ne controlla i valori nell'**header**. Estrae i vari spezzoni del messaggio riassemblandolo, e lo _demultiplexa_ inoltrandolo all'_application layer_ attraverso un _socket_.
 
 Vi sono due protocolli con i quali è possibile implementare il _livello di trasporto_:
 - `TCP` (_Transmission Control Protocol_): è un protocollo affidabile che si basa sul **setup della comunicazione**. Implementa il _controllo della congestione della rete_, il _controlllo di flusso_.
@@ -55,7 +55,7 @@ In entrambi i casi non vi è alcuna garanzia sulla _gestione del delay_ né _gar
 
 ## 2.2. Multiplexing e Demultiplexing
 
-Il _multiplexing_ è un servizio dei **_trasmettitori_** che permette di gestire i _segmenti_ diretti verso diversi _socket_, aggiungendo informaizoni agli **_header di trasporto_**.
+Il _multiplexing_ è un servizio dei **_trasmettitori_** che permette di gestire i _segmenti_ diretti verso diversi _socket_, aggiungendo informazioni agli **_header di trasporto_**.
 
 Il _demultiplexing_ è invece un servizio dei **_ricevitori_**, che utilizza le informazioni contenute negli **_header di trasporto_** dei _segmenti_ per indirizzarli ai _socket_ corretti.
 
@@ -99,11 +99,11 @@ Un altro vantaggio è possibile mantenere limitata la dimensione dell'_header_.
 Questa scelta però comporta l'assenza di controlli sia _di flusso_ che di _congestione_.
 
 
-Il protocollo `UDP` è utilizzato in diversi servizi che non necessitano di affidabilità ma preferiscono puntare sulla velocità e non hanno problemi nel perdere informaizoni:
+Il protocollo `UDP` è utilizzato in diversi servizi che non necessitano di affidabilità ma preferiscono puntare sulla velocità e non hanno problemi nel perdere informazioni:
 - Applicazioni multimediali e di streaming
 - `DNS`
 - `SNMP`
-- `HTTP/3`: implementa il trasferimento affifabile nell'_application layer_
+- `HTTP/3`: implementa il trasferimento affidabile nell'_application layer_
 
 
 <div class="grid2">
@@ -124,16 +124,11 @@ L'_header_ `UDP` è relativamente semplice e contenuto (`64bit`):
 
 ## 2.4. Protocollo TCP
 
-È stato definito
+È un protocollo _point-to-point_ che garantisce l'**affidabilità della connessione**, sia per quanto riguarda l'ordinamento che per quanto riguarda la correttezza.
 
-È un protocollo _point-to-point_ che implementa il concetto di _pipe_.
 
-È un servizio che garantisce l'**affidabilità della connessione**, sia per quanto riguarda l'ordinamento che per quanto riguarda la correttezza.
+Implementa il concetto di **_pipe_ full-duplex**, ovvero una _pipe_ che permette la trasmissione in entrambe le direzione dei _segmenti_, oltre a fornire i servizi di controllo delle congestioni e del flusso permette anche di impostare l'ampiezza della finestra. Ogni segmento può avere dimensione variabile, limitata dal `MSS` (_Maximum Segment Size_), calcolato come:
 
-La _pipe_ è **full-duplex**, ovvero permette la trasmissione in entrambe le direzione dei _segmenti_, oltre a fornire i servizi di controllo delle congestioni e del flusso permette anche di impostare l'ampiezza della finestra.
- Ogni segmento può avere dimensione variabile, limitata dal `MSS` (_Maximum Segment Size_).
-
-Il `MSS` è calcolato come
 $$
 	\text{max-size}_{\text{frame-payload}} - \text{size}_{\text{datagram-header}} - \text{size}_{\text{segment-header}}
 $$
@@ -143,7 +138,7 @@ Il protocollo `TCP` prevede l'invio **cumulativo degli `ACK`**.
 È un protocollo orientato alla connessione, che implementa un _handshake_ tra trasmettitore e ricevitore **prima che i dati inizino ad essere inviati**.
 
 
-Il protocollo `TCP`, quando crea i _segmenti_, lo fa tendno conto della **_posizione dei Byte de messaggio_**
+Il protocollo `TCP`, quando crea i _segmenti_, lo fa tenendo conto della **_posizione dei Byte deò messaggio_**
 
 <img class="" src="./images/tl/TCP-division-in-segment.png">
 
@@ -151,12 +146,12 @@ Il protocollo `TCP`, quando crea i _segmenti_, lo fa tendno conto della **_posiz
 <div class="grid2">
 <div class="">
 
-Sulla desra possiamo vedere come è formato un _header TCP_:
+Sulla destra possiamo vedere come è formato un _header TCP_:
 - **Numero di Porta Sorgente** (`16bit`)
 - **Numero di Porta Destinataria** (`16bit`)
 - **Numero di Sequenza** (`32bit`): indica il numero di sequenza del **_primo byte_** contenuto all'interno del segmento rispetto al messaggio complessivo. Questo permette l'inoltro ordinato dei messaggi. Questo valore viene casualmente generato dai due _host_ per minimizzare la probabilità di ricevere un segmento di una vecchia comunicazione che era ancora in viaggio e considerato valido.
 - **Acknowedgment number** (`32bit`): durante l'invio del messaggio contiene il **_numero di sequenza del prossimo segmento che il trasmettitore si aspetta di ricevere dal ricevitore_**. È significativo solamente se il l'`ACK bit` è settato
-- **Header Length** (`4bit`): indica la lunghezza complessiva dell'_header_. Questa infatti è variabile da un minimo di `160bit` a un massimo di `` dovuto alle varie _options_
+- **Header Length** (`4bit`): indica la lunghezza complessiva dell'_header_. A causa dei campi _options_, questa è un multiplo intero di `32bit` a parire da una dimensione minima di `160bit`.
 - **Bit inutilizzati** (`4bit`)
 - **Flags** (`6bit`): sono diversi bit che hanno ruoli diversi:
   - **ACK bit**: utilizzato per indicare che il valore nel campo _acknowledgment number_ è significativo
@@ -164,10 +159,10 @@ Sulla desra possiamo vedere come è formato un _header TCP_:
   - **CWR**, **ECE**: sono utilizzati nelle notifiche esplicite di congestione (non utilizzati)
   - **PSH**: indica se il payload deve essere inviato immediatamente al livello superiore (non utilizzato)
   - **URG**: indica se al'interno del payload sono presenti dati che il livello superiore ha segnato come **_urgenti_**. (non utilizzato)
-- **Receive Window** (`16bit`): è utilizzato per il controllo di flusso. Indica il numero di _byte_m assimi che il ricevitore può accettare e gestire
+- **Receive Window** (`16bit`): è utilizzato per il controllo di flusso. Indica il numero di _byte_ massimi che il ricevitore può accettare e gestire
 - **Internet checksum** (`16bit`)
 - **Urgent Data Pointer** (`16bit`): se il bit `URG` è settato, indica la posizione dell'ultimo byte della sezione segnata come **_urgente_**. (non utilizzato)
-- **Options**: campo variabile opzionale che specifica alcune informaizoni sul segmento
+- **Options**: campo variabile opzionale che specifica alcune informazioni sul segmento
 - **Payload**: messaggio passato dall'_application layer_
 
 </div>
@@ -198,6 +193,8 @@ Statisticamente la seconda opzione è quella più utilizzata.
 <div class="top">
 <p class="p">Client Side</p>
 
+---
+
 Per creare un oggetto socket:
 ```c
 int sockD = socket(AF_INET, SOCK_STREAM, 0);
@@ -224,6 +221,8 @@ Il client attende adesso l'_ack_ dal server. Quando lo riceve farà la `ESTAB` d
 </div>
 <div class="top">
 <p class="p">Server Side</p>
+
+---
 
 Per creare un oggetto socket:
 ```c
@@ -260,7 +259,7 @@ Quando vorremo chiudere la connessione i passaggi sono molto simili:
 - Il _client_ invia un segmento con `FIN = 1` al _server_
 - Il _server_ lo riceve e risponde con un `ACK`.
 - Successivamente procede acnhe lui a chiudere la connessione inviando anche lui un segmento con `FIN = 1` al _client_
-- Il _client_ lo riceve il `FIN` e invia un `ACK`, entrando in un **timed wait**
+- Il _client_ riceve il `FIN` e invia un `ACK`, entrando in un **timed wait**
 - Il _server_ riceve l'`ACK`
 
 Nella **timed wait** il _client_ continua ad essere attivo. Questo è implementato per ovviare al problema che l'`ACK` finale potrebbe non arrivare al _server_.
@@ -275,15 +274,15 @@ La **timed wait** quindi forza il _client_ a stare ancora attivo così da poter 
 </div>
 
 Il `TCP` crea quindi un servizio di trasferimento dati affidabile basandosi sul servizio `IP`, che abbiamo detto essere _inaffidabile_.
-Questo sistema, basato su finestre `ACK` e ritrasmissioni, e non differisce molto dall'_rdt_ già visto precedentemente, se non per il problema del **calcolo del timeout**.
+Questo sistema, basato su finestre `ACK` e ritrasmissioni, non differisce molto dall'_rdt_ già visto precedentemente, se non per il problema del **calcolo del timeout**.
 
 Mentre nel _link layer_ ci basavamo sul `RTT`, adesso questo valore è **variabile**, a causa degli _hop_ che un pacchetto deve fare.
 Dobbiamo quindi riuscire a calcolare una stima del `RTT` del pacchetto che stiamo inviando partendo dai dati passati.
 
 Il `RTT` misurato per un segmento, detto `SampleRTT`, è il tempo che passa dall'invio del segmento (il suo passaggio al _network layer_) fino alla ricezione del rispettivo `ACK`.
 
-La maggior parte degli algoritmi `TCP` **non misurano il `SampleRTT` per tutti i segmenti trasmessi** ma ne misurano uno alla volta, ovvero non misuriamo il `SampleRTT` per i segmenti tra l'invio del misurato e il suo `ACK`.
-Questo comporta che otteniamo un nuovo `SampleRTT` ogni `SampleRTT`.
+La maggior parte degli algoritmi `TCP` **non misurano il `SampleRTT` per tutti i segmenti trasmessi**, ma si limitano a misurare quello di uno solo dei segmenti.
+Questo comporta che otteniamo un nuovo `SampleRTT` ogni `RTT`.
 
 Inoltre, il `TCP` non calcola mai il `SampleRTT` per un segmento ritrasmesso.
 
@@ -296,8 +295,10 @@ L'algoritmo della _media campionaria_ non è molto funzionale, poiché le condiz
 Utilizziamo quindi la **_media esponenziale mobile_** `EWMA` (_Exponential Weighted Moving Average_).
 Definendo:
 $$
+\begin{matrix}
 	\text{SampleRTT} := RTT \\[0.25em]
-	\text{EstimatedRTT}:=ERTT
+	\text{EstimatedRTT}:= ERTT
+\end{matrix}
 $$
 
 Otteniamo che:
@@ -339,8 +340,9 @@ $$
 
 Il valore consigliato di $\beta$ in questo caso è di $\beta = \frac{1}{4} = 0.25$.
 
-Il _timeout_ viene quindi calcolato come $1$ secondo inizialmente `[RFC 6298]`, e successivamente come:
+L'`[RFC 6298]` ha stabilito quindi che il _timeout_ venga calcolato inizalmente come $1$ secondo, e successivamente come:
 $$
+\large
 	\boxed{\text{TimeoutInterval} = \text{EstimatedRTT} + 4 \cdot \text{DevRTT}}
 $$
 
@@ -401,7 +403,7 @@ while(1){
 ```
 
 Uno dei problemi con la ritrasmissione dovuta a timeout, è prorpio il fatto che questo timeout può essere relativamente lungo.
-Quand oun segmento viene prso, questo lungo periodo di _timeout_ costringe il trasmettitore ad **attendere prima di ritrasmettere il segmento**, aumentando di conseguenza il _delay end-to-end_.
+Quando un segmento viene prso, questo lungo periodo di _timeout_ costringe il trasmettitore ad **attendere prima di ritrasmettere il segmento**, aumentando di conseguenza il _delay end-to-end_.
 
 Fortunatamente, il trasmettitore può rilevare la perdita di un pacchetto prima che l'evento di timeout avvenga, attraverso gli **`ACK duplicati`**.
 
@@ -452,7 +454,7 @@ switch(event){
 ### 2.4.2. TCP Flow Control
 
 Gli _host_ su ambo i lati di una connessione `TCP` hanno un buffer di ricezione dedicato alla connessione.
-Quando vengono ricevuti dei byte corretti e in equenza, questi vengono inseriti nel _receive buffer_.
+Quando vengono ricevuti dei byte corretti e in sequenza, questi vengono inseriti nel _receive buffer_.
 Il processo associato dell'_application layer_ leggerà i dati proprio da questo buffer, anche se non è detto che lo faccia nel momento esatto in cui questi dati arrivano.
 
 Infatti l'applicazione stessa potrebbe essere impegnata con altre _task_, oppure potrebbe non provare nemmeno a leggere i dati finché non è sicura che sono arrivati tutti.
@@ -482,7 +484,7 @@ $$
 	\text{rwnd} = \text{RcvBuffer} - \bigl[\text{LastByteRcvd}-\text{LastByteRead}\bigr]
 $$
 
-Poiché lo spazio rimanente può campiare nel tempo, `rwnd` **è calcolata dinamicamente**.
+Poiché lo spazio rimanente può cambiare nel tempo, `rwnd` **è calcolata dinamicamente**.
 
 Inizialmente `B` imposta `rwnd = RcvBuffer` e invia il primo segmento.
 
@@ -493,11 +495,11 @@ $$
 
 Questo calcolo però ha un problema intrinseco.
 Immaginiamo che `A` cominici ad inviare messaggi finché `rwnd = 0`. `A` riceve questa informazione dall'ultimo `ACK` che riceve.
-A questo punto `A` non invierà più messaggi attendnedo che `B` legga i messaggi nel buffer così da liberare spazio.
+A questo punto `A` non invierà più messaggi attendendo che `B` legga i messaggi nel buffer così da liberare spazio.
 Tuttavia, smettendo di inviare messaggi `B` _non invierà più ACK_, quindi `A` **_non riceverà mai la notifica della liberazione del nuovo spazio_**.
 
 Per risolvere questo problema, le specifiche del `TCP` sanciscono che `A` **continui a inviare segmenti di dimensione `1 Byte` quando la finestra di `B` è zero**.
-Poiché il _buffer_ è destinato a svuotarsi prima o poi, i segmenti di _acknowledged_ conterranno valori `rwnd` non nulli, permettendo ad `A` di ripendere con l'invio di messaggi più grandi.
+Poiché il _buffer_ è destinato a svuotarsi prima o poi, i segmenti di _acknowledged_ conterranno valori `rwnd` non nulli, permettendo ad `A` di riprendere con l'invio di messaggi più grandi.
 
 Il _flow-control_ **non è implementato dal protocollo** `UDP`, che quindi può soffrire di perdita pacchetti dovute al _buffer overflow_.
 
@@ -546,7 +548,7 @@ L'approccio _network assisted_ opera delegando al router di settare due bit nell
 
 Sucessivamente, il destinatario, setterà il bit `ECE` nel segmento di `ACK` di ricezione del segmento e lo inoltrerà al trasmettitore.
 
-QUando il trasmettitore lo riceverà procederà a **dimezzare** `cwnd`, e setterà `CWR` nell'header del successivo segmento da inoltrare.
+Quando il trasmettitore lo riceverà procederà a **dimezzare** `cwnd`, e setterà `CWR` nell'header del successivo segmento da inoltrare.
 
 Questo metodo coinvolge sia il protocollo `IP` che quello `TCP`
 
@@ -563,7 +565,7 @@ Per decidere come agire dobbiamo rispondere a tre domande fondamentali:
 - Come fa il trasmettitore a _aggiustare_ il proprio rateo dopo aver rilevato la congestione?
 
 Il parametro sul quale agiamo si chiama **congestion window** `cwnd`.
-Il `cwnd` impone nu limite sul rateo al quale un trasmettitore `TCP` può instradare traffico nella rete.
+Il `cwnd` impone un limite sul rateo al quale un trasmettitore `TCP` può instradare traffico nella rete.
 
 In generale è di nuovo vero che:
 $$
@@ -583,7 +585,7 @@ $$
 
 Una semplificazione dell'approccio che il trasmettitore segue si chiama _Additive Increase, Multiplicative Decrease_ (`AIMD`):
 > Il trasmettitore prova costantemente ad **aumentare di 1 il rateo di invio del `MSS`**.
-> Quando si verifica un sintomo della congestione (_perdita di un pacchetto_, _timeout_, _triplo ACK_).dimezza il rateo di invio.
+> Quando si verifica un sintomo della congestione (_perdita di un pacchetto_, _timeout_, _triplo ACK_) dimezza il rateo di invio.
 
 <img class="" src="./images/tl/AMID-example.png">
 
@@ -592,7 +594,7 @@ Il vero algoritmo che il `TCP` utilizza è più complesso.
 Si divide in tre fasi:
 1. **Slow start**: si parte con una finestra piccola per poi ampliarla in modo esponenziale
 2. **Congestion Avoidance**: si aumenta il più possibile la finestra finché non si verifica la congestione
-3. **Reaction to Loss Events**: 
+3. **Reaction to Loss Events**:
 
 Quando una connessione viene avviata, lo _slow start_ impone di partire con finestre `cwnd = 1 MSS`.
 Successivamente, ad ogni `ACK` si **raddoppia la finestra**.
@@ -610,9 +612,7 @@ Quando si verifica un sintomo di congestione l'algoritmo agisce in modo differen
 
 L'aggiornamento del valore della soglia è indipendente dal proprio valore precedente, ma dipende esclusivamente dal valore della finestra prima che si verifichi un sintomo.
 
-Di seguito possiamo trovare sulla sinitra la macchina a stati finiti dellì'algoritmo del _TCP congestion control_.
-
-Sulla destra nivece è proposto un esempio di come possono variare nel tempo i valori della inestra e della soglia.
+Di seguito possiamo trovare sulla sinitra la macchina a stati finiti dellì'algoritmo del _TCP congestion control_, mentre sulla destra è proposto un esempio di come possono variare nel tempo i valori della finestra e della soglia.
 
 <div class="grid2">
 <div class="">

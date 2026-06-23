@@ -62,16 +62,14 @@ Il _network layer_ ha due funzioni principali:
 - **Routing**: determina come instradare un pacchetto per farlo arrivare alla destinazione. Vedremo come questo percorso viene calcolato attraverso _algoritmi di routing_.
 
 Il protocollo opera su due piani diversi.
+1. **_Piano Dei Dati_**: locale per ogni _router_. Questo piano determina a partire dalla **_tabella di forwarding_** a quale porta inoltrare il datagramma in entrata.
+2. **_Piano Di Controllo_**: segue una logica _network-wide_. Determina come il datagramma deve essere instradato attraverso i _router_ così da percorrere "il percorso più breve". Produce la **_tabella di forwarding_** utilizzando diversi approcci.
 
-Il primo piano è il **_piano dei dati_**, che è locale per ogni _router_. Questo piano determina, a partire dalla **_tabella di forwarding_**, a quale porta inoltrare il datagramam in entrata.
-
-Il secondo è il **_piano di controllo_**, che ha una logica _network-wide_. Determina come il datagramma deve essere nistradato attraverso i _router_ cos' da percorrere "il percorso più breve", scrivendo la **_tabella di forwarding_**.
-
-Questo piano può creare la tabella attraverso diversi approcci. Il primo approccio è attraverso **Algoritmi di routing tradizionali** implementati nei singoli _router_, che operano atrtaverso lo scambio di informaizoni tra _router_ adiacenti.
+Il primo approccio che è possibile utilizzare per scrivere la _tabella di forwarding_ è utilizzare **Algoritmi Di Routing Tradizionali** implementati nei singoli _router_, che operano attraverso lo scambio di informazioni tra _router_ adiacenti.
 
 <img class="" src="./images/internetworking/trad-routing-example.png">
 
-Un secondo approccio è il **Networking software-defined** che sono implementati il server remoti che opera nel cloud, e calcola i percorsi in maniera centralizzata.
+Un secondo approccio è invece il **Networking Software-Defined**, implementato utilizzando server remoti che operano nel cloud, che calcolano i percorsi in maniera centralizzata e si preoccupano di inviare copie aggiornate ad ogni router.
 
 <img class="" src="./images/internetworking/sdn-routing-example.png">
 
@@ -120,10 +118,10 @@ Il **line termination** implementa il _physical layer_, ovvero la ricezione fisi
 
 Il **link layer protocol** implementa, come dice il nome, il _link layer_.
 
-I servizi di **lookup, forwarding e queueing** forniscono al circuito di commutazione (_switch fabric_) i pacchetti da istradare, associandoli alle informaizoni per poterlo fare correttamente.
+I servizi di **lookup, forwarding e queueing** forniscono al circuito di commutazione (_switch fabric_) i pacchetti da instradare, associandoli alle informazioni per poterlo fare correttamente.
 
-Il servizio di _lookup_ controlla il contenuto dei campi _header_ per recuperare informazioni relative alla destinazion del pacchetto.
-Successivamente, queste informazioni vengoo confrontate dal servizio di _forwarding_ con _forwarding table_, per determinare quale delle porte di uscita del _router_ va selezionata.
+Il servizio di _lookup_ controlla il contenuto dei campi _header_ per recuperare informazioni relative alla destinazione del pacchetto.
+Successivamente, queste informazioni vengono confrontate dal servizio di _forwarding_ con _forwarding table_, per determinare quale delle porte di uscita del _router_ va selezionata.
 
 Il _forwarding_ si differenzia in:
 - **Destination-Based**: fa un inoltro basandosi esclusivamente sull'indirizzo IP del destinatario
@@ -142,7 +140,7 @@ Permettono di trasferire un pacchetto dal link di entrata all'uscita.
 Da questo circuito dipende il **_switching rate_**, ovvero la velocità con la quale i _router_ possono trasferire pacchetti dagli input agli output.
 
 Ipotizzando che tutti gli $N$ link di entrata abbiano un bit rate di $R$ bps, idealmente vorremo un _rate_ di $N\cdot R$ bps.
-Vedremo che questo valore è impossibile a causa di _overhead_ e inoltri multipli da diversi _link_ di entrata verso lo stesso _link_ di uscita, che quindi geenra concorrenza.
+Vedremo che questo valore è impossibile a causa di _overhead_ e inoltri multipli da diversi _link_ di entrata verso lo stesso _link_ di uscita, che quindi genera concorrenza.
 
 Vi sono diversi metodi per implementare la _switching fabric_ alcuni più complessi, altri più semplici. Noi vedremo i circuiti basati su:
 - **Memoria condivisa**
@@ -174,7 +172,7 @@ Questo tipo di router ha un _throughput_ tra i più bassi possibile, in quanto n
 <div class="grid2">
 <div class="">
 
-Si basa su una specie di rete ethernet in miniatura. Tutte le porte sono collegate ad un bus comune con accessi mutualmenti esclusivi o arbitrati per l'accesso multiplo, **senza alcun intervento da parte del processore di routing**.
+Si basa su una specie di rete ethernet in miniatura. Tutte le porte sono collegate ad un bus comune con accessi mutualmente esclusivi o arbitrati per l'accesso multiplo, **senza alcun intervento da parte del processore di routing**.
 
 Si rende questa modalità possibile appendendo davanti all'header uno _switch-internal label_ che permette al circuito di capire in autonomia (tramite le maschere alle porte), dove instradare il messaggio.
 
@@ -199,7 +197,7 @@ Questa tecnologia è comunque sufficientemente veloce per la maggior parte dei _
 Perette di ovviare alla limitazione della banda dovuta ad un unico _bus_ condiviso, attraverso una interconnessione di bus più complessa.
 Alcuni esempi di reti di interconnessione utilizzati sono i _crossbar_ (come in figura sulla destra). Dati $N$ link di entrata e $N$ link di uscita, sono presenti $2N$ bus per il collegamento.
 
-Ogni _bus_ erticale interseca tutti i _bus_ orizzontali in dei punti chiamati _crosspoints_, che possono essere opportunamente aperti o chiusi dal controllore del circuito, secondo una logica che fa parte del circuito stesso.
+Ogni _bus_ verticale interseca tutti i _bus_ orizzontali in dei punti chiamati _crosspoints_, che possono essere opportunamente aperti o chiusi dal controllore del circuito, secondo una logica che fa parte del circuito stesso.
 
 Se un pacchetto deve essere inviato dal link `A` verso il link `Y` il controllore chiudera il _crosspoint_ di intersezione tra i due link diretti (come in figura).
 
@@ -228,17 +226,17 @@ Ovviamente possiamo mettere in parallelo più _fabrics_ così da implementare ul
 
 ## 2.3. Port Queuing e Buffer Management
 
-Se a _switch fabric_ fosse più lenta di tutte le input port combinate, potrebbero verificarsi degli accumuli di pacchetti in coda sulle porte di ingresso.
+Se la _switch fabric_ fosse più lenta di tutte le input port combinate, potrebbero verificarsi degli accumuli di pacchetti in coda sulle porte di ingresso.
 
-Questo problema si chiama **_Head-Of-the-Line blocking_** `HOL`, ovvero quando il datagramma testa alla coda trova il suo percorso occupate e non permette agli altri pacchetti successivi (potenzialmente instradabili) di passare.
+Questo problema si chiama **_Head-Of-the-Line blocking_** `HOL`, ovvero quando il datagramma testa alla coda trova il suo percorso occupato e non permette agli altri pacchetti successivi (potenzialmente instradabili) di passare.
 
 <img class="" src="./images/internetworking/input-port-queuing.png">
 
-Questa logica pu avvenire anche nelle porte di uscita, nel caso in cui la _switch fabric_ inoltri più datagram di quanti la porta di uscita riesca a gestire.
+Questo problema non è limitato alle porte di entrata, ma si può presentare anche su quelle di uscita, nel caso in cui la _switch fabric_ inoltri più _datagram_ di quanti la porta di uscita riesca a gestire.
 
-In entrambi i casi dobbiamo implementare un `buffer`, che però può saturarsi costringendoci a scelgiere una politica di **_gestione delle perdite_**.
+In entrambi i casi diventa comunque necessario implementare un `buffer` e dei meccanismi di **_gestione delle perdite_** nel caso in cui questo si saturi.
 
-Dobbiamo quindi seguire una **_gestione del buffer_**:
+Tra le varie opzioni di _gestione del buffer_ abbiamo:
 - **_Drop_**: scegliamo di "perdere" un pacchetto quando il buffer è pieno. Questo può essere:
 	- **Tail Drop**: rimuove i nuovi pacchetti in arrivo
 	- **Priority Drop**: rimuove i pacchetti a seconda di una priorità
@@ -248,7 +246,7 @@ In _internet_ si gestisce il _buffer_ attraverso il **_drop_**.
 
 ## 2.4. Algoritmi di Schedulazione
 
-Il _packet scheduling_ permette di decidere qual'è il prossimo pacchetto da inviare attraverso il _link_.
+Il _packet scheduling_ permette di decidere qual è il prossimo pacchetto da inviare attraverso il _link_.
 
 <img class="40" src="./images/internetworking/scheduling-abstraction.png">
 
@@ -278,11 +276,11 @@ Si predilige la coda con priorità più alta, e inoltrando quelli nella coda a p
 
 ### 2.4.4. Weighted-Fair-Queuing - WFQ
 
-È una generalizzazione del `RR` che **_tratta ogniuna coda attraverso un peso_** `wi`.
+È una generalizzazione del `RR` che **_tratta ogni coda attraverso un peso_** `wi`.
 
-Ogni classe $i$ ha un peso $w_i$ e prende un tempo sul totale di $\frac{w_i}{\sum_j{w_j}}$.
+Ogni classe $i$ ha un peso $w_i$, e può impiegare una frazione di tempo sul totale pari a $\frac{w_i}{\sum_j{w_j}}$.
 
-Questo permette anche di fornire una garanzia di banda minima.
+Questo algoritmo ci permette anche di fornire una garanzia di banda minima.
 
 <img class="25" src="./images/internetworking/scheduling-WFQ.png">
 
@@ -302,14 +300,14 @@ Diversi stati hanno diversi punti di vista sulla _newutralità della rete_
 
 È il protocollo di livello network utilizzato su _internet_.
 
-All'interno di ogni _host_ definisce:
+Per ogni _host_ definisce:
 - Il formato dei datagram
 - Il formato di indirizzamento a livello di internet
 - Le regole di instradamento
 
 Si avvale anche dei protocolli:
 - `ICMP` (_Internet Control Media Protocol_), che permette di fare _error reporting_ e _router signaling_.
-- `ARP`: lo vedremo più avanti
+- `ARP` (_Address Resolution Protocol_) : [spiegato nel dettaglio nel prossimo capitolo](#28-address-resolution-protocol---arp)
 
 <img class="40" src="./images/internetworking/network-layer-scheme.png">
 
@@ -327,7 +325,7 @@ Il datagram del _network layer_ è più complesso di quelli visti fin'ora, e pre
 - **Flags** (`3bit`): descritto nella prossima sezione
 - **Fragment Offset** (`13bit`): descritto nella prossima sezione
 - **Time-To-Live** (`8bit`): va da `1` a `255` ed è decrementato ad ogni _hop_ dal router. Se arriva a `0` il router scarta il pacchetto. Serve per evitare che il datagram possa finire in cicli infiniti che occupano solamente banda.
-- **Upper Layer** (`8bit`): serve a specificare se il protocollo è `TCP` o `UDP`
+- **Upper Layer** (`8bit`): serve a specificare se il protocollo utilizzato al livello trasporto è `TCP` o `UDP`
 - **Header Checksum** (`16bit`): serve per l'_error detection_
 - **Indirizzo IP Sorgente** (`32bit`)
 - **Indirizzo IP Destinatario** (`32bit`)
@@ -372,8 +370,9 @@ Queste informazioni sono contenute proprio nella seconda parola:
 - **Flags** (`3bit`): sono bit che servono a gestire la frammentazione:
   - **Res** (_Null bit_): non è utilizzato
   - **DF** (_Don't Fragment_): Se `1` indica che il datagramma _non dovrebbe essere frammentato_. È principalmente utilizzato per testare la `MTU` di una rete, in quanto molti protocolli lo mantengono a `0`.
-  - **MF** (_More Fragments_): se `0` indica che è l'ultimo frammento del messaggio, `1` altrimenti. Se un frammento con `MF = 1` viene riframmentato anche i nuovi frammenti _avranno tutti_ `MF = 1`
-- **Fragment Offset** (`13bit`): risolve il problema della sequenziazione, indicando la posizione nel messaggio originale del primo bit del frammento. Per riuscire a indicare tutte le posizioni (che possono essere espresse su `16bit` dal campo lunghezza), viene inserito prendendo come unità `8 Byte`, ovvero `posizione/8`.	
+  - **MF** (_More Fragments_): se `0` indica che è l'ultimo frammento del messaggio, `1` altrimenti. Se un frammento con `MF = 1` viene riframmentato anche i nuovi frammenti _avranno tutti_ `MF = 1`, mentre se il frammento riframmentato aveva `MF = 0`, solamente l'ultimo dei sottoframmenti avrà `MF = 0`.
+- **Fragment Offset** (`13bit`): risolve il problema della sequenziazione, indicando la posizione nel messaggio originale del primo bit del frammento. Per riuscire a indicare tutte le posizioni (che possono essere espresse su `16bit` dal campo lunghezza), viene inserito prendendo come unità `8 Byte`, ovvero `posizione/8`.
+
 </div>
 <div class="">
 <img class="" src="./images/internetworking/ip-fragmentation-process.png">
@@ -421,8 +420,8 @@ Gli indirizzi delle sottoreti sono caratterizzate in classi. Queste classi si di
 
 | Classe | Bit di sottorete | Bit di Host | Massimo numero di host per una rete |
 | :----: | :--------------: | :---------: | :---------------------------------: |
-|  `A`   |       `8`        |    `24`     |       $2^24 - 3 \approx 16M$        |
-|  `B`   |       `16`       |    `16`     |       $2^16 - 3 \approx 64K$        |
+|  `A`   |       `8`        |    `24`     |      $2^{24} - 3 \approx 16M$       |
+|  `B`   |       `16`       |    `16`     |      $2^{16} - 3 \approx 64K$       |
 |  `C`   |       `24`       |     `8`     |           $2^8 - 3 = 253$           |
 
 </div>
@@ -432,12 +431,12 @@ Vi sono poi altre due classi:
 - `E`: riservati per scopi futuri
 
 Se un organizzazione avesse necessità di avere `15` host, sprecherebbe più di `200` indirizzi utilizzando una rete di classe `C`.
-Allo stesso modo, se ad un certo punto diventasse abbastanza rande da avere più di _253 host_, dovrà ottenere una nuova
+Allo stesso modo, se ad un certo punto diventasse abbastanza rande da avere più di _253 host_, dovrà ottenere un nuovo indirizzo appartenente ad una classe `B` o `A`, avendo quindi l'inconeniente di dover effettuare la migrazione.
 
-Durante l'espansione di internet venne studiato che, continuando ad assengare gli indirizzi attraverso le classi, gli indirizzi `IP` sarebbero **termianti entro la metà degli anni '80**.
+Durante l'espansione di internet venne studiato che, continuando ad assengare gli indirizzi attraverso le classi, gli indirizzi `IP` sarebbero **terminati entro la metà degli anni '80**.
 
 Questa "crisi" generò diverse idee:
-- `IPv6`: ampliare il numero di `bit`
+- `IPv6`: ampliare il numero di `bit` degli indirizzi, da `32bit` a `128bit`.
 - `NAT`: si vedrà meglio [in un capitolo successivo](#-nat)
 - `CIDR`
 
@@ -449,7 +448,7 @@ Segue il formato `a.b.c.d/x` dove `x` indica il numero di bit dedicati agli _hos
 
 In questa conformazione è possibile avere un indirizzo come `145.23.4.6/23`.
 
-La maschera di rete viene quindi costruita così: $(2^32 - 1) << x$.
+La maschera di rete viene quindi costruita così: $(2^{32} - 1) < < x$.
 
 ### 2.6.5. Ottenere un indirizzo host - `DHCP`
 
@@ -457,7 +456,7 @@ Vediamo adesso come si fa un _host_ ad ottenere un indirizzo `IP`.
 
 Un _host_ può ottenere un indirizzo `IP` in due modi:
 - Recuperandolo da un file di configurazione scritto dall'amministratore di sistema. In `UNIX` questo file si trova tin `/etc/rc.config`. Questa assegnazione è **_hard-coded e permanente_**.
-- `DHCP` (_Dynamic Host Configuration Protocol_): fornisce **dinamicamente** gli indirizzi `IP` ottenendoli da un server, per dei tempi 
+- `DHCP` (_Dynamic Host Configuration Protocol_): fornisce **dinamicamente** gli indirizzi `IP` prendendoli "in prestito" da un server.
 
 Il primo metodo ha diversi problemi, uno tra i principali è quello che difficilmente un dispositivo è costantemente connesso in rete. Quindi per tutto il tempo per il quale non è collegato, abbiamo un indirizzo "sprecato" e inutilizzato.
 
@@ -492,9 +491,10 @@ lifetime: 3600 secs
 ```
 
 La terza fase è chiamata **DHCP request**: l'_host_, **_sempre in broadcast_**, risponde facendo la vera e propria richiesta per l'indirzzo `IP` da utilizzare, diminuendo eventualmente il _lifetime_.
-La comunicazione continua ad avvenire in _broadcast_ per due motivi:
+La comunicazione continua ad avvenire in _broadcast_ per tre motivi:
 1. Il protocollo è stato definito così, quindi funziona così
 2. Potrebbero esserci più server `DHCP` che collaborano all'interno di una rete. Mandando il _broadcast_ la richiesta aumenta la probabilità di trovarne uno libero
+3. In questo modo si notificano gli altri server `DHCP` che non sono stati scelti.
 
 ```log
 src: 0.0.0.0, 68
@@ -531,7 +531,7 @@ Oltre all'indirizzo in realtà il server `DHCP` fornisce altre informazioni, qua
 - Maschera di rete
 
 
-### 2.6.6. Ottenere un indirizzo di rete 
+### 2.6.6. Ottenere un indirizzo di rete
 
 Per quanto riguarda gli indirizzi di _rete_, questi vengono forniti dagli `ISP`.
 
@@ -540,14 +540,14 @@ Gli `ISP` hanno a disposizione blocchi di indirizzi, che porzionano tra le varie
 Iporizziamo di avere un `ISP` che ha il blocco `200.23.16.0/20`.
 
 Se dovesse dividere gli indirizzi tra 8 organizzazioni identiche, potrebbe fornire loro `9bit` per gli host (circa 500 host possibili) dividendo il proprio blocco così:
-- `200.23.16.0/23`: parto dal blocco di partenza e fornisco 
+- `200.23.16.0/23`: parto dal blocco di partenza e fornisco
 - `200.23.18.0/23`
 - `200.23.20.0/23`
 - ....
 - `200.23.30.0/23`
 
 
-'utilizzo degli indirizzi `CIDR` permette anche di diminuire le dimensioni delle _forwarding table_. Infatti è possibile inoltrare i messaggi diretti ad un _host_ prima **_al suo `ISP`_**, che ha un blocco ampio.
+L'utilizzo degli indirizzi `CIDR` permette anche di diminuire le dimensioni delle _forwarding table_. Infatti è possibile inoltrare i messaggi diretti ad un _host_ prima **_al suo `ISP`_**, che ha un blocco ampio.
 In questo modo non è più necessario specificare tutti gli indirizzi delle varie reti nelle tabelle dei _core router_, ma è sufficiente metterne solo uno.
 Successivamente sarà l'host stesso a ridirezionare il messaggio nelle varie sottoreti che gestisce.
 
@@ -556,13 +556,13 @@ Successivamente sarà l'host stesso a ridirezionare il messaggio nelle varie sot
 Nel caso in cui un organizzazione cambiasse il proprio `ISP` ma volesse mantenere il proprio indirizzo `IP` sarà quindi sufficiente inserire nella _tabella di forwarding_ del nuovo `ISP` la condizione che sia presente proprio l'indirizzo specifico dell'organizzazione.
 
 
-Affinché un `ISP` possa ottenere un blocco di indirizzi deve chiedere a sua volta ad un altro `ISP`. 
-L'`ISP` gerarchicamente di riferimento è la `ICANN` (_INternet Corporation for Assigned Names and Numbers_) che permette di allocare gli indirizzi `IP` attraverso **5 registri regionali** `RR`.
-SI occupa anche di gestire le zone di root `DNS` e della gestione dei vari `TLD`.
+Affinché un `ISP` possa ottenere un blocco di indirizzi deve chiedere a sua volta ad un altro `ISP`.
+L'`ISP` gerarchicamente di riferimento è la `ICANN` (_Internet Corporation for Assigned Names and Numbers_) che permette di allocare gli indirizzi `IP` attraverso **5 registri regionali** `RR`.
+Si occupa anche di gestire le zone di root `DNS` e della gestione dei vari `TLD`.
 
 ## 2.7. Scarsità di indirizzi
 
-Quando venne introdotto lo standard degli indirizzi `IP` a `32bit` ($2^32 \approx 4G$ indirizzi) si pensava che fosse più che sufficiente per tutti i dispositivi.
+Quando venne introdotto lo standard degli indirizzi `IP` a `32bit` ($2^{32} \approx 4G$ indirizzi) si pensava che fosse più che sufficiente per tutti i dispositivi.
 
 La storia però ha dimostrato il contrario, infatti `ICANN`  ha assegnato l'ultimo blocco di indirizzi `IPv4` ai `RR` nel 2011
 
@@ -576,14 +576,14 @@ Sono state proposte diverse soluzioni, noi vedremo quelle che hanno preso piede 
 
 Il `NAT` permette di far condividere, dal punto di vista del mondo esterno, a tutti i dispositivi in una stessa rete locale **_un unico indirizzo_** `IPv4`.
 
-Prima di poter spiegare come funzioni il `NAT` dobbiamo dire che esistono alcuni indirizzi `IP` particolari che sonon dedicati a comunicazioni particolari:
+Prima di poter spiegare come funzioni il `NAT` dobbiamo dire che esistono alcuni indirizzi `IP` particolari che sono dedicati a comunicazioni particolari:
 - **Indirizzi speciali pubblici**: possono essere utilizzati per ocmunicare sulla internet pubblica
-  - `0.0.0.0`: indirizzo utilizzato da nuovi _host_ nella rete che non hanno ancora indirizzo 
+  - `0.0.0.0`: indirizzo utilizzato da nuovi _host_ nella rete che non hanno ancora indirizzo
   - `255.255.255.255` o `0..01..1` (parte _rete_ settata): indirizzo di _broadcast_
 - **Indirizzi speciali privati**: possono essere utilizzati per creare delle interreti **_private_**, non collegate alla rete pubblica
   - `10.0.0.0/8`
   - `172.16.0.0/12`
-  - `192.168.0.0/16
+  - `192.168.0.0/16`
 
 Il `NAT` permette di sfruttare questi indirizzi privati per aumentare il numero di indirizzi `IPv4` disponibili.
 
@@ -595,7 +595,7 @@ All'interno delle reti che utilizzano `NAT` i dispositivi credono di essere gli 
 Nell'esempio sulla destra possiamo vedere che i dispositivi nella rete credono di essere nella rete `10.0.0.0/24`.
 
 Il router di uscita avrà quindi:
-- **Un indirizzo privato**: con la quale più comunicare con gli _host_ interni
+- **Un indirizzo privato**: con la quale può comunicare con gli _host_ interni
 - **Un indirizzo pubblico**: con il quale può comunicare con l'esterno
 
 Il problema di questo approccio è che un _host_ interno alla rete privata **non può per definizione comunicare con l'esterno**.
@@ -606,15 +606,15 @@ Il problema di questo approccio è che se l'host `10.0.0.1, 3345` invia una rich
 È quindi necessario trovare un modo per il _router_ di capire come inoltrare correttamente il messaggio ricevuto all'interno della rete privata.
 </div>
 <div class="">
-<img class="" src="./images/internetworking/NAT-example.png">
+<img class="70" src="./images/internetworking/NAT-example.png">
 
 </div>
 </div>
 
 Per fare ciò il `NAT` utilizza una _NAT translation table_ composto da 4 colonne:
-- `Indirizzo Pubblico`: uguale per tutte le righe
+- `Indirizzo Inside Global`: detto comunemente _indirizzo pubblico_, è uguale per tutte le righe
 - `Porta Pubblica`: diversa per ogni riga
-- `Indirizzo Privato originaria`
+- `Indirizzo Inside Local`: detto comunemente _indirizzo privato_, è quello che ha originariamente fatto la richiesta
 - `Porta Privata originaria`
 
 Quando il router riceve una richiesta da `10.0.0.1, 3345`, e decide di inoltrarla come `138.76.29.7, 5001` inserirà il seguente record:
@@ -655,7 +655,7 @@ Risolve anche altre esigenze:
 
 Un _datagram IPv6_  segue quindi il seguente formato:
 - **Version** (`4bit`): contiene il valore `6`
-- **Traddic class** (`8bit`): come il campo `TOS` è utilizzato pe rdare priorità a certi datagrammi all'interno di un "flusso" rispetto ad un altro
+- **Traffic class** (`8bit`): come il campo `TOS` è utilizzato per dare priorità a certi datagrammi all'interno di un "flusso" rispetto ad un altro
 - **Flow Label** (`20bit`): identifica il flusso al quale il datagram appartiene
 - **Payload Length** (`16bit`): è considerato un `unsigned integer` e indica la dimensione del _payload_
 - **Next Header** (`8bit`): identifica quale protocollo utilizzano i dati nel _payload_ (`TCP`, `UDP`, ...)
@@ -669,9 +669,9 @@ Un _datagram IPv6_  segue quindi il seguente formato:
 </div>
 </div>
 
-Possimao notare come manchino diversi campi all'interno degli _header_ `IPv6`:
+Possiamo notare come manchino diversi campi all'interno degli _header_ `IPv6`:
 - **Informazioni relative alla frammentazione/riassemblaggio**: per ottimizzare i tempi di elaborazione del messaggio. Quello che accade se un _router_ non riesce a instradare il _datagram_ poiché troppo grande lo **_droppa_** inviando al sender un messaggio di notifica `ICMP` _"Packet Too Big"_ . Il _sender_ si occuperà di reinviare il messaggio in _datagram più piccoli_.
-- **Informazioni sul _checksum_**: per ottiimzzare i tempi di elaborazione del messaggio. Banalmente, cambiare il `TTL` ad ogni passo implica anche il ricalcolare il `CRC`.
+- **Informazioni sul _checksum_**: Poiché cambiare il `TTL` ad ogni passo implica anche il ricalcolare il `CRC`, per ottimizzare i tempi questo non è più contenuto, basandosi sul fatto che i protocolli agli altri livelli continuano ad implementarlo.
 - **Opzioni aggiuntive**: erano già poco utilizzate negli indirizzi `IPv4` e si è deciso di rimuoverli poiché anche presenti negli _header_ del livello _transportation_
 
 La transizione da `IPv4` a `IPv6` non è avvenuta in un unca notte, e ancora oggi, dopo 25 anni, siamo in transizione.
@@ -731,20 +731,19 @@ Una _cache_ interna ad `A` salverà la nuova entrata nella tabella che poi comin
 
 Questa soluzione è _plug-and-play_, e non necessita di interventi terzi.
 
-Nel caso di reti distribuite la situazioen è un po' più complessa.
-`A` creerà un datagramma `IP` con mittente `A` e destinazione `B`. Utilizzando il protocollo `ARP` otterrà l'indirizzo `MAC` del **_router di accesso_** `R`.
-
-`A` invierà quindi il messaggio che conterrà:
-- Indirizzo `IP` di `B`
-- Indirizzo `MAC` di `R`
-
-Quando `R` otterrà il pacchetto da inoltrare, farà lui una richiesta `ARP` sulla rete successiva a partire dall'indirizzo `IP` di `B`. Procederà quindi a modificare il contenuto dell'indirizzo `MAC` di destinazione con la nuova corrispondenza e inoltrerà il messaggio.
+Nel caso di reti distribuite la situazione è un po' più complessa:
+1. `A` crea un datagramma `IP` con mittente `A` e destinazione `B`
+2. Utilizzando il protocollo `ARP` otterrà l'indirizzo `MAC` del **_router di accesso_** `R`.
+3. `A` invierà quindi il messaggio che conterrà:
+  - Indirizzo `IP` di `B`
+  - Indirizzo `MAC` di `R`
+4. Quando `R` otterrà il pacchetto da inoltrare, farà lui una richiesta `ARP` sulla rete successiva a partire dall'indirizzo `IP` di `B`. Procederà quindi a modificare il contenuto dell'indirizzo `MAC` di destinazione con la nuova corrispondenza e inoltrerà il messaggio.
 
 Questo accade finché il pacchetto non raggiunge l'ultima rete, dalla quale, tramite richiesta `ARP` otterrà l'effettivo `MAC` di `B`. Il router finale inoltrerà quindi correttamente il messaggio.
 
 ## 2.9. Protocollo ICMP
 
-È utilizzato dagli _host_ e dai _router_ per counicare informazioni di _livello network_, ad esempio errori (ad esempio _unreachable host_) oppure inviare messaggi di `echo request` o `echo reply` (usati ad esempio dal comando `ping`)
+È utilizzato dagli _host_ e dai _router_ per counicare informazioni di _livello network_, come errori, messaggi di `echo request`/`echo reply` (usati ad esempio dal comando `ping`), ...
 
 Funzionalmente il protocollo `ICMP` sta **_sopra il protocollo `IP`_**, poiché i messaggi `ICMP` vengono incapsulati dentro datagrammi `IP`.
 
@@ -801,13 +800,13 @@ Un esempio:
 |             match             |        action        | Descrizione                                       |
 | :---------------------------: | :------------------: | :------------------------------------------------ |
 | `src: *.*.*.*, dest=3.4.*.*`  |     `forward(2)`     | Comportamento simile al precedente                |
-| `src: 1.2.*.*, dest=*.*.*.*`  |        `drop`        | Implementa un gateway                             |
+| `src: 1.2.*.*, dest=*.*.*.*`  |        `drop`        | Implementa un filtro                              |
 | `src: 10.1.2.3, dest=*.*.*.*` | `send to controller` | permette di fare filtri per determinati indirizzi |
 
 
 </div>
 
-Un protocollo che sfrutta questo approccio geenralizzato è `OpenFlow`:
+Un protocollo che sfrutta questo approccio generalizzato è `OpenFlow`:
 
 <img class="" src="./images/internetworking/OpenFlow-flow-table-entries.png">
 
@@ -829,7 +828,7 @@ Il protocollo `OpenFlow` è molto flessibile, e permette di unificare diversi ti
 Sono i dispositivi che si trovano nel _network core_, codì definiti:
 > Una _middlebox_ è una qualunque scatola che esegue funzioni diverse da quelle standard di un normale _router IP_ o  sul percorso tra un _host_ sorgente e un _host_ destinatario
 
-Ad esempio, il `NAT`, la `cache` o il `firewall` sono delle _middlebox_. Altri esempi di _middlebox_ sono i _load balancers_, gli _ids_ (controlla il pacchetto e i successivi per ispezionarli e filtrare pacchetti potenzialmente pericolosi) e altri più _application specific_..
+Ad esempio, il `NAT`, la `cache` o il `firewall` sono delle _middlebox_. Altri esempi di _middlebox_ sono i _load balancers_, gli _ids_ (controlla il pacchetto e i successivi per ispezionarli e filtrare pacchetti potenzialmente pericolosi) e altri più _application specific_.
 
 
 Inizialmente le _middlebox_ erano soluzioni proprietarie chiuse su certi tipi di reti.
@@ -851,5 +850,5 @@ Possiamo notare come il livello _network_ rappresenti il "restingimento" di ques
 
 Attraverso l'introduzione delle varie _middlebox_ oggi abbiamo ampliato il restingimento nel livello network:
 
-<img class="" src="./images/internetworking/IP-hourglass-now.png">
+<img class="40" src="./images/internetworking/IP-hourglass-now.png">
 

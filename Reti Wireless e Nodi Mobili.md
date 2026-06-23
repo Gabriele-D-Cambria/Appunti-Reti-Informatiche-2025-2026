@@ -647,7 +647,7 @@ Infatti la posizione del dispositivo mobile è **_trasparente nei confronti del 
 Abbiamo però il vantaggio che le connessioni _on-going_ possono essere mantenute anche se il dispositivo cambaisse _visited network_.
 Infatti, al cambio di network, viene aggiornata il record nell'`HSS`, che quindi informerà il _gateway router_ che inoltrerà diversamente i pacchetti in arrivo.
 
-IL cambio rischia sì di perdere qualche pacchetto, ma questo è in linea con la filosofia _best-effort_ di internet.
+Il cambio rischia sì di perdere qualche pacchetto, ma questo è in linea con la filosofia _best-effort_ di internet.
 
 ## 4.2. Routing Diretto
 

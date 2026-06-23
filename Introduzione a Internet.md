@@ -434,5 +434,5 @@ Gli _switch_ andranno a leggere **solo** i primi due header per deciderne l'istr
 
 Quando il _frame_ arriva ad un _router_, questo andrà a leggere anche il 3° header per capire a quale dispositivo interno alla rete va trasmesso il _frame_, intradandolo internamente alla rete verso la destinazione.
 
-La destinazione decodificherà il _frame_ (diverso nel livello _datalink_ modificato dal _router_), leggendone ad uno ad uno gli header, fino a capire qual'è il processo destinatario.
+La destinazione decodificherà il _frame_ (diverso nel livello _datalink_ modificato dal _router_), leggendone ad uno ad uno gli header, fino a capire qual è il processo destinatario.
 Il processo destinatario riceve quindi il messaggio `M`.

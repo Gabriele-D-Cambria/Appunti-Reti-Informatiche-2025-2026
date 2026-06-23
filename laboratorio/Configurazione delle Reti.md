@@ -21,7 +21,7 @@ title: Esercitazione 2
 
 Si dice **rete locale** una rete composta esclusivamente di end-point e di _switch_. Le comunicazioni su rete locale sono composte quindi solamente di informazioni relative ai primi due livelli di comunicazione, non permettendo l'accesso dall'esterno.
 
-Per poter comunicare all'esterno si utilizza un _router_ che permette l'accesso ad internet, poiché analizza le informaizoni di livello 3.
+Per poter comunicare all'esterno si utilizza un _router_ che permette l'accesso ad internet, poiché analizza le informazioni di livello 3.
 
 Per poter comunicare un dato dispositivo necessità di 4 informazioni:
 - Indirizzo `IP`

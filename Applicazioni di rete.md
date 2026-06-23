@@ -135,7 +135,7 @@ Per applicazioni _real-time_, come i _live streaming_ o giochi online, è richie
 
 Alcune app, come ad esempio quelle multimediali o di streaming, per essere efficaci necessitano invece che il _throughput_ rispetti un certo minimo, altre invece, dette **elastiche**, possono utilizzare qualsiasi _throughput_.
 
-Ultimo, ma non meno importante, è invece la **sicurezza** che l'applicazione richiede. Alcune applicazioni infatti maneggiano informaizoni sensibili per i quali vogliamo che i dati siano sempre al sicuro, altre invece che non maneggiano alcuna informazione si possono accontentare di sicurezze minori.
+Ultimo, ma non meno importante, è invece la **sicurezza** che l'applicazione richiede. Alcune applicazioni infatti maneggiano informazioni sensibili per i quali vogliamo che i dati siano sempre al sicuro, altre invece che non maneggiano alcuna informazione si possono accontentare di sicurezze minori.
 
 Una tabella che mostra alcuni requisiti per applicazioni comuni è la seguente:
 
@@ -175,7 +175,7 @@ Non fornisce garanzie sul delay, sul throughput minimo né sulla sicurezza, ma s
 
 Non prevede affidabilità, controllo di flusso e di congestione, di delay, di throughput né di sicurezza.
 
-Anche se sembra che questo servizio sia praticamente inutile e inefficace, questo è ampiamente utilizzato, poiché **_permette comunicazioni delle informaizoni più rapide e semplici_**.
+Anche se sembra che questo servizio sia praticamente inutile e inefficace, questo è ampiamente utilizzato, poiché **_permette comunicazioni delle informazioni più rapide e semplici_**.
 
 </div>
 </div>

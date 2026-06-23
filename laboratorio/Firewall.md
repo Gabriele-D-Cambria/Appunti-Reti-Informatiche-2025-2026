@@ -7,7 +7,7 @@ title: Firewall
 - [1. Indice](#1-indice)
 - [2. Firewall](#2-firewall)
 - [3. netfilter e iptables](#3-netfilter-e-iptables)
-	- [3.1. Tabella `filter`](#31-tabella-filter)
+  - [3.1. Tabella `filter`](#31-tabella-filter)
 - [4. `NAT`](#4-nat)
 - [5. Firewall Stateful](#5-firewall-stateful)
 
@@ -17,7 +17,7 @@ Un _**firewall**_ è un meccanismo di protezione hardware e/o software che perme
 
 Esistono diversi tipi di _firewall_ che operano a diversi livelli:
 - **Network Firewall**: operano nel _network layer_ analizzando gli header `IP`, `TCP` e `UDP`
-- **Host-based Firewall**: fanno _deep packet inspection_ nell'_application layer_, richiedendo però maggiori risorse computazionali. SOno efficaci contro _malware_, _exploit di vulnerabilità note_, _comportamenti dannosi delle applicazioni_, ...
+- **Host-based Firewall**: fanno _deep packet inspection_ nell'_application layer_, richiedendo però maggiori risorse computazionali. Sono efficaci contro _malware_, _exploit di vulnerabilità note_, _comportamenti dannosi delle applicazioni_, ...
 
 Studieremo quindi il **_Network Firewall_**.
 

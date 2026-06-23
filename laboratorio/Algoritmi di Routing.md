@@ -196,7 +196,7 @@ Fin'ora abbiamom fatto una trattazione sul routing puraemntepuramente teorico, d
 
 Nella realtà invece abbiamo **miliardi di destinazioni**, non possiamo quindi salvare tutti gli indirizzi nelle tabelle di _routing_, poiché, oltre a necessitare un ingente disponibilità di memoria, il loro scambio  ingolferebbe i collegamenti.
 
-DObbiamo quindi pensare ad alcuni approcci di scalabilità che permettano comunque un **autonomia amministrativa** all'interno delle singole reti.
+Dobbiamo quindi pensare ad alcuni approcci di scalabilità che permettano comunque un **autonomia amministrativa** all'interno delle singole reti.
 
 L'approccio generale aggrega i router in regioni chiamate **_Autonomus Systems_** (`AS`), detti anche **_domains_**.
 
@@ -259,7 +259,7 @@ Il protocollo fornisce quindi ad ogni `AS` un mezzo per:
 - Ottenere informazioni sulla raggiungibilità delle reti di destinazioni di `AS` vicini, attraverso l'_external BGP_ (`eBGP`)
 - Determinare le rotte per altre reti basandosi su informazioni di raggiungibilità e _policy_
 - Propagare informazioni di raggiungibilità a tutti i router nell'`AS`, attraverso l'_internal BGP_ (`iBGP`)
-- Pubblicizzare alle reti vicine le informaizoni di raggiungibilità delle destinazioni
+- Pubblicizzare alle reti vicine le informazioni di raggiungibilità delle destinazioni
 
 In una `BGP session` due router `BGP` si scambiano messaggi `BGP` su **connessioni `TCP` semi-permanenti**, con i quali pubblicizzano i _path_ verso diverse sottoreti di destinazione che sono in grado di raggiungere.
 

@@ -15,9 +15,9 @@ title: Reti a Commutazione di pacchetto
 
 # 2. Reti a Commutazione di Pacchetto
 
-Esistono diverse topologie di topologie per le reti a commutazione di pacchetto.
+Esistono diverse tipologie di topologie per le reti a commutazione di pacchetto.
 
-L'esempio più semplice è quello dell'_**ethernet hub**_. L'_hub_ è un dispositivo di livello fisico analogo a tutti gli effetti ad un ripetitore di segnale. Non permette il _frame buffering_, non fa controlli `CSMA/CD` e inoltre non fa nemmeno _packet switching_, ma si limita a ritrasmettere i messaggi **verso tutte le uscite**.
+L'esempio più semplice è quello dell'_**ethernet hub**_. L'_hub_ è un dispositivo di livello fisico analogo a tutti gli effetti ad un ripetitore di segnale. Non permette il _frame buffering_, non fa controlli `CSMA/CD` e inoltre non fa nemmeno _packet switching_, ma si limita a ritrasmettere i messaggi **verso tutte le interfacce diverse da quella di entrata**.
 
 Dall'_hub_ ci siamo evoluti introducendo l'**_ethernet switch_**. Lo _switch_ non solo permette il _frame buffering_, ma permette anche di effettuare _packet switching_, controllando il destinatario del messaggi e propagando quest'uiltimo **solo nel link corretto**. Per fare ciò lo _switch_ deve essere in grado di conservare i _frame_ attraverso un _buffer_.
 
@@ -29,7 +29,7 @@ Inoltre lo _switch_ è un dispositivo **plug-and-play** _self-learning_.
 <div class="grid2">
 <div class="">
 
-Ogni _host_ ha una **connessione dedicata** verso lo _switch_, ognuna amministrata con il **protocollo ethernet**.
+Ogni _host_ ha una **connessione dedicata** verso lo _switch_ amministrata con il **protocollo Ethernet**.
 
 Poiché ogni link è indipendente, il massimo numero di trasmissioni con $N$ nodi e uno switch è di $\frac{N}{2}$.
 
@@ -73,10 +73,10 @@ Seguendo l'approccio degli _switch_ è possibile amppliare le reti collegando tr
 
 <img class="" src="./images/psn/interconnected-switches-example.png">
 
-Bisogna porre particolare attenzione al fatto che _switch_ e _router_ sono **due dispositivi diversi** che **operano a livelli diversi**.s
+Bisogna porre particolare attenzione al fatto che _switch_ e _router_ sono **due dispositivi diversi** che **operano a livelli diversi**.
 
 Lo _switch_, lavorando al livello di _link_, implementa i livelli 1 e 2, controllando il _frame_ e gli indirizzi `MAC`.
-Gli switch lavorano al livello di _network_, implementando anche il livello 3, controllando quindi il _datagram_ e gli indirizzi `IP`.
+I _router_ lavorano invece al livello di _network_, implementando anche il livello 3 e controllando il _datagram_ e gli indirizzi `IP`.
 
 <figure class="">
 <img class="100" src="./images/psn/IP-subnet-example.png">
@@ -121,7 +121,7 @@ Per ovviare a qesti problemi sono state introdotte le `VLAN` (_Virtual-LAN_). Le
 
 L'introduzione delle `VLAN` introduce però altri problemi _amministrativi_. Se ad esempio un utente di un dominio di _broadcast_ si dovesse **fisicamente spostare attaccandosi ad uno switch di un altro dominio**, vorrebbe comunque essere **_logicamente connesso allo switch del suo dominio, non a quello attuale_**.
 
-<img class="" src="./images/psn/VLAN-domain-scheme.png">
+<img class="" src="./images/psn/VLAN-domain-example.png">
 
 <div class="grid2">
 <div class="">
@@ -135,16 +135,17 @@ Questo si chiama **_port-based `VLAN`_**, che raggruppa le interfacce di usicta 
 </div>
 
 Questo tipo di `VLAN` permette tre vantaggi principali:
-- **Isolazione del traffico**: i frame relativi alle prime 8 porte possono raggiungere _solo_ le prime 8 porte. È inoltre possibile definire le `VLAN` a seconda dei `MAC address` degli _endpoint_ piuttosto che nelle porte dello _switch_
+- **Isolazione del traffico**: i frame relativi alle prime 8 porte possono raggiungere _solo_ le prime 8 porte. È inoltre possibile definire le `VLAN` a seconda dei `MAC address` degli _endpoint_ piuttosto che delle porte dello _switch_
 - **Membership dinamica**: le porte possono essere assegnate dinamicamente a diverse `VLAN`
 - **Forwarding tra VLAN**: permesso dal _routing_, permette l'introduzione di diversi domini di _broadcast_.
 
-Le comunucazioni tra `VLAN` diverse vengono effettuate inoltrando i messaggi ad un _router_, complicamndo di fatto comunicazioni tra dispositivi magari fisicamente vicini ma con `VLAN` differenti.
+Le comunucazioni tra `VLAN` avvengono come se fossero a tutti gli effetti `LAN` diverse. I messaggi verranno inoltrati al _router_ che si occuperà di cambiare dominio virtuale attraverso una porta dedicata abiiltata al modo _trunk_. Quest'accortezza comporta di fatto che le comunicazioni tra dispositivi magari fisicamente vicini ma con `VLAN` differenti acquisiscano un grado di complessità più elevata.
 
 <div class="grid2">
 <div class="">
 
-Ad un _switch_ potrebbe essere assegnata una `trunk port`, che permette di trasmettere _frame_ tra _switch_ diversi con le stesse `VLAN`
+Per permettere a _switch_ diversi, che collegano le stesse `VLAN`, di scambiarsi informazioni può essere loro assegnata una `trunk port`.
+
 </div>
 <div class="">
 <img class="" src="./images/psn/Vswitch-trunk-port.png">
@@ -153,7 +154,7 @@ Ad un _switch_ potrebbe essere assegnata una `trunk port`, che permette di trasm
 
 <img class="" src="./images/psn/VLAN-frame-format.png">
 
-Al formato ethernet standard  sono aggiunti `2Byre` per l'identificatore di protocollo, `12bit` che identificano l'`ID` della `VLAN` e 3 che ne sanciscono la priorità (come nelle tabelle a livello `IP`).
+Al formato ethernet standard  sono aggiunti `2Byte` per l'identificatore di protocollo, `12bit` che identificano l'`ID` della `VLAN` e 3 che ne sanciscono la priorità (come nelle tabelle a livello `IP`).
 
 ## 2.3. Packet-Switched WAN
 
@@ -167,15 +168,17 @@ Uno _switch_ è collegato con un certo numero variabile di altri _switch_, così
 </figcaption>
 </figure>
 
-Similmente a come accadeva per gli indirizzi `MAC` nelle `LAN`, ogni nodo nelle `WAN` è identificato da un proprio **_indirizzo univoco._**.
+Similmente a come accadeva per gli indirizzi `MAC` nelle `LAN`, ogni nodo nelle `WAN` è identificato da un proprio **_indirizzo univoco_**.
 
-Andiamo a introdurre un **problema di routing**. Adesso infatti sono presenti _più percorsi tra uno switch e un'altro_. Adesso non ci preoccupiamo di questa scelta, e diamo per scontato di conoscerlo.
+Andiamo a introdurre un **problema di routing**, poiché sono presenti _più percorsi tra uno switch e un'altro_ che potrebbero comportare percorsi chiusi nei quali i pacchetti entrerebbero in "loop".
+
+Per ora però ignoriamo temporaneamente questo problema, assumentdo che non provochi alcun effetto non desiderato.
 
 Supposto quindi di conoscere il percorso migliore, vediamo quindi come inoltrare i pacchetti all'interno di questa architettura.
 
 I servizi forniti da questa architettura sono di due tipi:
-- **Connectionless**: ogni pacchetto è gestito individualmente senza nessun tipo di _handshake_. In questo tipo di servizio un pacchetto inviato dopo potrebbe essere instradato diversamente e arrivare prima dei precedenti. È chiamato anche **datagram service**
 - **Connection**: si stabilisce prima un _circuito virtuale_ attraverso un _handshake_. Successivamente tutti i pacchetti seguono lo stesso percorso
+- **Connectionless**: ogni pacchetto è gestito individualmente senza nessun tipo di _handshake_. In questo tipo di servizio un pacchetto inviato dopo potrebbe essere instradato diversamente e arrivare prima dei precedenti. È chiamato anche **datagram service**
 
 ### 2.3.1. Circuito Virtuale
 
@@ -188,9 +191,9 @@ Nelle comunicazioni si hano tre fasi: _setup_, _comunicazione_ e _teardown_.
 <div class="grid2">
 <div class="">
 
-Una _virtual-conneciton_ consiste in:
+Una _virtual-conneciton_ `VC` consiste in:
 1. Un percorso dal trasmettitore al ricevitore
-2. `VC number`, dove ogni numero identifica il `VC` in un link sul perorso. _Potrebbe essere diverso per link diversi, anche se identificano lo stesso percorso_
+2. Un `VC number` che identifica la `VC` assegnata al percorso. _Potrebbe essere diverso per link diversi, anche se identificano lo stesso percorso_
 3. Le entrate nelle _forwarding tables_ nei router sul percorso
 
 Allo stesso modo un pacchetto che viagga sul `VC` possiede l'identificatore di `VC` piuttosto che l'indirizzo di destinazione.
@@ -247,12 +250,10 @@ Si mettono quindi _range di indirizzi_ che via via si amplieranno per _switch_ v
 
 La virtualizzazione delle risorse è una delle astrazioni più potenti all'interno dell'ingegneria dei sistemi.
 
-Ad ora abbiamo visto i concetti di _memoria virtuale_, _dispositivi virtuali_. _LAN virtuali_, _macchine virtuali_
+Ad ora abbiamo visto i concetti di _memoria virtuale_, _dispositivi virtuali_, _LAN virtuali_, _macchine virtuali_, ...
 
 Introduciamo quindi il concetto di **_link virtuale_**.
 
-Il percorso tra un trasmettitore e un ricevitore è trattato _virtualmente_ come un **link punto-punto**.
-Questo è comodo poiché, dal punto di vista del _network layer_ è **inifluente il servizio di comunicazione che sta alla base**.
+Il percorso tra un trasmettitore e un ricevitore è trattato _virtualmente_ come un **link punto-punto**, anche se fisicamente necessita di diversi dispositivi intermedi per creare la connessione.
 
-
-
+Questo ci è comodo poiché ci permette di **ignorare il servizio di comunicazione utilizzato nel _network layer_**, collegando magari aree fisicamente distanti e trattandole come se fossero "ad uno switch di distanza".

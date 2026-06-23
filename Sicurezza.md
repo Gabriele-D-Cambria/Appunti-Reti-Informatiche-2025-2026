@@ -616,7 +616,7 @@ Nei primi due casi la rete interna è connessa a quella esterna attraverso il _r
 
 ### 3.6.1. Stateless Packet Filters
 
-SI effettua un filtro **_sui singoli pacchetti_**, e si prende la decisione in base alle informazioni contenute in esso, come:
+Si effettua un filtro **_sui singoli pacchetti_**, e si prende la decisione in base alle informazioni contenute in esso, come:
 - Indirizzi sorgente e destinatario
 - Sorgente `TCP`/`UDP`, porta di destinazione
 - Tipo di messaggio
