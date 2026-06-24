@@ -1,7 +1,7 @@
 # Appunti Reti Informatiche  A.A. 2025-2026
 
 Questi sono gli appunti del corso Reti Informatiche di 2025-2026 dell'Università di Pisa.
-Per una visualizzazione ottimale con formattazione completa, rendering delle formule matematiche e funzionamento dei link di navigazione, si consiglia di consultare la versione online disponibile su [GitHub Pages](https://github.com/Gabriele-D-Cambria/Appunti-Reti-Informatiche-2025-2026).
+Per una visualizzazione ottimale con formattazione completa, rendering delle formule matematiche e funzionamento dei link di navigazione, si consiglia di consultare la versione online disponibile su [GitHub Pages](https://gabriele-d-cambria.github.io/Appunti-Reti-Informatiche-2025-2026/).
 
 
 ## 📚 Informazioni sul Corso
@@ -10,7 +10,7 @@ Per una visualizzazione ottimale con formattazione completa, rendering delle for
 - **Giuseppe Anastasi**
 	- **Ricevimento:** Mercoledì, ore 15:30 - 18:30 o su TEAMS su appuntamento
 - **Francesca Righetti**
-	- **Ufficio**:Ufficio: 5-049 DII, Largo Lucio Lazzarino 1
+	- **Ufficio**: Ufficio: 5-049 DII, Largo Lucio Lazzarino 1
 	- **Ricevimento:** su TEAMS su appuntamento
 
 - **E-mail:** [giuseppe.anastasi@unipi.it](mailto:giuseppe.anastasi@unipi.it)

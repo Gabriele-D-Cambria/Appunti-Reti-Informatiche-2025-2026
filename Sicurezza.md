@@ -24,14 +24,13 @@ title: Sicurezza
 		- [3.3.1. Handshake](#331-handshake)
 		- [3.3.2. Chiusura](#332-chiusura)
 	- [3.4. TLS](#34-tls)
-	- [3.5. 3.5 Sicurezza a livello Network - `IPsec`](#35-35-sicurezza-a-livello-network---ipsec)
+	- [3.5. Sicurezza a livello Network - `IPsec`](#35-sicurezza-a-livello-network---ipsec)
 		- [3.5.1. Encapsulation Security Protocol - `ESP`](#351-encapsulation-security-protocol---esp)
 	- [3.6. Firewall e IDS](#36-firewall-e-ids)
 		- [3.6.1. Stateless Packet Filters](#361-stateless-packet-filters)
 		- [3.6.2. Stateful Packet Filters](#362-stateful-packet-filters)
 		- [3.6.3. Application Gateways](#363-application-gateways)
 		- [3.6.4. Limiti di firewall e gateway](#364-limiti-di-firewall-e-gateway)
-
 
 # 2. Sicurezza
 
@@ -40,7 +39,6 @@ Il termine sicurezza è molto generico e può intendere diversi aspetti:
 - **Autenticazione**: il trasmettitore deve ricevere la conferma che il destinatario sia davvero tale e non qualcun altro.
 - **Integrità del messaggio**: il trasmettitore vuole che il messaggio non venga alterato (né quando in transito né successivamente) da terzi.
 - **Permessi di accesso e disponibilità**: un dato servizio deve consentire l'accesso e la disponibilità agli utenti
-
 
 <img class="" src="./images/ns/intruder-simple-scheme.png">
 
@@ -77,14 +75,12 @@ Prima di poter accedere al messaggio $m$ deve riuscire a decifrarlo in qualche m
 Per valutare un algoritmo di cifratura si misura **_quanto è facile decifrarlo senza avere la chiave_**.
 
 Esistono due approcci attraverso i quali è possibile decifrare un messaggio senza la chiave:
-- **Brute Force**: prova **_tutte le chiavi possibili_** finché non trova quella corretta
-- **Analisi statistica**: si effettuano delle analisi sia sui messaggi che sugli utenti che scambiano i messaggi per recuperare pattern sui quali basarsi per recuperare la chiave.
+- **Brute Force**: prova **_tutte le chiavi possibili_** finché non trova quella corretta.
+- **Analisi statistica**: si effettuano delle analisi sia sui messaggi che sugli utenti per recuperare pattern sui quali basarsi per recuperare la chiave.
 
 ### 2.1.1. Crittografia a chiave simmetrica
 
-In questo assioma crittografico sia `Alice` che `Bob` possiedono **_la stessa chiave_** $K_S$ (per questo si dice simmetrica).
-
-Per decidere la chiave comune si utilizza un cifrario.
+In questo assioma crittografico sia `Alice` che `Bob` possiedono **_la stessa chiave_** $K_S$ (per questo si dice simmetrica), decisa a partire da un _cifrario_.
 
 Il più semplice cifrario è quello di **sostituzione**:
 > Si sostituisce un carattere con un altro
@@ -92,25 +88,24 @@ Il più semplice cifrario è quello di **sostituzione**:
 Un cifrario monoalfabetico sostituisce una lettera con un altra. Dato il semplice `plaintext: abcdefghijklmnopqrstuvwxyz` si può tradurre con il testo cifrato `ciphertext: mnbvcxzasdfghjklpoiuytrewq`.
 
 In questo caso:
-```plaintext
+```snippets
 bob. i love you. alice
 ```
 
 Diventa:
-```plaintext
+```snippets
 nkn. s gktc wky. mgsbc
 ```
 
 La chiave di cifratura è quindi **_mappata da un set di 26 lettere per mappare 26 lettere_**, ottenendo $26! - 1$ possibili chiavi.
 
-
-Un altro algoritmo più complesso è l'algoritmo a _$n$ cifrari di sostituzioni__
+Un altro algoritmo più complesso è l'algoritmo a $n$ **cifrari di sostituzioni**:
 > Per ogni simbolo si effettua una sostituzione seguendo un diverso cifrario.
-> Il cifrario da utilizzare è otenuto a partire dalla posizione del carattere. La lettera alla posizione $i$ utilizzerà il cifrario alla posizione $i \% n$ nel _cycling pattern_
+> Il cifrario da utilizzare è ottenuto a partire dalla posizione del carattere. La lettera alla posizione $i$ utilizzerà il cifrario alla posizione $i \% n$ nel _cycling pattern_
 
-Dati $n$ cifrari con il seguente _cycling pattern_: $M_1, M_3, M_4, M_3, M_2$, cifrare una parola come `dog` verrà cifrata come : $M_1(d)M_3(o)M_4(g)$.
+Dati $n$ cifrari con il seguente _cycling pattern_: $M_1, M_3, M_4, M_3, M_2$, cifrare una parola come `dog` verrà cifrata come: $M_1(d)M_3(o)M_4(g)$.
 
-In questo caso la chiave corrisponde prorpio al **numero di cifrari** e al _cyclic pattern_ utilizzato.
+In questo caso la chiave corrisponde proprio al **numero di cifrari** e al _cyclic pattern_ utilizzato.
 
 Questi tipi di cifrari soffrono del problema che nella lingua molte parole sono _standard_ nei discorsi, così come il numero di parole sensate composte da poche lettere sono poche, ed è quindi possibile decifrare almeno quelle poche parole.
 
@@ -137,17 +132,17 @@ Una challenge di decriptazione dimostrò che per decriptare la chiave in _brute 
 
 Allora si passò al `3DES` che critpa tre volte un messaggio con tre diverse chiavi.
 
-Dal 2001 lo standard è diventato l'`AES`, che processa dati in blocchi di `128bit` utilizzando chiavi di `128`, `192` o `256 bit` .
+Dal 2001 lo standard è diventato l'`AES`, che processa dati in blocchi di `128 bit` utilizzando chiavi di `128`, `192` o `256 bit`.
 
-È stato dimostrato che per decifrare in _brute force_ un messaggio che con il `DES` ci vuole un `1s` ci vuole circa _**149 trilioni di anni**_, basandosi sulla tecnologia dell'epoca.
+È stato dimostrato che decifrare in _brute force_ un messaggio, che se cifrato con `DES` impiegherebbe 1 secondo, necessita di circa _**149 trilioni di anni**_, basandosi sulla tecnologia dell'epoca.
 
 #### 2.1.1.1. Trasmissione della chiave
 
-Dobbiamo capire come permettere a due entità di scambiarsi la chiave in modo sicuro.
+Il problema diventa quindi quello di capire come permettere a due entità di scambiarsi la chiave in modo sicuro.
 
-Il metodo più semplice sarebbe quello di permettere ai due personaggi di incontrarsi di persona , cosa però non sempre possibile.
+Il metodo più semplice sarebbe quello di permettere ai due personaggi di incontrarsi di persona, cosa però non sempre possibile.
 
-Un altro modo potrebbe essere quello di utilizzare una **_crittografia a chiave pubblica_**, ma vedremo più avanti che ha poco senso logico.
+Un altro modo potrebbe essere quello di utilizzare una **_crittografia a chiave pubblica_**, ma vedremo più avanti che ha poco senso logico utilizzare un tipo di cifratura per instaurarne un altro, se non quello di voler ottimizzare i tempi di computazione dei messaggi cifrati.
 
 Il terzo approccio è quello di utilizzare un `KDC` (_Key Distribution Center_), un entità distribuita terza fidata che permette di fare da intermediario tra le entità.
 
@@ -155,11 +150,10 @@ Quando un entità $i$ si registra presso un `KDC` ottiene una chiave $K_{i-KDC}$
 
 Quando si vuole comunicare con un nuovo utente $j$, si invia una richiesta cifrata al `KDC`: $K_{i-KDC}(i, j)$.
 Questo risponde con un messaggio cifrato con $K_{i-KDC}$ contenente:
-- **_chiave di sessione_** $R_1$:  è una chiave a tempo che andrà utilizzata da $i$ e $j$
-- **_tiket_**: un _**messaggio cifrato con $K_{j-KDC}$**_ contenente informazioni sul mittente $i$ e la chiave di sessione $R_1$
+- **_Chiave Di Sessione_** $R_1$:  è una chiave a tempo che andrà utilizzata da $i$ e $j$
+- **_Ticket_**: un _**messaggio cifrato con $K_{j-KDC}$**_ contenente informazioni sul mittente $i$ e la chiave di sessione $R_1$
 
-A questo punto $i$ deve occuparsi di **inoltrare così com'è il tiket a $j$**.
-Quando $j$ la riceve è in grado di decifrarla poiché utilizza la propria chiave e otterrà informazioni su $i$ e la **_nuova chiave da utilizzare per le comunicazioni con $i$_**.
+A questo punto $i$ deve occuparsi di **inoltrare così com'è il ticket a $j$**, così che quando $j$ la riceverà potrà ottenere le informazioni su $i$ e sulla **_nuova chiave da utilizzare per le comunicazioni_**. Utilizzando la propria chiave $K_{j-KDC}$ infatti riesce a decifrare il messaggio in quanto, come vedremo dopo, $K(K(m)) = m$.
 
 ### 2.1.2. Crittografia a chiave pubblica
 
@@ -177,8 +171,10 @@ La crittografia a chiave pubblica, detta `RSA` (_Rivest, Shamir, Adelson algorit
 
 Inoltre `RSA` richiede delle chiavi $K^+$ e $K^-$ tali che:
 $$
+\begin{matrix}
 	K^-(K^+(m)) = m = K^+(K^-(m))\\
 	K^- \not\propto K^+
+\end{matrix}
 $$
 
 Per ottimizzare al meglio le comunicazioni in caso di messaggi grossi si utilizza un metodo ibrido con la **_chiave di sessione_** $K_S$:
@@ -187,13 +183,11 @@ Per ottimizzare al meglio le comunicazioni in caso di messaggi grossi si utilizz
 
 ## 2.2. Integrità della comunicazione
 
-L'**integrità della comunicazione**, nota anche come _autenticazione dei mesasaggi_, permette di essere sicuro che i messaggi:
-- Avere la certezza che il mittente dei messaggi sia chi dice di essere
-- Avere la certezza che il messaggio non sia stato manomesso in alcun modo durante il transito
+L'**integrità della comunicazione**, nota anche come _autenticazione dei mesasaggi_, permette di avere la certezza che:
+- Il mittente dei messaggi sia chi dice di essere
+- Il messaggio non sia stato manomesso in alcun modo durante il transito
 
-Prendiamo il caso più semplice, ovvero un singolo messaggio.
-
-Prima di parlare di come viene garantita l'integrità della comunicazione, ripassiamo le _funzioni hash_.
+Per capire come viene garantita l'integrità della comunicazione, ripassiamo le _funzioni hash_.
 
 ### 2.2.1. Funzioni Hash
 
@@ -238,7 +232,7 @@ Se `H(m+s) == h` allora concluderà che tutto è andato bene.
 </div>
 </div>
 
-Lo standard più popolare di `MAC` oggi in utilizzo è `HMAC [RFC 2104]` che dopo aver generato `(m, H(m+s))` performa un ulteriore hash per inviare `H(m, H(m+s))`.
+Lo standard più popolare di `MAC` oggi in utilizzo è `HMAC [RFC 2104]` che dopo aver generato `(m, H(m+s))` performa un ulteriore hash per poi inviare `(m, H(m, H(m+s)))`.
 
 #### 2.2.2.1. Attacco Playback e OTP
 
@@ -246,20 +240,21 @@ Lo standard più popolare di `MAC` oggi in utilizzo è `HMAC [RFC 2104]` che dop
 
 Inizialmente si **copiano i messaggi che `Alice` invia** e si salvano localmente.
 
-Successivamente si **inoltrano questi messaggi a `Bob`**.
+Successivamente si **inoltrano questi messaggi a `Bob`** senza modificarli, così da passare il controllo del `MAC`.
 
-Questi messaggi, poiché non sono manomessi, passano il controllo del `MAC`, e possono essere dannosi. Infatti se venisse intercettata una richiesta di bonifico, questa potrebbe essere inoltrata ripetutamente da parte di `Trudy`.
+Seppur non manomessi, questi messaggi possono comunque essere dannosi: se venisse intercettata ad esempio una richiesta di bonifico, questa potrebbe essere inoltrata ripetutamente da parte di `Trudy`.
 
 Questo tipo di attacchi sfruttano una vulnerabilità di `MAC`, il fatto che **_si verifica chi produce il messaggio, ma non chi lo invia_**.
-Infatti non vi sono verifiche di "freschezza" del messaggio, quindi che sia passato "poco tempo" tra la creazione del messaggio con l'invio del messaggio con la ricezione di esso.
+Infatti non vi sono verifiche di "freschezza" del messaggio, quindi che sia passato "poco tempo" tra la creazione, l'invio e la ricezione di esso.
 
 Esistono diversi modi per implementare questo livello di sicurezza, uno ad esempio è quelle delle _One-Time-Password_, ovvero `OTP`.
 
-A partire da un _seed_ si generano pseudocasualmente ogni `x` secondi un nuovo codice `c`.
-Quando un utente invia il messaggio si inserisce in `m + s` anche questo codice `R` provvedendo a fare l'_hashing_ di `H(m+s+R)`.
-Chi riceve il messaggio provvederà anche lui a effettuare l'_hash_ di `m+s+R`, avendo accesso **_al medesimo codice in quell'istante_**.
-Se i due combaciano allora si ha la certezza che:
-- Chi ha generato il messaggio è chi ha dett odi essere, poiché condividiamo lo stesso `s`
+A partire da un _seed_ si genera pseudocasualmente ogni `x` secondi un nuovo codice `R`. Quando un utente invia il messaggio si inserisce in `m + s` anche questo codice `R` provvedendo a fare l'_hashing_ di `H(m+s+R)`.
+
+Chi riceve il messaggio provvederà anche lui a effettuare l'_hash_ di `m+s+R`. Il codice `R` del destinatario sarà _**uguale a quello del destinatario in ogni istante**_, in quanto i due condividono _seed_ e tempi di generazione.
+
+Se i due _hash_ combaciano allora si ha la certezza che:
+- Chi ha generato il messaggio è chi ha detto di essere, poiché condividiamo lo stesso `s`
 - Chi ha inviato il messaggio lo ha fatto nell'ultima "finestra dell'`OTP`", poiché hanno utilizzato lo stesso `R` generato da un algoritmo pseudocasuale nello stesso istante.
 
 ### 2.2.3. Firme Digitali
@@ -283,8 +278,8 @@ $$
 $$
 
 Notiamo ora il motivo. Infatti:
-- $K^-(K^+(m)) = m$ permette la lettura di un messaggio ricevuto da un altro utente che conosceva la nostra _chiave pubblica_.
-- $m = K^+(K^-(m))$ permette invece la verifica che un utente abbia firmato un documento decifrando questa firma con la sua _chiave pubblica_ e verificando che combaci con il messaggio.
+- $K^-(K^+(m)) = m$ &emsp; permette la lettura di un messaggio ricevuto da un altro utente che conosceva la nostra _chiave pubblica_.
+- $m = K^+(K^-(m))$ &emsp; permette invece la verifica che un utente abbia firmato un documento decifrando questa firma con la sua _chiave pubblica_ e verificando che combaci con il messaggio.
 
 La verifica infatti dimostra che **_chi ha firmato ha utilizzato la chiave privata della persona per la quale si è spacciato_**.
 Così possiamo dimostrare che:
@@ -292,7 +287,7 @@ Così possiamo dimostrare che:
 - Nessun altro ha firmato il documento
 - `Bob` ha firmato proprio `m` e non un altro documento diverso.
 
-Tuttavia avevamo anche detto che la crittografia di grandi messaggi richiede tanto _overhead_. Per risolvere ciò quello che si fa è **_firmare il digest della funzione di hash ottenuto dal messaggio_**.
+Tuttavia avevamo anche detto che la crittografia di grandi messaggi richiede tanto _overhead_. Per risolvere ciò quello che si fa è **_firmare il digest della funzione di hash ottenuto dal messaggio_**, ovvero un hash di dimensione fissata ottenuto dal testo del messaggio originale utilizzando una funzione nota.
 In questo modo abbiamo le garanzie della _crittografia della chiave pubblica_, ottimizzando le dimensioni attraverso le funzioni di _hash_.
 
 Di seguito possiamo vedere come può avvenire l'invio e la ricezione di un messaggio.
@@ -328,8 +323,7 @@ La verifica che la firma digitale sia autentica si verifica attraverso la **_chi
 </div>
 </div>
 
-A questo punto quando un utente vuole avere la chiave pubblica di un entità può richiedere direttamente alla `CA` la chiave pubblica dell'entità.
-
+A questo punto quando un utente vuole avere la chiave pubblica di un entità può richiederela direttamente alla `CA`.
 
 ## 2.3. Autenticazione
 
@@ -342,17 +336,22 @@ Per avere la certezza che chi sta comunicando delle informazioni è necessario a
 
 Un primo esempio è quello di una **password**, utilizzato nella posta elettronica per tanti anni, in quanto solo chi la crea ne è a conoscenza.
 
-Il problema era che questo messaggio però viaggiava **_in chiaro_**, e quindi poteva essere tranquillamente _sniffato_ (intercettato) da terzi che poteva riutilizzarlo, nei già nominati _attacchi playback_.
+Il problema che però si aveva agli albori di internet era che questo messaggio _**viaggiava in chiaro**_, pronto per essere tranquillamente _sniffato_ (intercettato) da terzi che potevano riutilizzarlo nei già nominati _attacchi playback_.
 
-Possiamo quindi pensare di **_cifrare la password_**, ma anche questa è _sniffabile_, infatti non ci interessa la password vera e propria, ma il suo _hash_.
+Anche **_cifrare la password_** soffre dello stesso problema di _sniffing_, dato proprio che non interessa la password vera e propria, ma il suo _hash_.
 
 La soluzione può quindi essere quella di utilizzare un `OTP` e la _cifratura a chiave pubblica_.
 
-Quando ci si autentica ad un altra entità, questa risponde con un `OTP` $R$.
-Successivamente dovremo reinviarlo cifrandolo con la nostra **_chiave privata_** $K^-(R)$ e inviando la nostra chiave pubblica $K^+$.
-L'entità verificherà la chiave pubblica, e verificherà che $K^+(K^-(R)) = R$, e che quindi siamo chi diciamo di essere.
+Quando ci si autentica ad un altra entità, questa risponde con un `OTP` $R$. Successivamente sarà nostro compito rispondere con un messaggio che contiene:
+- L'`OTP` cifrato con la nostra **_chiave privata_** $K^-(R)$
+- La nostra chiave pubblica $K^+$.
 
-Anche questo metodo ha delle vulnerabilità, in particolare un utente terzo può infatti fare da _middlemen_ nella comunicazione fingendosi `B` con `A` e `A` con `B`.
+
+L'entità quindi si occuperà di verificare:
+- La chiave pubblica alla `CA`
+- Che $K^+(K^-(R)) = R$
+
+Anche questo metodo ha delle vulnerabilità, in particolare un utente terzo può infatti fare da _middlemen_ nella comunicazione fingendosi `B` con `A` e `A` con `B`. Non vediamo però come risolvere questo problema.
 
 # 3. Implementare la sicurezza
 
@@ -362,17 +361,17 @@ Vediamo quindi alcuni modi per implementare la sicurezza.
 
 ## 3.1. Sicurezza a Livello Applicazione
 
-Se abbiamo un applicazione _client_/_server_ che deve comunicare in maniera riservata, dobbiamo poter utilizzare una funzione come la `send` fornita dalla `socket API` che però implementa nativamente anche la sicurezza.
+Se abbiamo un applicazione _client_/_server_ che deve comunicare in maniera riservata, dobbiamo poter utilizzare una funzione come la `send` fornita dalla `socket API` per permettere queste comunicazioni e trovare un modo per proteggerle. In realtà la funzione `send` della `socketAPI` implementa nativamente anche la sicurezza.
 
-Queste funzioni si trovano nella libreria `pgp` (_Pretty-Good-Privacy_), disponibile pubblicamente su internet.
+In generale però questo tipo di funzioni si trovano nella libreria `pgp` (_Pretty-Good-Privacy_), disponibile pubblicamente su internet.
 All'interno della libreria sono definite tutte una serie di funzioni che permettono di **_garantire la confidenzialità_**.
 
-`pgp` implementa una tecnica di crittografia ibrida tra chiave simmetrica e chiave pubblica.
+In particolare, `pgp` implementa una tecnica di crittografia ibrida tra chiave simmetrica e chiave pubblica.
 
 <div class="grid2">
 <div class="">
 
-Per garantire la confidenzialità si genera una chiave di sessione che cifra il messaggio. Successivamente, **_nello stesso pacchetto_**, si cifra la chiave di sesione attraverso la chive pubblica del destinatario.
+Per garantire la confidenzialità si genera una **Chiave Di Sessione** $K_S$ che cifra il messaggio. Successivamente, **_nello stesso pacchetto_**, si cifra la chiave di sessione attraverso la chive pubblica del destinatario.
 
 Quando il destinatario riceverà il messaggio decifra la chiave di sessione con la propria chiave privata, e utilizza questa per decifrare il messaggio.
 
@@ -380,7 +379,7 @@ A questo punto i due, qualora continuassero a comunicare, possono direttamente u
 
 </div>
 <div class="">
-<img class="" src="./images/ns/email-confidentiality.png">
+<img class="70" src="./images/ns/email-confidentiality.png">
 </div>
 <div class="">
 
@@ -393,7 +392,7 @@ Il mittente firmerà digitalmente il messaggio inviando un pacchetto contenente:
 Il destinatario decifrerà il messaggio utilizzando la chiave pubblica del mittente e confronterà l'_hash_ decifrato con quello generato.
 </div>
 <div class="">
-<img class="" src="./images/ns/email-integrity-and-auth.png">
+<img class="70" src="./images/ns/email-integrity-and-auth.png">
 </div>
 </div>
 
@@ -419,11 +418,11 @@ Prima di `TLS` era utilizzato il protocollo `SSL` (_Secure Socket Layer_) che pe
 
 Vediamo adesso una versione semplificata del protocollo `TLS`.
 
-Sicuramente avremo questi passaggi:
-- **handshake**: gli _host_ utilizzano i propri certificati e chiavi private per autenticarsi l'un l'altro e scambiarsi/creare una chiave simmetrica
-- **key derivation**: gli _host_ utilizzano la chiave simmetrica per _recuperare altre chiavi_, come il _segreto_
-- **data transfer**: si ha lo scambio di dati come uno _stream di record_ diviso in _record_
-- **chiusura della connessione**: si inviano dei messaggi speciali per chiudere la connessione in maniera sicura
+Questo protocollo semplificato comprende i seguenti passaggi del protocollo completo:
+1. **Handshake**: gli _host_ utilizzano i propri certificati e chiavi private per autenticarsi l'un l'altro e scambiarsi/creare una chiave simmetrica
+2. **Key Derivation**: gli _host_ utilizzano la chiave simmetrica per _recuperare altre chiavi_, come il _segreto_
+3. **Data Transfer**: si ha lo scambio di dati come uno _stream di record_ diviso in _record_
+4. **Chiusura Della Connessione**: si inviano dei messaggi speciali per chiudere la connessione in maniera sicura
 
 ### 3.3.1. Handshake
 
@@ -449,6 +448,8 @@ Quando entrambi avranno lo stesso $MS$ si generano quattro chiavi:
 - $K_S$: chaive di cifraggio per i dati inviati dal server al client
 - $M_S$: chiave MAC per i dati inviati dal server al client
 
+<small>(La chiave MAC coincide con il <em>secret</em> nominato precedentemente)</small>
+
 Queste chiavi vengono generati attraverso una funzione di derivazione di chiavi (`KDF`) che utilizza come _seed_ il $MS$ e altri dati per generare le chiavi.
 
 Per cifrare i dati inviati all'interno di un flusso si divide il flusso in una serie di _record_ composti da:
@@ -461,12 +462,12 @@ Ogni record viene quindi cifrato utilizzando la chiave simmetrica e solo dopo vi
 Questi record sono susciettibili a attacchi di _re-ordering_ da un eventuale _man-in-the-middle_ e a attacchi di _replay_.
 
 Per proteggere questi record quello che si fa è:
-- Generare il `MAC` anche a partire dal numero di sequenza del `TLS` per proteggere dal _re-ordering_
+- Non unsare un singolo `MAC`, ma rigenerarlo per ogni record a partire dal numero di sequenza del `TLS` per proteggere dal _re-ordering_
 - Utilizzare un `nonce` (come la 2FA) per proteggere da attacchi di _replay_.
 
 ### 3.3.2. Chiusura
 
-Per evitare attacchi di tipo _truncation_, nei quale un agressore crea un finto messsaggio di chiusura terminando la connessione tra gli host, si rende sicuro anche il messaggio di chiusura.
+Per evitare attacchi di tipo _truncation_, nei quale un aggressore crea un finto messsaggio di chiusura terminando la connessione tra gli host, si rende sicuro anche il messaggio di chiusura.
 
 In particolare si inserisce nei vari record un nuovo campo **types** che è settato a `0` se il record scambia dati o `1` se è un record di chiusura.
 
@@ -494,7 +495,7 @@ Per far si che server e client concordino sulla _suite_ da utilizzare, il client
 
 Il server allora scelgierà tra le _suite_ proposte dal client (tipicamente il server le conosce tutte) rispondendo con il proprio certificato e il proprio nonce per garantire che questi messaggi di scambio, che ricordiamo essere mandati in chiaro, non siano stati manipolati.
 
-## 3.5. 3.5 Sicurezza a livello Network - `IPsec`
+## 3.5. Sicurezza a livello Network - `IPsec`
 
 Il protocollo `IP sec` permette di fornire cifrature a livello _datagram_ per garantire autenticazione, identità e confidenzialità sia per il traffico dell'utente che per il controllo del traffico.
 
@@ -518,12 +519,12 @@ Quando questo messaggio arriverà ad al _gateway router_ del _branch office_ o a
 
 </div>
 <div class="">
-<img class="" src="./images/ns/VPN-scheme.png">
+<img class="70" src="./images/ns/VPN-scheme.png">
 </div>
 </div>
 
 Esistono due principali protocolli che permettono l'`IPsec`:
-- **Authentication Header Protocol** (`AH`): fornisce autenticazione della sorgente e integrità dei dati, ma non implementa la confidenzialità della comunicazione. È definito in `[RFC 4302]`
+- **Authentication Header Protocol** (`AHP`): fornisce autenticazione della sorgente e integrità dei dati, ma non implementa la confidenzialità della comunicazione. È definito in `[RFC 4302]`
 - **Encapsulation Security Protocol** (`ESP`): fornisce autenticazione del sorgente, integrità dei dati e confidenzialità della comunicazione sfruttando il _tunneling_. È definito in `[RFC 4303]`.
 
 Tra i due quello più ampiamente utilizzato è `ESP`.
@@ -533,7 +534,7 @@ Tra i due quello più ampiamente utilizzato è `ESP`.
 <div class="grid2">
 <div class="">
 
-`IPsec` introduce la _**security association**_ (`SA`), ovvero una associazione per garantire i servizi di sicurezza tra due punti (tipicamente tra _gateway routers_) in modo unidirezionale.
+`IPsec` introduce la _**Security Association**_ (`SA`), ovvero una associazione per garantire i servizi di sicurezza tra due punti (tipicamente tra _gateway routers_) in modo unidirezionale.
 Per ottenere una comunicazione bidirezionale si avranno due `SA`.
 
 `IPsec` è quindi un protocollo _connection-oriented_, a differenza di `IP` che è _connectionless_.
@@ -544,7 +545,7 @@ Per ottenere una comunicazione bidirezionale si avranno due `SA`.
 </div>
 </div>
 
-Per funzionare la `SA`, sia il router `R1` che il router `R2` devono mantenere alcune informazioni:
+Per rendere operativa la `SA`, sia il router `R1` che il router `R2` devono mantenere alcune informazioni:
 - **Security Parameter Index** (`SPI`): identificatore a `32bit` della `SA`
 - Interfaccia di origine della `SA`
 - Interfaccia di destinazione della `SA`
@@ -553,7 +554,7 @@ Per funzionare la `SA`, sia il router `R1` che il router `R2` devono mantenere a
 - Tipo di check di integrità utilizzato
 - Chiave di autenticazione
 
-Queste informazioni sono utilizzate da `R1` per cifrare i messaggi uscenti e da `R2` per decifrarli.
+Queste informazioni sono utilizzate da `R1` per cifrare i messaggi uscenti e da `R2` per decifrarli (e viceversa).
 
 <div class="grid2">
 <div class="">
@@ -612,7 +613,7 @@ Esistono tre tipi di _firewall_:
 - **_Stateful Packet Filters_**
 - **_Application Gateways_**
 
-Nei primi due casi la rete interna è connessa a quella esterna attraverso il _router firewall_
+Nei primi due casi la rete interna è connessa a quella esterna attraverso il _router firewall_.
 
 ### 3.6.1. Stateless Packet Filters
 
