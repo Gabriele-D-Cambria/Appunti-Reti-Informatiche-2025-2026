@@ -254,7 +254,7 @@ Se immaginiamo il **packet-switching** invece la probabilità che più di 10 per
 
 Gli _host_ si connettono ad internet tramite l'accesso fornito da un **Internet Service Provider** (`ISP`), che può fornire il servizio sia a livello residenziale che a livello aziendale.
 
-I vari `ISP` devono essere però interconnessi, affinché le comunicazioni possano avvenire in maniera trasversale. CIò crea una rete di reti molto complessa, influenzata anche da motivi economici e politiche nazionali.
+I vari `ISP` devono essere però interconnessi, affinché le comunicazioni possano avvenire in maniera trasversale. Ciò crea una rete di reti molto complessa, influenzata anche da motivi economici e politiche nazionali.
 
 La struttura finale di internet di oggi assomiglia a qualcosa del genere:
 

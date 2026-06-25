@@ -196,7 +196,7 @@ Nel caso più semplice, un server web è in esecuzione su **una macchina con un 
 
 In questo caso, per avere $n$ siti web saranno necessarie $n$ macchine, utilizzando quindi tantissime risorse.
 
-COn il _**name-based Virtual Hosting**_ si possono configurare più siti **_sullo stesso server Web_**, sulla stessa macchina con lo stesso indirizzo IP.
+Con il _**name-based Virtual Hosting**_ si possono configurare più siti **_sullo stesso server Web_**, sulla stessa macchina con lo stesso indirizzo IP.
 
 Il server Web discrimina le richieste dei _client_ in base al campo `Host` della richiesta `HTTP`:
 ```log
