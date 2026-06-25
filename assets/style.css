@@ -351,8 +351,8 @@ mjx-container.MathJax {
 
 /* Compensazione per header fisso */
 body {
-    padding-top: 4rem;
     padding: 1em;
+    padding-top: 4rem !important
 }
 
 .site-nav {

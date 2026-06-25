@@ -512,7 +512,7 @@ Le reti cellulari sono la soluzione per la fornitura di internet in reti `WAN` w
 Infatti la tecnologia `4G` è utilizzata per il $97\%$ del tempo in Corea e più del $90\%$ negli Stati Uniti.
 
 <div class="grid2">
-<div class="">
+<div class="top">
 <p class="p">Similitudini con Internet Cablato</p>
 
 ---
@@ -524,7 +524,7 @@ Inoltre è anch'essa una _rete di reti_, e sfrutta molti protocolli che abbiamo 
 È connesso all'internet cablato.
 
 </div>
-<div class="">
+<div class="top">
 <p class="p">Differenze con Internet Cablato</p>
 
 ---
