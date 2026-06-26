@@ -729,7 +729,7 @@ La primitiva `fork()` duplica un processo restituendo:
 
 Quando un processo viene duplicato, il padre e il figlio si ritrovano **_gli stessi descrittori duplicati_**.
 
-Ogniuno deve quindi **_chiudere il descrittore che non usa_**, per evitare di mantenere aperte risorse non necessarie.
+Ognuno deve quindi **_chiudere il descrittore che non usa_**, per evitare di mantenere aperte risorse non necessarie.
 In particolare:
 - Il padre chiude il descrittore del socket connesso al _client_
 - Il figlio chiude il descrittore del socket in ascolto

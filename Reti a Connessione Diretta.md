@@ -159,15 +159,16 @@ Questo algoritmo è spiegato in dettaglio all'interno del `RFC 1071`.
 
 Il `CRC` (_Cycilc Redundancy Check_) è l'algoritmo di _error detection_ più potente.
 
-Introduciamo un nuovo parametro:
-- `G`: _Generator_, bit pattern dato di $r+1$ bit tale per cui il `MSD = 1`
+Per funzionare introduce un nuovo parametro detto _Generator_ `G`. Questo rappresenta un _bit pattern_ di $r+1$ bit **noto** tale per cui la sua `MSD = 1`
 
-L'obiettivo di questo algoritmo è di scegliere $r$ `CRC` bit `R` tali che $\langle D, R\rangle = D\cdot 2^r \text{XOR} R$ sia esattamente divisibile per `G` in modulo 2.
+L'obiettivo di questo algoritmo è quello di scegliere $r$ `CRC` bit `R` tali che $\langle D, R\rangle = D\cdot 2^r \text{ XOR } R$ sia esattamente divisibile per `G` in modulo 2.
 
 In altre parole:
 $$
+\begin{matrix}
 	D \cdot 2^r \text{ XOR } R = nG \\
 	D \cdot 2^r = nG \text{ XOR } R
+\end{matrix}
 $$
 
 <div class="grid2">
@@ -184,7 +185,8 @@ $$
 
 Ed effettuiamo la divisione $D \cdot 2^r \over G$. Il resto di questa operazione sarà proprio `R`, mentre il quoziente sarà `n`.
 
-La sequenza trasmessa sarà quindi: `<D, R> = 101 110 011`
+La sequenza trasmessa sarà quindi: `<D, R> = <101 110, 011>`
+
 </div>
 <div class="">
 <img class="" src="./images/drn/CRC-calc-example.png">
@@ -373,7 +375,7 @@ Attraverso questa tecnica il trasmettitore non invia solo un pacchetto, ma perme
 
 Questa introduzione comporta però delle modifiche:
 - Il numero di bit dedicati a indicare il _numero di sequenza_ deve aumentare.
-- Dobbiamo introddurre dei sistemi di _buffering_ nel trasmettitore e/o nel ricevitore.
+- Dobbiamo introdurre dei sistemi di _buffering_ nel trasmettitore e/o nel ricevitore.
 
 <figure class="">
 <img class="100" src="./images/drn/rdt3-pipeline-example.png">
@@ -506,7 +508,7 @@ Questo protocollo invece non permette:
 - **Out for order deliveries**
 - **Point-to-multipoint communication** (supportato invece di altri protocolli come il `HDLC`)
 
-L'_error recovery_, il _flow control_ e il _data re-ordering_ sono delegati dal protocollo **ai livelli superiori**.
+L'_error recovery_, il _flow control_ e il _data re-ordering_ sono delegati ai protocolli **dei livelli superiori**.
 
 Il protocollo stabilisce che i messaggi siano così incapsulati:
 
@@ -528,9 +530,9 @@ Il processo attraverso il quale il trasmettitore crea questa sequenza si chiama 
 Le trasmissioni delle seguenti sequenze vengono quindi tradotte:
 $$
 \begin{CD}
-	\overbrace{01111110}^{\textbf{Dati uguali al flag}} @>{\text{Trasmettitore}}>> 01111101|01111110 @>{\text{Ricevitore}}>> 01111110	\\
+	\overbrace{01111110}^{\textbf{Dati uguali al flag}} @ >{\text{Trasmettitore}} > > 01111101|01111110 @ >{\text{Ricevitore}} > > 01111110	\\
 	\\
-	\underbrace{01111101}_{\textbf{Dati uguali alla sequenza di escape}} @>{\text{Trasmettitore}}>> 01111101|01111101 @>{\text{Ricevitore}}>> 01111101
+	\underbrace{01111101}_{\textbf{Dati uguali alla sequenza di escape}} @ >{\text{Trasmettitore}} > > 01111101|01111101 @ >{\text{Ricevitore}} > > 01111101
 \end{CD} \\
 
 $$
@@ -586,7 +588,7 @@ Questo metodo non soddisfa i desideri del `MAC` ideale.
 
 Questa politica sancisce che quando un nodo ha dei pacchetti da trasferire lo fa **utilizzando tutto il canale**. Il protocollo inoltre **_non regola alcuna coordinazione a priori tra i nodi_**.
 
-Questo ultimo passaggio comporta che il protocollo è susciettibile a **collisioni**. Il protocollo a `random access MAC` specifica come rilevare gli errori e sistemarli.
+Questo ultimo passaggio comporta che il protocollo è susciettibile a **collisioni**. Il protocollo a `Random Access MAC` specifica come rilevare gli errori e sistemarli.
 Alcuni esempi di protocolli `MAC` sono:
 - `ALOHA` e `slotted ALOHA`
 - `CSMA`, `CSMA/CD`, `CSMA/CA`
@@ -598,18 +600,18 @@ Questo protocollo opera sotto le seguenti assunzioni:
 - La rete opera a $R$ bps
 - Il tempo è diviso in unità di $\frac{L}{R}$ s
 - I nodi iniziano a trasmettere i frame _solo all'inizio degli slot_
-- I nodi sono sincronizzati così che ogniuno sa quando lo slot inizia
+- I nodi sono sincronizzati affinché ognuno sappia quando lo slot inizia
 - Se due o più _frame_ collidono in uno slot, **tutti i nodi** rilevano la collisione prima che lo slot termini.
+
+<div class="grid2">
+<div class="">
 
 Detta $p$ una probabilità $0 \le p \le 1$, le operazioni stabilite dal protocollo sono semplici:
 - Se un nodo ha un nuovo _frame_ da trasmettere aspetta l'inizio del prossimo slot e lo trasmette tutto nello slot
 - Se non ci sono collisioni, il _frame_ è stato correttamente trasferito e l'operazione di trasferimento è terminata
 - Se ci sono state collisioni, il nodo le rileva prima della fine dello slot. Successivamente, per ogni slot successivo il nodo avrà una probabilità $p$ di ritrasmettere il _frame_.
 
-<div class="grid2">
-<div class="">
-
-La ritrasmissione ha probabilità $p$ che avvenga senza una nuova collisione. Quello che si intende con questa affermazione, è che ad ogni ritrasmissione è come se il nodo lanciasse una "biased coin":
+A questo punto la ritrasmissione ha probabilità $p$ che avvenga senza una nuova collisione, ovvero è come se ad ogni ritrasmissione il nodo lanciasse una "biased coin":
 - **Testa** rappresenta la ritrasmissione, che accade con probabilità $p$
 - **Croce** rappresenta saltare lo slot e ritentare al prossimo, che accade con probabilità $(1 - p)$
 
@@ -626,7 +628,7 @@ Questo protocollo ha sia pro che contro.
 
 |                                     Pro                                      |                                                   Contro                                                    |
 | :--------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------: |
-|               Un singolo nodo attivo più trasmettere a $R$ bps               |                             Ci possono essere collisioni che sprecano gli slot                              |
+|               Un singolo nodo attivo piò trasmettere a $R$ bps               |                             Ci possono essere collisioni che sprecano gli slot                              |
 | È decentralizzato, poiché solo gli slot nei nodi devono essere sincronizzati |                                  Ci sono degli slot _idle_ non utilizzati                                   |
 |                                   Semplice                                   | I nodi potrebbero rendersi conto della collisione **dopo** che il pacchetto è stato completamente trasmesso |
 |                                                                              |                                    Necessità di sincronizzare il _clock_                                    |
@@ -635,7 +637,7 @@ Questo protocollo ha sia pro che contro.
 
 Andiamo a calcolarne l'efficienza, ovvero **il raporto tra _slot correttamente utilizzati_ sul _totale_**.
 
-Supponendo di avere $N$ nodi. Ogni nodo ha tanti _frame_ da inviare, ogniuno con probabilità $p$ di essere trasmesso in un determinato slot:
+Supponendo di avere $N$ nodi. Ogni nodo ha tanti _frame_ da inviare, ognuno con probabilità $p$ di essere trasmesso in un determinato slot:
 - Probabilità che un nodo invii correttamente un messaggio in uno slot: $p(1-p)^{N-1}$
 - Probabilità che un _qualsiasi_ nodo invii correttamente un messaggio in uno slot: $N\cdot p(1-p)^{N-1}$
 - Massima efficienza: troviamo $p^\ast$ che massimizza $N\cdot p(1-p)^{N-1} \to p^\ast = \frac{1}{N}$
@@ -694,11 +696,11 @@ Sulla destra possiamo vederre un esempio di ciò.
 <div class="">
 
 Questa versione però non performa _collision detection_, infatti sia $B$ che $D$ continuano a trasmettere i loro _frame_ anche se sanno che c'è stata una collisione.
-Il protocollo `CSMA/CD` sancisce che le comunicazioni siano terminate nel momento in cui si rileva una collisione, come raffigurato sulla destra.
+Il protocollo `CSMA/CD` sancisce invece che le comunicazioni siano terminate nel momento in cui si rileva una collisione, come raffigurato sulla destra.
 
 In questo modo riusciamo a **_diminuire il tempo perso per via delle collisioni_**.
 
-Il segnale inviato durante le collisioni si chiama **_segnale di `JAM`_**. Questo è utilizzato per rafforzare la collisione e rendernme più semplice l'identificazione agli altri nodi.
+Il segnale inviato durante le collisioni si chiama **_segnale di `JAM`_**. Questo è utilizzato per rafforzare la collisione e renderne più semplice l'identificazione agli altri nodi.
 
 </div>
 <div class="">

@@ -79,7 +79,7 @@ Nel caso di _demultimplexing con connessione_, un _socket TCP_ è identificato d
 - Indirizzo IP destinatario
 - Numero di Porta destinatario
 
-Un server potrebbe infatti supportare **_diversi socket TCP_** che operano in **simultanea**. Ogniuno sarà quindi identificato da queste quattro tuple, e sarà associato ad un processo _client_ diverso.
+Un server potrebbe infatti supportare **_diversi socket TCP_** che operano in **simultanea**. Ognuno sarà quindi identificato da queste quattro tuple, e sarà associato ad un processo _client_ diverso.
 
 Il _demultiplexer_ utilizzerà quindi **_tutte e quattro le informazioni_** per direzionare opportunamente il segmento al _socket_ corretto.
 

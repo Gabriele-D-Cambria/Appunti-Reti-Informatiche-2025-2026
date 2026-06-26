@@ -29,8 +29,10 @@ title: Introduzione a Internet
 Non esiste una risposta univoca alla domanda _"Che cos'è internet?"_, ma **dipende dal punto di vista**.
 
 <div class="grid2">
-<div class="">
+<div class="top">
 <p class="p">Dall'interno</p>
+
+---
 
 Se si guarda dall'interno, possiamo definirlo come:
 > Un sistema che connette milardi di dispositivi attraverso link di comunicazione che si dividono in:
@@ -51,8 +53,10 @@ Gli istituti di standardizzazione sono diversi, uno ad esempio è `IETF` (_Inter
 <div class="">
 <img class="" src="./images/internet/scheme-service.png">
 </div>
-<div class="">
+<div class="top">
 <p class="p">Servizio</p>
+
+---
 
 Possiamo vedere Internet come un Servizio, ovvero un'infrastruttura che fornisce servizi per le applicazioni.
 Fornisce interfaccie per il corretto utilizzo di applicazioni distribuite.

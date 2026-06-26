@@ -17,7 +17,7 @@ title: Applicazioni di Rete
 		- [3.2.2. Cookies](#322-cookies)
 		- [3.2.3. Proxy Servers](#323-proxy-servers)
 		- [3.2.4. `HTTP+`](#324-http)
-	- [3.3. Email e protocolli](#33-email-e-protocolli)
+	- [3.3. Protocolli di Posta Elettronica](#33-protocolli-di-posta-elettronica)
 	- [3.4. DNS](#34-dns)
 		- [3.4.1. Record del `DNS`](#341-record-del-dns)
 		- [3.4.2. Registrazione di un nuovo record di dominio](#342-registrazione-di-un-nuovo-record-di-dominio)
@@ -111,10 +111,9 @@ Per ricevere i messaggi ogni processo deve avere un **identificatore**, che nei 
 
 # 3. Applicazioni client-server
 
-Esistono tantissipi tipi diversi di applicazioni, e ognuna di esse segue uno o più protocolli di riferimento che permetteno la corretta trasmissione dei messaggi tra le due.
+Esistono tantissimi tipi diversi di applicazioni, e ognuna di esse segue uno o più protocolli di riferimento che ne permetteno la corretta trasmissione dei messaggi, definendone in modo formale la sintassi.
 
-Un protocollo di livello applicazione definisce il formato dei messaggi che l'applicazione invia e riceve.
-La sintassi del messaggio comprende:
+Per sintassi del messaggio si intende:
 - **Tipo del messaggio scambiato**: `Request` in caso di richieste o `Response` per le risposte
 - **Sintassi del messaggio**: quali campi sono presenti e come sono delineati
 - **Semantica del messaggio**: comprende il significato dell'informazioni nei campi
@@ -124,18 +123,12 @@ Di questi protocolli ce ne sono tanti, di diverse forme:
 - _Open Protocols_: sono protocolli messi a disposizione di chiunque, definiti attraverso `RFC` ufficiali o testi di riferimento non ufficiali. Permettono l'interoperabilità. Alcuni esempi sono l'`HTTP` e l'`SMTP`
 - _Protocolli proprietari_: sono protocolli privati esclusivi degli ideatori. Un esempio era il protocollo utilizzato da Skype
 
-Per sviluppare un applicazione dobbiamo prima capire come i dati vengono trasferiti.
-
-Alcune applicazioni hanno infatti necessità di garanzie l'**integrità dei dati** trasmessi. Se infatti durante l'invio di un file si verificassero molti errori, il file risulterebbe _corrotto_, incorretto o addirittura inutilizzabile.
-
-Altre applicazioni invece possono tollerare alcuni errori, non necessitando della correttezza dei dati al 100%. Un esempio sono le applicazioni che si occupano di trasmissione di audio e/o video, dove piccole perdite dei dati non influiscono sulla qualità del prodotto finale.
-
-È inoltre importante stabilire le esigenze sul _delay_ di invio e ricezione messaggi.
-Per applicazioni _real-time_, come i _live streaming_ o giochi online, è richiesto infatti un _delay_ basso per essere efficace, per applicazioni _asincrone_ invece è tollerabile anche un _delay_ più ampio.
-
-Alcune app, come ad esempio quelle multimediali o di streaming, per essere efficaci necessitano invece che il _throughput_ rispetti un certo minimo, altre invece, dette **elastiche**, possono utilizzare qualsiasi _throughput_.
-
-Ultimo, ma non meno importante, è invece la **sicurezza** che l'applicazione richiede. Alcune applicazioni infatti maneggiano informazioni sensibili per i quali vogliamo che i dati siano sempre al sicuro, altre invece che non maneggiano alcuna informazione si possono accontentare di sicurezze minori.
+L'invio dei dati non è uniforme, e può anche in modo considerevole a seconda delle esigenze della nostra applicazione:
+- **Integrità dei dati**: potrebbe essere necessario garantire che non vengano persi/sbagliati dei dati. L'invio di un file si verificassero molti errori, il file risulterebbe _corrotto_, incorretto o addirittura inutilizzabile.
+- **Tolleranza ad errori**: potremmo non aver bisogno di avere tutte le informazioni in modo corretto, ma di avere un flusso sufficientemente buono. Un esempio sono le applicazioni che si occupano di trasmissione di audio e/o video, dove piccole perdite dei dati non influiscono sulla qualità del prodotto finale.
+- **Esigenze di Delay**: le applicazioni _real-time_, come i _live streaming_ o giochi online, richiedono un _delay_ basso per poter essere efficaci. Le applicazioni _asincrone_ invece, tollerano anche _delay_ più ampi, senza andare a danneggiare il servizio.
+- **Esigenze di Throughput**: alcune app, come ad esempio quelle multimediali o di streaming, per essere efficaci richiedono che il _throughput_ rispetti un certo minimo. Altre invece, dette _elastiche_, sono utilizzabili per qualsiasi valore.
+- **Sicurezza**: le applicazioni che maneggiano informazioni sensibili, hanno bisogno che i dati siano sempre al sicuro. Se invece non abbiamo questa esigenza, è possibile accontentarsi di garanzie di sicurezza minori.
 
 Una tabella che mostra alcuni requisiti per applicazioni comuni è la seguente:
 
@@ -153,13 +146,17 @@ Una tabella che mostra alcuni requisiti per applicazioni comuni è la seguente:
 
 </div>
 
+Per poter sviluppare quindi un applicazione, dobbiamo _**capire come vengono trasferiti i dati**_.
+
 ## 3.1. Protocolli Internet
 
-I servizi di comunicazione su internet sono il protocollo `TCP` e quello `UDP`.
+I servizi di comunicazione principali su Internet sono il protocollo `TCP` e quello `UDP`.
 
 <div class="grid2">
 <div class="top">
 <p class="p"><code>Servizio TCP</code></p>
+
+---
 
 È un protocollo di trasporto **affidabile** nei processi di invio e ricezione.
 
@@ -170,6 +167,8 @@ Non fornisce garanzie sul delay, sul throughput minimo né sulla sicurezza, ma s
 </div>
 <div class="top">
 <p class="p"><code>Servizio UDP</code></p>
+
+---
 
 È un servizio di trasferimento "non affidabile", ovvero che non prevede l'affidabilità delle comunicazioni. I dati possono arrivare non in ordine o affetti da errore.
 
@@ -196,13 +195,16 @@ Di seguito vediamo quale protocollo utilizzano comunemente le applicazioni web:
 
 </div>
 
-I _socket_ `TCP` e `UDP` di base non forniscono alcuna _encryption_, infatti trasmettono anche dati sensibili, come le password, come `plaintext`.
+---
 
-Per poter garantire l'encriptazione dei dati si utilizza il servizio `TLS` (_Transport Layer Security_). Questo servizio permette di utilizzare connessioni `TCP` criptate che garantiscono non solo l'integrità dei dati, ma anche un autenticazione end-point.
+I _socket_ `TCP` e `UDP` di base non forniscono alcun servizio di _encryption_. Di conseguenza, trasmettono anche dati sensibili, come le password, come banale `plaintext`.
 
-Il protocollo deve però essere implementato dalle applicazioni, che utilizzano librerie `TLS` sulle connessioni `TCP`.
+Per poter garantire l'encriptazione dei dati si utilizza il servizio `TLS` (_Transport Layer Security_), che vedremo nel dettaglio [più avanti nel capitolo della Sicurezza](./Sicurezza#33-toy-tls).
 
-Inoltre fornisce delle `TLS socket API` che criptano il `plaintext` fornito alla _socket_ prima di inviarlo su internet. Vedremo meglio come funziona più avanti.
+Per ora ci basta sapere :
+1. Questo servizio permette di utilizzare connessioni `TCP` criptate che garantiscono non solo l'integrità dei dati, ma anche un autenticazione end-point.
+2. Il protocollo deve essere implementato dalle applicazioni, che utilizzano librerie `TLS` sulle connessioni `TCP`.
+3. Sono fornite delle `TLS socket API` che criptano il `plaintext` fornito ai _socket_ prima di inviarlo su internet.
 
 ## 3.2. Web e `HTTP`
 
@@ -222,50 +224,67 @@ Si basa sul modello _client/server_:
 - _server_: tipicamente un web server che invia _Web object_ in risposta alle richieste
 
 Il protocollo `HTTP` utilizza comunicazioni `TCP`. In particolare il client, quando fa una richiesta, inizializza la connessione `TCP` (ovvero crea un _socket_) al server nella porta `80`. Il server accetta la connessione `TCP` del client, e viene invializzato uno scambio di messaggi `HTTP` tra il _browser_ (`HTTP client`) e il _web server_ (`HTTP server`).
-Al termine la connessione `TCP` viene chiusa.
+Al termine, la connessione `TCP` viene chiusa.
 
-Questo protocollo si dice _stateless_, infatti il server **non salva alcuna informazione sulle precedenti richieste di un client**.
-Infatti i protocolli che mantengono uno stato sono più complessi, in quanto richiedono non solo il salvataggio degli stati con ciascuno dei client, ma anche una sincronizzazione tra le informazioni del client e del server qual'ora uno dei due crashasse e gli stati diventassero incosistenti.
+Questo protocollo si dice _stateless_, poiché il server **non salva alcuna informazione sulle precedenti richieste di un client**.
 
-Le connessioni `HTTP` si classificano in due tipologie
+Esistono altri protocolli, detti _stateful_, che mantengono lo stato delle richieste, ma sono molto più complessi, in quanto richiedono non solo il salvataggio degli stati con ciascuno dei client, ma anche una sincronizzazione tra le informazioni del client e del server qual'ora uno dei due crashasse e gli stati diventassero incosistenti.
+
+Le connessioni `HTTP` si classificano quindi in due tipologie
 <div class="grid2">
 <div class="top">
-<p class="p"><code>HTTP non persistente</code></p>
+<p class="p">HTTP non persistente <em>(stateless)</em></p>
+
+---
 
 Questa tipologia:
 1. Apre una connessione `TCP`
 2. Invia **al massimo _un oggetto_** attraverso la connessione
 3. Chiude la connessione `TCP`
 
-Questo implica che l'invio di più oggetti richiede tante connessioni quanti sono gli oggetti.
+L'invio di $n$ oggetti richiede $n$ connessioni.
 
 </div>
 <div class="top">
-<p class="p"><code>HTTP persistente</code></p>
+<p class="p">HTTP persistente <em>(stateful)</em></p>
+
+---
 
 Questa tipologia invece:
 1. Apre la connessione `TCP` con il server
 2. Invia **_più oggetti_** tra il client e il server sulla medesima connessione `TCP`
 3. Chiude la connessione `TCP`
 
+L'invio di $n$ oggetti può essere fatto con $1$ sola connessione.
+
 </div>
 </div>
 
-Le due tipologie hanno un'importante influenza sul tempo di risposta delle richieste.
+---
 
-Definiamo il `RTT` (_Round Trip Time_):
+L'approccio che utilizziamo avrà un'importante influenza sul tempo di risposta delle richieste.
+
+Per poterlo valutare definiamo il `RTT` (_Round Trip Time_):
 > È il tempo necessario ad un piccolo pacchetto per andare dal client al server e poi tornare
 
 Nel caso di `HTTP non persistente`, per ogni oggetto abbiamo:
 - 1 `RTT` per inizializzare la connessione `TCP`
 - 1 `RTT` per la richiesta `HTTP` e l'attesa dei primi byte della risposta
-- Tempo di trasmissione del file/oggetto
+- Tempo di trasmissione del file/oggetto $t_i$
+- 1 `RTT` per la chiusura della connessione `TCP`
 
-In totale il tempo di risposta è $2\text{RTT} + \text{tempo di trasmissione oggetto}$
+Il tempo di risposta all'invio di $n$ messaggi è quindi:
+$$
+	T = \sum_{i=1}^n{3\text{RTT} + t_i} = 3\cdot n\cdot \text{RTT} + \sum_{i=1}^n{t_i}
+$$
 
 Con questo approccio l'unico modo per migliorare le prestazioni è effettuare **più connessioni `TCP` parallele** per ognuno degli oggetti da recuperare.
 
-Utilizzando invece connessioni `HTTP presistenti` (`HTTP1.1`) il server lascia la connessione aperta dopo aver inviato la prima risposta. Di conseguenza i messaggi `HTTP` tra gli stessi client/server sono inviati sulla stessa connessione, ogni qual volta che il client incontra il riferimento ad un nuovo oggetto. Abbiamo quindi che nel caso minimo abbiamo un solo `RTT` per tutti gli oggetti, _dimezzando il tempo di risposta_.
+Utilizzando invece connessioni `HTTP presistenti` (`HTTP1.1`) il server lascia la connessione aperta dopo aver inviato la prima risposta. Di conseguenza i messaggi `HTTP` tra gli stessi client/server sono inviati sulla stessa connessione, ogni qual volta che il client incontra il riferimento ad un nuovo oggetto.
+Il tempo di risposta diventa quindi:
+$$
+	T' = 3\text{RTT} + \sum_{i=1}^n{t_i}
+$$
 
 ### 3.2.1. Formato messaggi `HTTP`
 
@@ -371,10 +390,9 @@ La risposta del server è questa:
 
 Ricordando che le interazioni tramite `HTTP GET/` sono _stateless_, non abbiamo alcuna nozione per effettuare scambi a più step di messaggi `HTTP` per completare una **trasazione**.
 
-Si utilizzano quindi i _Cookies_. I _Cookies_ permettono di rendere **stateful** il protocollo _stateless_.
+Si utilizzano quindi i _Cookies_, uno strumento che permette di rendere **stateful** il protocollo _stateless_.
 
-In questo modo, quando l'utente lo desidera, è possibile conservare lo stato attraverso gli step della transizione.
-Permettono inoltre di recuperare le transizioni parzialmente completate.
+In questo modo, quando l'utente lo desidera, è possibile conservare lo stato attraverso gli step della transizione, oltre a recuperare le transizioni parzialmente completate.
 
 Il meccanismo dei cookies ha 4 componenti:
 - Inserimento della **cookie header line** del messaggio `HTTP response`
@@ -415,24 +433,24 @@ I **proxy** hanno quindi un doppio ruolo:
 - _Client_ quanto effettuano le richiesta ai server originali
 - _Server_ quando inoltrano le informazioni già ottenute al client
 
-Tipicamente queste _web cache_ sono installate direttamente dalle `ISP`, e permettono di raggiungere diversi vantaggi:
-- Diminuisce il tempo di risposta al _client_, data proprio la vicinanza
-- Diminuisce il traffico all'access link degli `ISP`
-- Diminuisce il traffico su internet, diminuendo le probabilità di congestione
+Tipicamente queste _web cache_ sono installate direttamente dagli `ISP`, e permettono di raggiungere diversi vantaggi:
+- Diminuire il tempo di risposta al _client_, data proprio la vicinanza
+- Diminuire il traffico all'access link degli `ISP`
+- Diminuire il traffico su internet, diminuendo le probabilità di congestione
 
-Può capitare che la copia contenuta nel **proxy** sia obsoleta, poiché il server ha aggiornato la sua versione della pagina.
+Come nelle normali _cache_, può però capitare che la copia contenuta nel **proxy** sia obsoleta, poiché il server ha aggiornato la sua versione della pagina.
 
-Si utilizzano in questi casi le `conditional GET`. permettono di inviare l'oggetto solo se la versione contenuta dal server è più recente di quella contenuta in cache.
-Questo è possibile con l'introduzione di un nuovo parametro `if-modified-since: <date>`.
-È infatti sufficiente inserire come argomento la data della versione della copia contenuta, e il server risponderà:
+Si utilizzano in questi casi le `conditional GET`. Questo tipo di richiesta, fa in modo che nella risposta sia contenuto l'oggetto richiesto **solo se la versione contenuta dal server è più recente di quella contenuta in cache**, attraverso l'introduzione di un nuovo parametro `if-modified-since: <date>` all'interno del corpo della `HTTP request`.
+
+Inserendo quindi come argomento la data della versione della copia contenuta, e il server risponderà:
 - Con l'oggetto se è stato aggiornato più recentemente
-- Con risposta `HTTP/1.0 304 Not Modified`
+- Con risposta `HTTP/1.0 304 Not Modified` se il server contiene la stessa copia del _client_
 
 ### 3.2.4. `HTTP+`
 
-Fin'ora abbiamo parlato dello _standard_ `HHTP1.0`.
+Fin'ora abbiamo parlato dello _standard_ `HHTP/1.0`.
 
-Nella versione `1.1` venne aggiornato l'algoritmo di _scheduling_ introducendo l'algoritmo `FCFS` (_Frst-Come-First-Serve_).
+Nella versione `1.1` venne aggiornato l'algoritmo di _scheduling_ introducendo l'algoritmo `FCFS` (_First-Come-First-Serve_).
 In questo modo è stata introdotta la possibilità di effettuare richieste `GET` **multiple in pipeline**.
 
 Seppur adesso il server sia impostato per rispondere in ordine di arrivo si verificano problemi di `HOL blocking` (_Head-of-Line blocking_), ovvero oggetti più massicci che  bloccano oggetti più piccoli.
@@ -445,11 +463,11 @@ Con questo protocollo tutti gli oggetti vengono **divisi in _frame_**. In questo
 
 Il protocollo `HTTP/2` opera ancora sul protocollo `TCP`, che quindi non fornisce alcun mezzo di sicurezza.
 
-Oggi stiamo transitando verso `HTTP/3` che invece aggiunge nativamente la sicurezza, migliora il controllo in caso di errori e congestioni. Per fare ciò si utilizzano connessioni `UDP`, che permette di evitare di aprire le connessioni.
+Oggi stiamo transitando verso `HTTP/3` che invece aggiunge nativamente la sicurezza, migliora il controllo in caso di errori e congestioni. Per fare ciò si utilizza `TLS` su connessioni `UDP`, in un protocollo ad-hoc detto `QUIC`.
 
 Più informazioni su questo metodo si vedranno nei corsi magistrali.
 
-## 3.3. Email e protocolli
+## 3.3. Protocolli di Posta Elettronica
 
 Quando parliamo di posta elettronica ci sono 3 attori principali:
 - **User agent**: il software che permette di accedere e inviare la posta elettronica
@@ -501,9 +519,7 @@ C: QUIT
 S: 221 hamburger.edu closing connection
 ```
 
-
-Oggi la porta `25` non è più utilizzata per motivi di sicurezza, tuttavia alcuni _mail server_ consentono ancora comunicazioni su quella porta.
-Con questi _mail server_ è possibile provare a connettersi anche dalla shell:
+Tipicamente questo scambio avveniva sulla porta `25`, che però oggi non è più utilizzata per motivi di sicurezza. Cio nonostante, alcuni _mail server_ vi consentono ancora comunicazioni, permettendo la connessione dalla shell:
 ```bash
 telnet <server_name> 25
 ```
@@ -512,11 +528,11 @@ Il protocollo `SMTP` e quello `HTTP` sono simili:
 
 <div class="flexbox" markdown="1">
 
-|                           |                                 `SMTP`                                 |                       `HTTP`                        |
-| :------------------------ | :--------------------------------------------------------------------: | :-------------------------------------------------: |
-| **Comportamento**         |                           _command/response_                           |                 _request/response_                  |
-| **Tipo** di comunicaizone |                                 _push_                                 |                       _pull_                        |
-| **Comunicazione**         |                              persistente                               |
+|                           |                                `SMTP`                                 |                       `HTTP`                        |
+| :------------------------ | :-------------------------------------------------------------------: | :-------------------------------------------------: |
+| **Comportamento**         |                          _command/response_                           |                 _request/response_                  |
+| **Tipo** di comunicazione |                     _push_ (invia dati al server)                     |          _pull_ (richiede dati al server)           |
+| **Comunicazione**         |                               stateful                                |                 stateless/stateful                  |
 | **Formato Oggetti**       | Più oggetti inviati in un singolo messaggio, codificato `7-bit ASCII` | Ogni messaggio incapsulato in un messaggio apposito |
 
 </div>
@@ -529,13 +545,13 @@ Il protocollo `STMP` è definito in `RFC 531`, mentre la sintassi del messaggio 
   - ....
 - **Corpo del messaggio**: codificato solo con caratteri `ASCII`
 
-Il protocollo `SMTP` in realtà descrive solo il protocollo di comunicazione per inviare i messaggi ai _mail server_ del destinatario, non al suo _user agent_. Infatti se l'_UA_ fosse spento sarebbe impossibile inviarvi messaggi, andando a perderli.
+Il protocollo `SMTP` descrive quindi il protocollo di comunicazione **per inviare i messaggi ai _mail server_ del destinatario**, e non al suo _user agent_. Questo avviene per avere garanzie di ricezione anche qualora l'_user agent_ fosse spento.
 
-Per recuperare le mail dal proprio _mail server_ esistono altri due protocolli:
-- `IMAP` (_Internet Mail Access Protocol_): definito in `RFC 3501`, i messaggi rimangono salvati sul server. Il protocollo permette il recupero, l'eliminazione e l'incartellamento dei messaggi sul server. Sull'_UA_ si hanno dei riferimenti ai messaggi nella _mailbox_.  Più client diversi vedono quindi sempre tutta la stessa posta.
+Il mail server fa quindi da memoria di transito finché un _user agent_ non richiede i messaggi a lui indirizzati. Per fare ciò esistono altri due protocolli:
+- `IMAP` (_Internet Mail Access Protocol_): definito in `RFC 3501`, i messaggi rimangono salvati sul server. Il protocollo permette il recupero, l'eliminazione e l'incartellamento dei messaggi sul server. Sull'_UA_ si hanno dei riferimenti ai messaggi nella _mailbox_. Più client diversi vedono quindi sempre tutta la stessa posta.
 - `POP`: i messaggi vengono _"poppati"_, ovvero estratti dal _mail server_, spostandoli permanentemente su un _client_. Con questo protocollo se un _client_ accede al _mail server_ dopo un'altro, non vede la posta già visualizzato dal primo.
 
-Oggi esistono tantissime interfacce web basate su `SMTP`/`IMAP`(`POP`) per inviare e recuperare le email. (gmail, Hotmail, Yahoo!Mail, ...).
+Oggi esistono tantissime interfacce web basate su `SMTP`/`IMAP`(`POP`) per inviare e recuperare le email (gmail, Hotmail, Yahoo!Mail, ...).
 
 ## 3.4. DNS
 
@@ -568,16 +584,11 @@ Se un client vuole trovare l'`IP` di `www.amazon.com`, possiamo approssimare la 
 - Query al server `DNS` dei `.com` per trovare il server `DNS` per `amazon.com`
 - Query al server `DNS` di `amazon.com` per trovare l'`IP`di `www.amazon.com`
 
-Esistono 13 server di _root_ sparsi per il mondo (nessuno in Italia), ognuno implementato da _server factory_.
-Questi server sono in realtà contattati come _last-resort_ dai server di dominio che non riescono ad effettuare la traduzione.
-Questi hanno però un **_importanza incredibile_** per il funzionamento di internet.
+Esistono 13 server di _root_ sparsi per il mondo (nessuno in Italia), ognuno implementato da delle _server factory_. Questi server sono in realtà contattati come _last-resort_ dai server di dominio che non riescono ad effettuare la traduzione. Ciò nonostante, hanno un **_importanza incredibile_** per il funzionamento di internet.
 
-I server `DNS` si dicono **authoritative** se sanno tradurre _url_ in indirizzi `IP` invece di rimandare ad altri server `DNS`.
-I server `TLD` sono **authorative** per i domini come: `.com`, `.org`, `.net`, `.edu`, `.aero`, `.jobs`, `.museums` e tutti i `CCTLD` come: `.it`, `.uk`, `.fr`, `.ca`, `.jp`, `.cn`.
+I server `DNS` si dicono **authorative** se sanno tradurre determinati _url_ in indirizzi `IP` invece di rimandare ad altri server `DNS`. Ad esempio, i server `TLD` sono **authorative** per i domini come: `.com`, `.org`, `.net`, `.edu`, `.aero`, `.jobs`, `.museums` e tutti i `CCTLD` come: `.it`, `.uk`, `.fr`, `.ca`, `.jp`, `.cn`.
 
-In realtà esiste un `local DNS server` che potrebbe non rispettare la gerarchia (in realtà c'è anche un secondario per affidabilità). Questi sono forniti dagli `ISP` (o dalle organizzazioni private), e sono conosciuti anche sotto al nome di _default name server_.
-
-Il loro ruolo è quello di agire da _proxy_ quando un host richiede una traduzione, il risultato viene prima salvato nella _cache_ dal `lDNSs`, così da non dover rieffettuare la richiesta in un secondo momento.
+All'interno delle reti private può esistere anche uno o più `local DNS server`, che non è tenuto a rispettare la gerarchia vista fin'ora. Questi sono tipicamente forniti dagli `ISP` (o dalle organizzazioni private), e sono conosciuti anche sotto al nome di _Default Name Server_, e agiscono da _proxy_. In questo modo, quando un host richiede una traduzione il risultato viene prima salvato nella _cache_ dal `lDNSs`, così da non dover rieffettuare la richiesta in un secondo momento.
 
 Esistono due modi per effettuare le richieste di traduzione. Immaginiamo di avere:
 - host: `enineering.nyu.edu`
@@ -586,6 +597,8 @@ Esistono due modi per effettuare le richieste di traduzione. Immaginiamo di aver
 <div class="grid2">
 <div class="top">
 <p class="p">Query Iterativa</p>
+
+---
 
 
 Quando si effettua una richiesta il `lDNSs` (se questo non ha la traduzione), lui chiede al server di _root_.
@@ -601,6 +614,8 @@ La richiesta del `lDNSs` a `DNSs umass.edu` può essere **authorative** che rest
 <div class="top">
 <p class="p">Query Ricorsiva</p>
 
+---
+
 Funziona in maniera simile a quella delle query iterative, ma sono i `DNSs` stessi a effettuare le richieste per i livelli inferiori.
 
 In questa architettura sono quindi necessari più _cache level_ per ogni `DNSs` così da diminuirne il carico.
@@ -610,6 +625,8 @@ In questa architettura sono quindi necessari più _cache level_ per ogni `DNSs` 
 </div>
 </div>
 
+---
+
 Quando un `DNSs` impara una nuova traduzione, la salva in locale su una sua _cache_ interna. Un entrata di questa _cache_ **scade**, ovvero viene rimossa, dopo un _time-to-live_ `TTL`.
 
 È quindi possibile che le entrate locali di un `DNSs` possano tutte essere scadute, oppure non aggiornate correttamente con la traduzione attuale (in caso di cambio di `IP` da parte di un host già cachato)
@@ -618,11 +635,9 @@ I meccanismi di aggiornamento e di notifica sono descritti dallo standard `IETF`
 
 ### 3.4.1. Record del `DNS`
 
-Abbiamo detto che il `DNS` è un database disribuito che conserva _resource records_ `RR`.
-Il loro formato è il seguente:
-<p class="p"><code>(name, value, type, ttl)</code></p>
+Abbiamo detto che il `DNS` è un database disribuito che conserva _resource records_ `RR`, che segue il formato: `(name, value, type, ttl)`.
 
-A seconda del `type` gli altri parametri (tranne il `ttl`) hanno significati diversi:
+A seconda del campo `type` specificato gli altri parametri (tranne il `ttl`) hanno significati diversi:
 
 <div class="flexbox" markdown="1">
 
@@ -671,8 +686,8 @@ Il primo passo è quello di selezionare il dominio di riferimento top-level.
 Successivamente è necessario registrarsi in un `DNS registratore` (ad esempio _Network Solution_) fornendo nome di dominio e indirizzo IP del server **authoritative** (sia primario che secondario)
 
 Il registratore inserisce i seguenti record nel server TLD:
-- `(networkutopia.com, dns1.networkutopia.com, NS)` traduzione di alias per il `DNSs authoritative`
-- `(dns1networkutopia.com, 212.212.212.1, A)`
+- **Traduzione Hostname-IP**:`(dns1.networkutopia.com, 212.212.212.1, A)`
+- **Traduzione di Alias per il DNSauth**: `(networkutopia.com, dns1.networkutopia.com, NS)`
 
 È quindi necessario attivare un server **authoritative** localmente all'indirizzo `212.212.212.1` che traduca:
 - Record `A` per `www.networkutopia.com`
@@ -692,31 +707,26 @@ Per tutte le applicazioni `P2P` è quindi **necessario** avere un _indice_ che m
 
 Gli indici sono contenuti in _database_ basati su _hash_ `(key, value)` $\to$ `Led Zeppelin IV, 203.17.123.38`.
 
-I _peer_ possono effettuare query a partire dalla chiave, o inserire intere coppie.
+I _peer_ possono effettuare query a partire dalla chiave, o inserire intere coppie, così da avere un indice centralizzato accessibile tramite _Hash table distribuite_, che può essere fornito da uno o più server, come ad esempio in `Napster` (un sistema **_ILLEGALE_** per la condivisione di musica).
 
-In questo modo si ha un indice centralizzato accessibile tramite _Hash table distribuite_
-
-L'indice centralizzato può essere fornito da uno o più server, come ad esempio in `Napster` (un sistema **_ILLEGALE_** per la condivisione di musica).
-In questi casi quando un utente diventa attivo, l'applicazione notifica l'indice con il suo indirizzo `IP` e i suoi file disponibili.
-
-L'approccio in questi casi è ibrido:
+In questi casi quando un utente diventa attivo, l'applicazione notifica l'indice con il suo indirizzo `IP` e i suoi file disponibili, seguendo un approccio ibrido:
 - La distribuzione dei file è `P2P`
 - La ricerca degli indirizzi `IP` è _client-server_
 
-Prendendo sempre come esempio `Napster`, abbiamo che l'indice centralizzato si trova a `napster.com`. Questo però ha due svantaggi che avevamo già visto: il _single-point of failure_ e il _performance bottleneck_.
+Prendendo sempre come esempio `Napster`, l'indice centralizzato si trova a `napster.com`, che provoca i due svantaggi che avevamo già visto: il _single-point of failure_ e il _performance bottleneck_.
 
 Un altro approccio completamente **_decentralizzato_** è quello del **Query Flooding**.
 Introdotto nella versione originate di `Gnutella` (`LimeWire`). Si basa su un network di overlay rappresentabile come un _grafo_. Il grafo ha come nodi i _peers_ attivi, e come _edges_ le connessioni `TCP` tra i _peer_.
 
-Il modello di _query flooding_  si basa su fatto che se un peer non ha l'oggetto richiesto da un _peer_ può propagare la stessa domanda agli altri _peer_ ai quali è collegato, attraversto risposte _unicast_. Quando viene trovato un _peer_ con i contenuti richiesti è **solo il _peer_ iniziale** che scarica i contenuti.
-Questo approccio è _scalabile_, e spesso introduce un limite al _flooding_, riducendo il traffico e diminuendo le probabilità di localizzare il contenuto finale.
+Il modello di _query flooding_  si basa su fatto che se un peer non ha l'oggetto richiesto da un _peer_ può propagare la stessa domanda agli altri _peer_ ai quali è collegato, attraversto risposte _unicast_. Quando vengono trovati uno o più _peer_ con i contenuti richiesti è **solo il _peer_ iniziale** che scaricherà i contenuti da quello **più vicino**, inteso come il _peer più vicino in ordine di successione_.
+Questo approccio è _scalabile_, anche se spesso si introduce un limite al _flooding_ così da ridurre il traffico, anche se diminuiscono di conseguenza le probabilità di localizzare il contenuto finale.
 
-Esiste poi un ulteriore metodo che combina le migliori _feature_ degli approcci precedenti, si chiama **Overlay Gerarchico**. Venne prodotto in `FastTrack` ed è anche utilizzato dal moderno `Gnutella`.
-Non ha un _server centrale_ ma introduce delle gerarchie tra gli _peer_.
-Vengono introdotti i **Super Nodes** `SN`, che sono _peer_ selezionati, con un ampia banda e un ampia disponibilità. I _peer_ comuni effettuano le richieste ai _super-peer_, che contengono gli indici dei _peer locali_. Se il `SN` ha la risposta la fornisce, altrimenti effettua anch'egli una query al suo `SN` di riferimento.
-Alla fine il primo _peer_ scaricerà i file dal _peer_ che li mette a disposizione.
+Esiste poi un ulteriore metodo che combina le migliori _feature_ degli approcci precedenti, chiamato **Overlay Gerarchico**. Venne prodotto in `FastTrack` ed è anche utilizzato dal moderno `Gnutella`.
 
-Questi ultimi due metodi distribuiti si definisce come **il più vicino** il _peer più vicino in ordine di successione_.
+Questo sistema non utilizza un _server centrale_ ma introduce delle gerarchie tra gli _peer_. Vengono introdotti i **Super Nodes** `SN`, che sono _peer_ selezionati, con un ampia banda e disponibilità. I _peer_ comuni effettuano quindi le richieste ai _super-peer_, che contengono gli indici dei _peer locali_. Se il `SN` ha la risposta la fornisce, altrimenti effettua anch'egli una query al suo `SN` di riferimento, come nell'approccio basato su _flooding_.
+
+Quando viene trovato il file richiesto dal primo _peer_, solamente questo lo scaricerà dal _peer_ che lo mette a disposizione.
+
 Asintoticamente, con $n$ _peer_ vanno inviati in media $O(n)$ messaggi.
 
 ## 4.1. Confronto P2P e client-server
@@ -744,11 +754,14 @@ $$
 	D_{cs} \ge \max{\Biggl\{N\frac{F}{u_s}, \frac{F}{d_{min}}\Biggr\}}
 $$
 
-Ipotizzando invece un approccio _P2P_, il "server" che contine il file dovrà caricare solamente una copia in quanto i _peer_ possono re-distribuire i bit tra di loro, impiegando un tempo di $F \over u_s$.
+Ipotizzando invece un approccio _P2P_, il _peer_ che possiede il file dovrà caricare solamente una copia in quanto i _peer_ possono **re-distribuire i bit tra di loro** agendo da "switch", impiegando un tempo di $F \over u_s$. Possiamo quindi considerare la capacità titale di upload del sistema come
+$$
+	u_{tot} = u_s + \sum_i^N{u_i}
+$$
 
 I _peer_ dovranno comunque scaricare il file, con il più lento che impiegherà sempre un tempo di $F \over d_{min}$.
 
-Poiché ogni _peer_ pià re-distribuire i dati, possiamo considerare la capacità totale di upload del sistema come $u_{tot} = u_s + \sum_i^N{u_i}$. Poiché il sistema, nel complesso, deve comunque consegnare $NF$ bit, abbiamo un tempo di distribuzione minimo di almeno $\frac{NF}{u_s + \sum{u_i}}$.
+Dobbiamo in questo caso considerare comunque che nel complesso il sistema deve comunque consegnare $NF$ bit. Ciò impiega un tempo di distribuzione minimo di almeno $\frac{NF}{u_{tot}}$.
 
 In totale il tempo di distribuzione necessario sarà:
 $$
@@ -777,37 +790,30 @@ In casi generici il tempo per il _P2P_ tende asintoticamente ad un valore di $F 
 
 È il protocollo più utilizzato per le comunicazioni _P2P_. Non ha uno standard, ma è descritto in un articolo pubblico non ufficiale, preso comunque come _standard di fatto_.
 
-I file vengono divisi in porzioni (_chunk_) di `256Kb`.
-I _peer_ non vanno più a scambiarsi interi file, ma _chunk_ di esso. In questo protocollo non ci si preoccupa del'ordine dei vari _chunk_, che potrebbero, e tendenzialmente lo fanno, arrivare sfusi.
-Il protocollo rende la comunicazione _multi-P2P_, vediamo quindi perché.
-Prima di fare ciò definiamo:
-> **_Torrent_**: l'insieme di _peer_ che in un certo istante partecipano alla condivisione di un dato file
-
-Nel **torrent**, in un certo istante troviamo tre tipi di _peer_:
-- **Leachers**: coloro che devono ancora completare di scaricare il file
-- **Feeders**: coloro che hanno completato il _download_ del file. Potrebbero egoisticamente uscire dal torrent, ma decidono, altruisticamente, di rimanere per alimentare
-- **Free Riders**: sono coloro che sono solo interessati a scaricare i file, senza fornire la possibilità di caricare i loro file
+Prima di introdurre il funzionamento di _BitTorrent_ definiamo cosa si intende per **_Torrent_**:
+> L'insieme di _peer_ che in un certo istante partecipano alla condivisione di un dato file, divisi in tre tipologie:
+> - **Leachers**: coloro che devono ancora completare di scaricare il file
+> - **Seeders**: coloro che hanno completato il _download_ del file e che potrebbero egoisticamente uscire dal torrent, ma decidono, altruisticamente, di rimanere per alimentare il _torrent_
+> - **Free Riders**: coloro che sono solo interessati a scaricare i file, senza fornire la possibilità di caricare i loro file
 
 Con l'introduzione dei **torrent** si introducono anche dei **tracker**, che hanno come compito quello di tracciare i _peer_ che in un certo istante fanno parte del _torrent_.
 
+Nel protocollo _BitTorrent_ invece di scambiarsi interi file, i _peer_ li dividono in porzioni tra i `256KB` e qualche `MB` dette _**chunk**_, e propagano quest'ultimi. Non ci si preoccupa del'ordine di invio/ricezione dei vari _chunk_, ma si adopera un riordinamento finale.
 
-Quando un _peer_ desidera ottenere un file, per prima cosa deve ottenere l'`IP` del _tracker_, richiedendolo ad un **Torrent Server** specificando il contenuto che desidera.
-Questo restituisce un _metafile_ `.torrent` nel quale si trova anche l'`IP` del _tracker_.
+Quando un _peer_ desidera ottenere un file, deve per prima cosa deve ottenere accedere al torrent. Per fare ciò deve recuperare l'`IP` del _tracker_ facendo una richiesa ad un **Torrent Server** e descrivendo il contenuto che desidera. Il server restituirà un _metafile_ `.torrent` nel quale sarà contenuto anche l'`IP` del _tracker_.
 
-A questo punto il _tracker_ viene contattato, e questi inserisce il _peer_ nel torrent restituendogli una lista contenente gli `IP` degli altri dispositivi nel torrent.
+A questo punto il _tracker_ viene contattato, e questi iscrive il _peer_ nel torrent restituendogli una lista contenente gli `IP` degli altri dispositivi iscritti.
 
-A questo punto il _peer_ cerca di effettuare connessioni `TCP` con tutti gli altri _peer_ nella lista.
-Statisticamente non riesce a creare una connessione con tutti i _peer_, ma questo non importa finché viene raggiunto un certo numero base.
-I _peer_ con i quali si riesce a instaurare una connessione vengono chiamati **_vicini_**.
+Il _peer_ procederà cercando di effettuare connessioni `TCP` con tutti gli altri _peer_ nella lista, finché non raggiunge un certo numero minimo di connessioni stabilite. I _peer_ con i quali si riuscità a instaurare una connessione vengono chiamati **_vicini_**.
 
-Il _peer_ chiede ai suoi vicini quali _chunk_ possiedono, e comincia a richiederli partendo dal **più raro** (_Rarest First_), evitando di chiedere più volte lo stesso _chunk_ e quelli che potrebbe già possiede.
-Infatti, se ci fosse una copia presente solo in un vicino, se questi dovesse uscire metterebbe in attesa a tempo indeterminato.
+Il _peer_ può adesso chiedere ai suoi vicini quali _chunk_ del file desiderato possiedono. Ottenuta questa informazioni procede a richiedere ai singoli vicini i vari _chunk_, partendo dal **più raro** (_Rarest First_) ed evitando di chiedere più volte lo stesso _chunk_ e quelli già possiede. Attraverso l'approccio _Rarest First_, si riesce a minimizzare le attese indeterminate, in quanto  se ci fosse una copia presente solo in un vicino e questi dovesse uscire, dovremmo attendere l'arrivo di un nuovo _peer_.
 
-Mentre il _peer_ scarica i _chunk_ dai suoi vicini, questi potrebbero richiedergli altri _chunk_. Poiché queste richieste potrebbero essere troppe da seguire, si opera una graduatoria secondo la poiltica _tit-for-tat_.
+A meno che non sia un _free-rider_, mentre il _peer_ scarica i _chunk_ dai suoi vicini, mette a disposizione i propri chunk ai vicini, che potrebbero procedere a fargli richieste. Poiché queste richieste potrebbero essere troppe da seguire, si opera una graduatoria secondo la politica _Tit-For-Tat_:
+> Ogni dispositivo dà priorità più elevata alle richieste di quei vicini che, nell'unità di tempo, gli hanno inviato più dati.
 
-Si decide di dare priorità a quei vicini che, nell'unità di tempo, mi inviano più dati. Questo scoraggia i _Free Riders_, e incentiva i vari _peers_ di contribuire al torrent.
+Questo approccio scoraggia i _Free Riders_, e incentiva i vari _peers_ di contribuire al torrent.
 
-In particolare si inviano dati ai **_top-four providers_**, che tendenzialmente sono coloro che hanno una capacità di carico simile a quella del _peer_. Per ovviare a questa limitazione, ogni 30 secondi si seleziona casualmente un altro **vicino** e vi si inviano dei _chunk_, sperando che questo abbia una velocità di trasmissione maggiore a quella dell'attuale _top-four_.
+In particolare, ogni dispositivo invia dati solamente ai **_Top-Four Providers_**, che sono tipicamente coloro che hanno una capacità di carico simile a quella del _peer_.  Per ovviare alla limitazione per cui si comunicherebbe sempre con gli stessi peer (e per permettere ai nuovi nodi di integrarsi), ogni 30 secondi si seleziona casualmente un altro **vicino** a cui inviare dati. Se questo nuovo vicino risponderà garantendo una velocità di trasmissione maggiore rispetto a uno dei membri attuali dei _top-four_, prenderà il suo posto.
 
 # 5. Applicazioni di comunicazione in tempo reale
 
@@ -828,7 +834,7 @@ I _video_ sono:
 Un singolo _frame_ è rappresentato come un **array di pixel**, ognuno rappresentato da una sequenza di 8bit.
 
 Per diminuire il numero di bit da inviare si sfruttano le correlazioni presenti nelle sequenze video:
-- **Correlazione Spaziale**: Avviene quando due o più pixel vicini sono sufficientemente simili da poter essere considerati uguali. Invece di inviare informazioni per ogniuno, è quindi sufficiente inviare solamente due valori: il colore e quanti pixel consecutivi lo hanno.
+- **Correlazione Spaziale**: Avviene quando due o più pixel vicini sono sufficientemente simili da poter essere considerati uguali. Invece di inviare informazioni per ognuno, è quindi sufficiente inviare solamente due valori: il colore e quanti pixel consecutivi lo hanno.
 - **Correlazione Temporale**: Avviene quando due frame successivi avranno molti pixel uguali. In questi casi possiamo quindi concentrarci ad inviare solamente i valori di colore esclusivamente per i pixel che sono effettivamente cambiati
 
 Esistono due tipi di codifica del video:

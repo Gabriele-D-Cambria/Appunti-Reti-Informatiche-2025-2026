@@ -450,7 +450,7 @@ Quando entrambi avranno lo stesso $MS$ si generano quattro chiavi:
 
 <small>(La chiave MAC coincide con il <em>secret</em> nominato precedentemente)</small>
 
-Queste chiavi vengono generati attraverso una funzione di derivazione di chiavi (`KDF`) che utilizza come _seed_ il $MS$ e altri dati per generare le chiavi.
+Queste chiavi vengono generate attraverso una funzione di derivazione di chiavi (`KDF`) che utilizza come _seed_ il $MS$ e altri dati.
 
 Per cifrare i dati inviati all'interno di un flusso si divide il flusso in una serie di _record_ composti da:
 - Lunghezza

@@ -258,7 +258,7 @@ Vediamo alcuni esempi.
 
 Si basa sul trasmettere i pacchetti **_in ordine di arrivo_**.
 
-Questo algoritmo tratta **_tutti i pacchetti in modo uguale_**. Nella realtà però abbiamo applicazioni diverse, ogniuna con necessità diverse.
+Questo algoritmo tratta **_tutti i pacchetti in modo uguale_**. Nella realtà però abbiamo applicazioni diverse, ognuna con necessità diverse.
 
 ### 2.4.2. Priorità
 
@@ -291,7 +291,7 @@ Questo algoritmo ci permette anche di fornire una garanzia di banda minima.
 
 Affronta il problema della rete da diversi punti di vista:
 - **Tecnico**: come un `ISP` dovrebbe allocare/condividere le sue risorse?
-- **Sociale e Economico**: dovrebbe proteggere la "libertà di parola" incoraggiando "innovazione" e "competizione, trattando tutti "alla stessa maniera"? Oppure dovremmo fornire ad ogniuno "le risorse che necessita, anche se più di un altro"
+- **Sociale e Economico**: dovrebbe proteggere la "libertà di parola" incoraggiando "innovazione" e "competizione, trattando tutti "alla stessa maniera"? Oppure dovremmo fornire ad ognuno "le risorse che necessita, anche se più di un altro"
 - **Legale**: dovrebbe forzare regole e politiche?
 
 Diversi stati hanno diversi punti di vista sulla _newutralità della rete_

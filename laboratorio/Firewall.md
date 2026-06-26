@@ -70,7 +70,7 @@ All'interno del kernel `Linux` il componente **_netfilter_** offre le funzionali
 
 `iptables` invece è il programma `CLI` che server per configurare le tabelle di reogle.
 
-In particolare `iptables` lavora su diverse tabelle (_tables_), ogniuna con una specifica funzionalità.
+In particolare `iptables` lavora su diverse tabelle (_tables_), ognuna con una specifica funzionalità.
 
 Ogni tabella contiene **diverse catene**, dette _chains_, che contengono una lista di regole da applicare a una categoria di pacchetti.
 

@@ -89,7 +89,7 @@ A livello implementativo il router e lo switch vengono collassati in un unico di
 
 Gli _switch_ sono messi a dura prova all'interno dei **datacenter**, dove abbiamo centinaia di migliaia di _host_ vicini che comunicano tra loro .
 
-È quindi necessario gestire correttamente e in maniera efficace e affidabile grossi carichi di lavoro gestiti da molte applicazioni che gestiscono ogniuna molti clienti, gestendo quindi la distribuzione del carico.
+È quindi necessario gestire correttamente e in maniera efficace e affidabile grossi carichi di lavoro gestiti da molte applicazioni che gestiscono ognuna molti clienti, gestendo quindi la distribuzione del carico.
 Soprattutto, dobbiamo trovare un modo per **evitare effetti bottleneck**.
 
 <div class="grid2">
