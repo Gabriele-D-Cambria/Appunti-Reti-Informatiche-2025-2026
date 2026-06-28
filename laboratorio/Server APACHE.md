@@ -18,7 +18,7 @@ title: Server APACHE
 
 # 2. HTTP
 
-L'_HyperText Transfer Protocol_ è un protocollo di livello applicazione er lo scambio di _ipermedia_.
+L'_HyperText Transfer Protocol_ è un protocollo di livello applicazione per lo scambio di _hypermedia_.
 
 Segue l'architettura **client/server**, dove il _client_ (_browser_) chiede un documento e il server `HTTP` risponde con la risorsa.
 
@@ -26,7 +26,7 @@ Segue l'architettura **client/server**, dove il _client_ (_browser_) chiede un d
 
 Nella prima versione `1.0 (1996)` le comunicazioni erano **non presistenti**, ma già un anno dopo `HTTP 1.1` prevedeva comunicazioni **persistenti** per le risorse,
 
-Con l'aumento dei dispositivi monbili e dell'utilizzo di contenuti multimediali e della richiesta di esperienze web più veloci ed efficienti, si è implementata una nuova versione del protocollo `HTTP 2` che ha introdotto una serie di nuove tecnologie, come **Server Push**, **Multiplexing**, **Priorità del flusso**, **Compressione header**, **Protocollo binario**, ...
+Con l'aumento dei dispositivi mobili e dell'utilizzo di contenuti multimediali e della richiesta di esperienze web più veloci ed efficienti, si è implementata una nuova versione del protocollo `HTTP 2` che ha introdotto una serie di nuove tecnologie, come **Server Push**, **Multiplexing**, **Priorità del flusso**, **Compressione header**, **Protocollo binario**, ...
 
 Nel 2022 l'evoluzione in `HTTP 3` ha mirato a migliorare l'efficienza, passando da una semplice richiesta `GET` ad un protocollo `QUIC`, un protocollo avanzato basato su `UDP` con multiplexing e crittografia integrata. `QUIC` riduce la latenza e aumenta la sicurezza.
 
@@ -234,21 +234,21 @@ Questa configurazione risponde a **_tutti gli IP sulla porta 80_**.
 
 ## 3.4. Moduli Utili
 
-Il modulo `/etc/apache2/mods-availaable/dir.conf`, abilitato didefualt, permette di specificare attraverso la direttiva `DirectoryIndex` **_il file da prelevare in caso non venga specificato dal client_**.
+Il modulo `/etc/apache2/mods-available/dir.conf`, abilitato di defualt, permette di specificare attraverso la direttiva `DirectoryIndex` **_il file da prelevare in caso non venga specificato dal client_**.
 ```conf
 DirectoryIndex index.html index.cgi index.pl index.php ...
 ```
 
 In questo modo quando l'utente digita `www.mysite.com` riceverà il file `www.mysite.com/index.html`
 
-Il modulo `/etc/apache2/mods-availaable/userdir.conf`, NON abilitato didefualt, permette invece ai singoli utenti di mettere i propri file nella cartella speciicfata e renderli accessibili tramite l'indirizzo `www.mysite.com/~username/`.
+Il modulo `/etc/apache2/mods-available/userdir.conf`, NON abilitato di defualt, permette invece ai singoli utenti di mettere i propri file nella cartella speciicfata e renderli accessibili tramite l'indirizzo `www.mysite.com/~username/`.
 ```conf
 UserDir public_html
 ```
 
 # 4. Multi-Processing Module
 
-Affinché il server possa accettare e servire più richieste contemporaneamente Apache ricorre ad un _Multi-Processing Module_ `MPM`, responsabile di gestire i socket, fare binfig delle porte, accettare connessioni e servirle, eventualmente usande processi e thread figli.
+Affinché il server possa accettare e servire più richieste contemporaneamente Apache ricorre ad un _Multi-Processing Module_ `MPM`, responsabile di gestire i socket, fare il binding delle porte, accettare connessioni e servirle, eventualmente usando processi e thread figli.
 
 Su `UNIX` si può scegliere tre:
 - prefork
@@ -263,14 +263,12 @@ Dopo aver servito una connessione tornano disponibili per una nuova connessione.
 
 Il padre gestisce il _pool_ dei figli, cercando di mantenere sempre alcuni figli disponibili.
 
-Il preforking permette di diminuire l'overhead della `fork()` ad ogni connessione.
-
-ogni figlio viene riciclato per `MaxConnectionsPerChild` connessioni, e poi viene ucciso per evitare _memory leak_ accidentali.
+Il preforking permette di diminuire l'overhead della `fork()` ad ogni connessione, ed ogni figlio viene riciclato per `MaxConnectionsPerChild` connessioni, e poi viene ucciso per evitare _memory leak_ accidentali.
 Il server genera all'avvio `StartServer n` figli. Il numero massimo di figli creabili dalle connessioni aggiuntive è `MaxRequestWorkers`.
 
 I figli inattivi devono essere compresi nell'intervallo `[MinSpareServers; MaxSpareServers]`.
 
-Tutte queste variabili si trovano in `/etc/apache2/mods-available/prefork.conf`
+Tutte queste variabili si trovano in `/etc/apache2/mods-available/mpm_prefork.conf`.
 
 Questo approccio ha come vantaggio:
 - Massima compatibilità: in alcuni casi alcuni moduli o librerie potrebbro non supportare il _multithreading_
@@ -294,9 +292,11 @@ I figli generano all'inizio `ThreadsPerChild`, e il numero massimo di **thread t
 
 Il numero massimo di figli è **_necessariamente_** `MaxRequestWorkers/ThreadsPerChild`.
 
+Tutte queste variabili si trovano in `/etc/apache2/mods-available/mpm_worker.conf`.
+
 ## 4.3. MPM Event
 
-È una versione migliorata di `MPM worker`, ed è il modulo di defautl dalla versione `2.4`.
+È una versione migliorata di `MPM worker`, ed è il modulo di default dalla versione `2.4`.
 
 Oltre ad accettare le connessioni, il thread listener gestisce le connessioni **_temporaneamente inattive_**.
 Ad esempio:
@@ -312,3 +312,5 @@ Alcuni limiti globali sono:
 - `ServerLimit`: limite massimo configurabile per il numero di **processi figli attivi**.
   - `Prefork`: `MaxRequestWorkers <= ServerLimit`
   - `Worker(thread)`: `MaxRequestWorkers <= ServerLimit * ThreadsPerChild`
+
+Tutte queste variabili si trovano in `/etc/apache2/mods-available/mpm_event.conf`.

@@ -43,18 +43,18 @@ Per ogni pacchetto il firewall compie tre azioni:
 3. Se il pacchetto corrisponde alle caratteristiche della regola, intrapende l'azione
 
 
-Ipotizzando una rete locale `222.22.0.0/16` e vogliamo:
-- Impedire l'accesso a Internet dall'interon della rete
+Ipotizzando una rete locale `222.22.0.0/16`, vogliamo:
+- Impedire l'accesso a Internet dall'interno della rete
 - Consentire l'accesso dalla rete esterna `111.11.0.0/16` alla sottorete locale `222.22.22.0/24`, impedendo però a `111.11.11.0/24` di accedere alla sottorete locale `222.22.22.0/24`
 
-Un esempio di _firewall_ è il seguente:
+Un esempio di _firewall_ che rispetta queste regole è il seguente:
 <div class="flexbox" markdown="1">
 
 | indice |   IP sorgente    | Porta Sorgente | IP destinatario  | Porta dest. |  Azione  |
 | :----: | :--------------: | :------------: | :--------------: | :---------: | :------: |
-|   1    | `111.11.11.0/24` |                | `222.22.22.0/24` |             |  `DROP`  |
-|   2    | `111.11.0.0/16`  |                | `222.22.22.0/24` |             | `ACCEPT` |
-|   3    |    `0.0.0.0`     |                |    `0.0.0.0`     |             |  `DROP`  |
+|   1    | `111.11.11.0/24` |       /        | `222.22.22.0/24` |      /      |  `DROP`  |
+|   2    | `111.11.0.0/16`  |       /        | `222.22.22.0/24` |      /      | `ACCEPT` |
+|   3    |    `0.0.0.0`     |       /        |    `0.0.0.0`     |      /      |  `DROP`  |
 
 </div>
 
@@ -88,14 +88,16 @@ Per visualizzare le regole:
 sudo iptables [-t table] -L [chain]
 ```
 
-La tabella di _default_ è proprio `filter`, mentre nel caso in cui non si specifichi una catena vengono vidualizzate tutte:
+La tabella di _default_ è proprio `filter`:
 ```bash
 sudo iptables -L INPUT
 ```
 > Chain INPUT (policy ACCEPT)
 > target     prot opt source               destination
+
+Per vedere le regole del `nat` invece:
 ```bash
-sudo iptables -t nat -L
+sudo iptables -t nat -L     # Se non viene specificata una catena, vengono mostrate tutte
 ```
 > Chain PREROUTING (policy ACCEPT)
 > target     prot opt source               destination         
@@ -109,23 +111,22 @@ sudo iptables -t nat -L
 > Chain POSTROUTING (policy ACCEPT)
 > target     prot opt source               destination 
 
-Vediamo adesso uan serie di comandi per manipolare le tabelle:
+Vediamo adesso una serie di comandi per manipolare le tabelle:
 ```bash
 # Aggiungere una regola in fondo alla catena
-sudo iptables [-t table] -A chain rule-specification
+sudo iptables [-t table] -A <chain> <rule-specification>
 
 # Aggiungere una regola in una posizione specifica (o in cima se lasciato vuoto)
-sudo iptables [-t table] -I chain [num] rule-specification
+sudo iptables [-t table] -I <chain> [num] <rule-specification>
 
 # Rimuovere una regola dalla catena
-sudo iptables [-t table] -D chan rule-specification
-sudo iptables [-t table] -D chan num
+sudo iptables [-t table] -D <chain> (rule-specification | num)
 
 # Rimuovere tutte le regole dalla/e catena/e
 sudo iptables [-t table]  -F [chain]
 
 # Cambiare la regola di default
-sudo iptables [-t table] -P target
+sudo iptables [-t table] -P <chain> <target>
 ```
 
 `rule-specification` è una stringa in cui possiamo specificare:
@@ -161,7 +162,7 @@ Attraverso il meccanismo di _port translation_ può modificare internamente gli 
 
 La tabella `nat` ha **3 catene**:
 - `PREROUTING`: per fare il `D-NAT`, ovvero alterare l'indirizzo/porta di destinazione dei pacchetti in arrivo
-- `OUTPUT`: per fare `D-NAT` dei pacchetti in uscita dai rocessi locali _prima del routing_
+- `OUTPUT`: per fare `D-NAT` dei pacchetti in uscita dai processi locali _prima del routing_
 - `POSTROUTING`: per fare il `S-NAT`, ovvero alterare l'indirizzo/porta sorgente dei pacchetti in partenza
 
 
@@ -200,12 +201,12 @@ A esempio possiamo rendere accessibile via `ssh` (`port 22`) un host (`192.168.1
 sudo iptables -P DROP
 
 # Permetti le connessioni ssh dall'amministratore verso l'host
-sudo iptables -A INPUT -p tcp -i -s 192.168.10.5 -d 192.168.10.1 --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
+sudo iptables -A INPUT -p tcp -i eth0 -s 192.168.10.5 -d 192.168.10.1 --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
 
 sudo iptables -A OUTPUT -p tcp -o eth0 -s 192.168.10.1 -d 192.168.10.5 --sport 22 -m state --state ESTABLISHED -j ACCEPT
 ```
 
-Un altro esempio può essere quello di un _firewall_ che blocca le connessioni dall'eserno ma permette quelli che partono dalla rete locale:
+Un altro esempio può essere quello di un _firewall_ che blocca le connessioni dall'esterno ma permette quelli che partono dalla rete locale:
 
 ```bash
 sudo iptables -A FORWARD -s 192.168.10.0/24 -i eth0 -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT

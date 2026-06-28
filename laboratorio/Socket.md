@@ -11,7 +11,7 @@ title: Socket
 	- [2.3. Operazioni di IO](#23-operazioni-di-io)
 		- [2.3.1. Gestione dei file](#231-gestione-dei-file)
 	- [2.4. Compilare e linkare i file](#24-compilare-e-linkare-i-file)
-	- [2.5. Dtata e ora](#25-dtata-e-ora)
+	- [2.5. Data e ora](#25-data-e-ora)
 - [3. Programmazione Distribuita](#3-programmazione-distribuita)
 	- [3.1. Primitive dei Socket](#31-primitive-dei-socket)
 	- [3.2. Lato Server](#32-lato-server)
@@ -101,7 +101,7 @@ Le operazioni di I/O si basano sulla `<stdlib.h>`, che fornisce funzioni per leg
 int main(){
 	char* str = "Hello!\n";
 	printf(str);
-	pritnf("str = %s", str);
+	printf("str = %s", str);
 
 	int i = 5;
 	printf("i = %d\n", i);
@@ -116,7 +116,7 @@ int main(){
 <img class="100" src="./images/socket/stdio-printf-special-characters.png">
 <figcaption>
 
-Alcuni caratteri epr la manipolazione delle stringhe nelle funzioni.
+Alcuni caratteri per la manipolazione delle stringhe nelle funzioni.
 </figcaption>
 </figure>
 
@@ -148,8 +148,9 @@ char *str2 = "World!\n";
 n2 = sizeof(str2);
 strcat(str, str2, n2);
 /*
-* considera str come la lunghezza senza \0, mentre in str2 lo considera
-* produce quindi "Hello \nWorld!\n\0"
+ * Considera str come la lunghezza senza \0, mentre in str2 lo considera
+ * produce quindi "Hello \nWorld!\n\0"
+ */
 ```
 
 ### 2.3.1. Gestione dei file
@@ -163,7 +164,7 @@ Ogni file aperto è rappresentato da un puntatore di tipo `FILE*` definito in `<
 #include <stdio.h>
 
 FILE* fd;
-fd = fopne("path/file.txt", "r");
+fd = fopen("path/file.txt", "r");
 
 if(fd == NULL){
 	// Gestione errore
@@ -243,7 +244,7 @@ Oppure in un unica linea:
 gcc -Wall -c myFile1.c myFile2.c -o myProgram
 ```
 
-## 2.5. Dtata e ora
+## 2.5. Data e ora
 
 Di seguito un esempio di stampa di data e ora:
 ```c
@@ -338,12 +339,12 @@ Un _socket_ è identificato da un indirizzo:
 - _processo_ (`TCP/IP`: numero porta)
 
 
-Nelle comunicazioni un _scket_ è l'estremità del canale di comunicazione:
+Nelle comunicazioni un _socket_ è l'estremità del canale di comunicazione:
 
 <img class="" src="./images/socket/client-server-socket.png">
 
 
-L'astrazione del _socket_ è implementata dal _sistema operativo_. Quest'ultimo infatti mette a disposizioen delle **primitive** (`system calls`) che permettono di:
+L'astrazione del _socket_ è implementata dal _sistema operativo_. Quest'ultimo infatti mette a disposizione delle **primitive** (`system calls`) che permettono di:
 - Creare un _socket_
 - Assegnarli un indirizzo e una porta
 - Connettersi ad un altro _socket_
@@ -360,7 +361,7 @@ Per la creazione di un _socket_ dobbiamo includere tre librerie e utilizzare la 
 
 /**
 * Permette la creazione di un socket. Non lo associa ad un indirizzo IP o ad una porta
-* @param domain è la famisglia di protocolli da utilizzare, può valere
+* @param domain è la famiglia di protocolli da utilizzare, può valere
 *					- AF_LOCAL: comunicazione locale
 *					- AF_INET: protocolli IPv4, TCP e UDP
 * @param type specifica la tipologia di socket
@@ -374,7 +375,7 @@ int socket(int domain, int type, int protocol);
 
 Alcune strutture dati utili per la gestione {degli indirizzi:
 ```c
-/* Endpont IPv4 in `netinet/in.h`*/
+/* Endpoint IPv4 in `netinet/in.h`*/
 
 struct sockaddr_in{
 	sa_family_t		sin_family;		/* address family: AP_INET */
@@ -388,19 +389,19 @@ struct in_addr {
 }
 ```
 
-Esiste anche una `struct sockaddr` utilizzata da alcune funzioni, ma che non non manipoleremo mai direttamente.
+Esiste anche una `struct sockaddr` utilizzata da alcune funzioni, ma che non manipoleremo mai direttamente.
 
-Negli esempi è possibile notare la dicitura `in network byte order`. Questo è sepcificata perché calcolatori diversi possono usare modalit diverse per **ordinare i byte**.
+Negli esempi è possibile notare la dicitura `in network byte order`. Questo è specificata perché calcolatori diversi possono usare notazioni diverse per **ordinare i byte**.
 
 Prendiamo per esempio il numero `422990` in `32bit`: `0000 0000 0000 0110 0111 0100 0100 1110`
 
 Questo può essere memorizzato:
 <div class="flexbox" markdown="1">
 
-|                     big-endian                     |                   little-endian                    |
-| :------------------------------------------------: | :------------------------------------------------: |
-|   Per primo il byte più significativo (**MSB**)    |   Per primo il byte meno significativo (**LSB**)   |
-| `0000 0000 \| 0000 0110 \| 0111 0100 \| 0100 1110` | `0100 1110 \| 0111 0100 \| 0000 0110 \| 0000 0000` |
+|                   big-endian                    |                  little-endian                  |
+| :---------------------------------------------: | :---------------------------------------------: |
+|  Per primo il byte più significativo (**MSB**)  | Per primo il byte meno significativo (**LSB**)  |
+| `0000 0000 - 0000 0110 - 0111 0100 - 0100 1110` | `0100 1110 - 0111 0100 - 0000 0110 - 0000 0000` |
 
 </div>
 
@@ -422,7 +423,7 @@ I formati `uint16_t` e `uint32_t` utilizzano **_sempre_** rispettivamente `16` e
 
 
 Noi siamo abituati a vederli nel formato **presentazione**, in notazione puntata (`192.34.5.123`)
-Gli indirizzi `IP` seguono però un formato **numerico** su `32bit` utilizzato dal computer. (`3223455 099`)
+Gli indirizzi `IP` seguono però un formato **numerico** su `32bit` utilizzato dal computer.
 
 Sono quindi necessari delle funzioni di traduzione:
 ```c
@@ -505,7 +506,7 @@ ret = listen(sd, 10);
 
 
 /**
-* Accetta una richiesta di connessioen perveunta sul socket.
+* Accetta una richiesta di connessione perveunta sul socket.
 * Ha senso solo sui socket `SOCK_STREAM`
 * La funzione è bloccante: il programma si ferma finché non arriva una richiesta
 * @param sockfd: descrittore del socket
@@ -676,8 +677,7 @@ Uno schema può essere il seguente:
 
 # 4. Gestione degli errori
 
-Abbiamo visto che le primitive fin'ora restituiscono `-1` in caso di errore.
-Oltre ad avere questo ritoro, le primitive **_settano una variabile_** `errno` che può essere letta per scoprire il motivo dell'errore.
+Fin'ora abbiamo visto che in caso di errore le primitive restituiscono sempre `-1`. Oltre a questo valore di ritorno, in realtà le primitive **_settano una variabile_** `errno` che può essere letta per scoprire il motivo dell'errore.
 
 ```c
 #include <errno.h>
@@ -799,7 +799,7 @@ void pthread_exit(void* retval);
 Di default un _socket_ è **_bloccante_**.
 
 Tutte le operazioni su di esso **fermano l'esecuzione del processo in attesa del risultato**.
-Questa modalità è sepmlice da usare e va bene per applicazioni in cui i blocchi temporanei non sono problematici o in cui viene utilizzato il _multithreading_ per gestire la concorrenza.
+Questa modalità è semplice da usare e va bene per applicazioni in cui i blocchi temporanei non sono problematici o in cui viene utilizzato il _multithreading_ per gestire la concorrenza.
 
 I _socket_ possono però essere settati anche come **_non bloccanti_**.
 
@@ -1027,7 +1027,7 @@ ssize_t sendto(int sockfd, const void* buf, size_t len, int flags, const struct 
 * @param addrlen lunghezza di `src_addr`
 * @returns il numero di byte ricevuti, `-1` su errore, `0` se il socket remoto si è chiuso
 */
-ssize_t recv_from(itn sockfd, const void *buf, size_t len, int flags, struct sockaddr *src_addr, socklen_t addrlen);
+ssize_t recv_from(int sockfd, const void *buf, size_t len, int flags, struct sockaddr *src_addr, socklen_t addrlen);
 ```
 
 Possiamo vedere un esempio di codice:
@@ -1132,8 +1132,6 @@ Questo non è tuttavia necessario.
 </figcaption>
 </figure>
 
-
-
 # 9. Text Vs Binary Protocols
 
 Molti protocolli a livello applicativo inviano messaggi di testo (_text protocols_) invece di inviare direttamente i dati delle strutture dati (_binary protocols_).
@@ -1150,7 +1148,7 @@ Questi protocolli hanno come pro:
 
 Come contro:
 - **Efficienza**: i dati trasmessi sono generalmente più grandi, poiché i numeri devono essere convertiti in stringhe
-- **Parsing lento**: il parsing del testo necessità di interpeetare e convertire il testo nei tipi di dati corretti
+- **Parsing lento**: il parsing del testo necessità di interperetare e convertire il testo nei tipi di dati corretti
 - **Ambiguità**: in alcuni casi la gestione di formati può portare a errori se questo non è ben definito o implementato
 
 Immaginiamo di avere la seguente struttura:
@@ -1173,9 +1171,9 @@ sscanf(buffer, "%d %c", &t.a, &t.b);
 Il **Binary Protocol** utilizza dati codificati direttamente nel formato binario nativo, non leggibile dall'uomo.
 Si definiscono messaggi con struttura prefissata, composti da campi che rappresentano l'informazione da scambiare. L'informazione `12345` verrà convertita in binario a `32bit` e inviati come tale, occupando solo `4Byte` invece di `5Byte`
 
-Ciascun campo avrà una lunghezza e un tipo associate. Nei rari casi in cui ci potrebbero essere campi a lunghezza variabile, questi hanno comunque una dimensione massima.
+Ciascun campo avrà una lunghezza e un tipo associati. Nei rari casi in cui ci potrebbero essere campi a lunghezza variabile, questi hanno comunque una dimensione massima.
 
-L'invio di strutture senza controlli:
+L'invio di strutture senza controlli, ad esempio:
 ```c
 sendto(sock, &t, sizeof(struct tmp), 0, &server, length);
 ```
@@ -1227,7 +1225,7 @@ La variabilità rende l'uso del tipo `int` poco sicuro nei protocolli binari.
 
 Poiché la rappresentazione binaria dei dati può variare tra le diverse piattaforme, è necessario gestire l'**endianess** e la **serializzazione**/**deserializzazione**.
 
-Per garantire la corrente interpretazione dei dati tra sistemi con _endianess_ diverso si utilizzano funzioni tipo `htonl()` (_Host to Network Long_) e `nothl()` (_Network to Host Long_) per convertire tra _host byte order_ e _network byte order_.
+Per garantire la corretta interpretazione dei dati tra sistemi con _endianess_ diverso si utilizzano funzioni tipo `htonl()` (_Host to Network Long_) e `nothl()` (_Network to Host Long_) per convertire tra _host byte order_ e _network byte order_.
 
 La **serializzazione** è il processo di trasformazione di una struttura complessa in una sequenza di byte, mentre la **deserializzazione** fa il contrario, trasformando sequenze di byte in strutture dati.
 
@@ -1237,6 +1235,6 @@ Il protocollo binario ha diversi vantaggi:
 - **Precisione**: non ci vono problemi di formattazione o ambiguità legata alla rappresentazione del testo
 
 Tuttavia, anche in questo caso abbiamo dei contro:
-- **Difficoltà di debug**: il _debig_ manuale diventa più difficile. È spesso necessario uno strumento specializzato per visualizzare e interpretare i dati binari, come ad esempio un analizzatore di pacchetti di tipo _Wireshark_
-- **Estendibilità**: poiché i messaggi devono rispettare una struttura fissa e rigorosa, aggiungere nuovi campi potrebbe richiedere modifiche ai byte gia esistenti, _rompendo la compatibilità_
-- **Compatibilità tra sistemi**: problami di _endianess_ richiedono funzioni come `htonl()` e `ntohl()` per la conversione.
+- **Difficoltà di debug**: il _debug_ manuale diventa più difficile. È spesso necessario uno strumento specializzato per visualizzare e interpretare i dati binari, come ad esempio un analizzatore di pacchetti di tipo _Wireshark_
+- **Estendibilità**: poiché i messaggi devono rispettare una struttura fissa e rigorosa, aggiungere nuovi campi potrebbe richiedere modifiche ai byte già esistenti, _rompendo la compatibilità_
+- **Compatibilità tra sistemi**: problemi di _endianess_ richiedono funzioni come `htonl()` e `ntohl()` per la conversione.

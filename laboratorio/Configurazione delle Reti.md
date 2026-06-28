@@ -1,5 +1,5 @@
 ---
-title: Esercitazione 2
+title: Configurazione delle Reti
 ---
 
 # 1. Indice
@@ -19,78 +19,57 @@ title: Esercitazione 2
 
 # 2. Indirizzi IP
 
-Si dice **rete locale** una rete composta esclusivamente di end-point e di _switch_. Le comunicazioni su rete locale sono composte quindi solamente di informazioni relative ai primi due livelli di comunicazione, non permettendo l'accesso dall'esterno.
+Si dice **rete locale** una rete composta esclusivamente da end-point e _switch_, nella quale le comunicazioni composte solamente da informazioni relative ai primi due livelli di comunicazione. Per poter comunicare all'esterno, quindi sfruttare il terzo livello di comunicazione e accedere ad internet, si utilizza un _router_.
 
-Per poter comunicare all'esterno si utilizza un _router_ che permette l'accesso ad internet, poiché analizza le informazioni di livello 3.
-
-Per poter comunicare un dato dispositivo necessità di 4 informazioni:
-- Indirizzo `IP`
+Per poter agire all'interno della rete un dato dispositivo necessita quindi di quattro informazioni:
+- Indirizzo `IP`: identifica una scheda di rete di un dispositivo all'intenro della rete.
 - Maschera di rete
 - Indirizzo `IP` del gateway (per comunicazioni all'esterno)
-- Indirizzo `IP` del server `DNS` per la traduzione dell'url in un indirizzo `IP` di end-point
+- Indirizzo `IP` del server `DNS` per la traduzione degli indirizzi
 
-Ogni scheda di rete di un computer è identificata all'interno della rete tramite un **indirizzo IP**, una sequenza di `32bit` (`IPv4`) o `128bit` (`IPv6`).
-
-Gli indirizzi `IPv4` sono rappresentati in 4 numeri decimali in notazione decimale puntata/ :
-
+Gli **indirizzi IP** sono una sequenza di `32bit` (`IPv4`) o `128bit` (`IPv6`). Per quanto riguarda gli indirizzi `IPv4` questa sequenza è rappresentata da 4 numeri decimali in notazione decimale puntata:
 $$
-\underbrace{\text{11000000}.\text{10101000}.\text{00010101}.\text{10000010}}_{192.168.21.130}
+\begin{CD}
+	{\text{11000000}.\text{10101000}.\text{00010101}.\text{10000010}} \\
+	@VVV \\
+	{{192.168.21.130}}
+\end{CD}
 $$
 
-Un indirizzo IP è a sua volta definito in due parti:
-- La parte iniziale indica la rete
-- La parte finale indica l'host
+Ogni indirizzo IP è a sua volta definito in due parti:
+- La parte iniziale identifica la rete
+- La parte finale identifica un host all'interno della rete
 
-Per poter dividere queste informazionisi utilizza la **_maschera di rete_**. Qeusta maschera è una sequenza di `32bit` che ha:
+Per definire praticamente cosa intendiamo per "parte iniziale" e "parte finale" si utilizza la **_Maschera Di Rete_**, una sequenza di `32bit` che ha:
 - Nella prima parte tanti `1 bit` quanti sono i bit da dedicare alla rete
-- Nella parte finale tanti `0 bit` quanti sono quelli necessari epr indirizzare tutti gli host.
+- Nella parte finale tanti `0 bit` quanti sono quelli necessari per indirizzare tutti gli host.
 
-Nella maschera `255.255.240.0` $\to$ `11111111.11111111.11110000.00000000` abbiamo $2^{12}-2$ host possibili. Il $-3$ è dovuto a due indirizzi dedicati:
-- `0`: dedicato all'indirizzo di rete
-- tipicamente `1`: dedicato all'indirizzo di gateway
-- `255`: dedicato alle comunicazioni in _broadcast_
+Se una rete (prendiamo in esempio `192.168.0.0`) ha maschera `255.255.240.0` $\to$ `11111111.11111111.11110000.00000000`, significa che al suo interno potremo indirizzare un massimo di $2^{12}-3$ host. Si rimuovono tre indirizzi poiché rappresentano indirizzi dedicati.:
+- `192.168.0.0`: È il primo indirizzo valido e rappresenta l'**indirizzo della rete**
+- `192.168.0.1`: È il secondo indirizzo valido, è tipicamente utilizzato per identificare il _gateway_.
+- `192.168.15.255`: È l'ultimo indirizzo valido, rappresenta l'**indirizzo di broadcast**
 
 Per ricavare l'indirizzo di rete dato un `IP` e una `mask` si effettua l'operazione di `and`.
 
-Possiamo vedere di seguito un esempio:
+Possiamo vedere di seguito un esempio di rete locale connessa ad internet:
 
-<img class="" src="./images/networkConfig/local-network-ip-example.png">
+<img class="40" src="./images/networkConfig/local-network-ip-example.png">
 
 # 3. Configuraizione interfaccia di `rete`
 
-La connessione che sarà emulatada _virtualbox_ è una connessione cablata (_ethernet_).
+All'interno della macchina virtuale, la connessione ad internet viene **emulata** da _virtualbox_ attraverso una connessione cablata (_Ethernet_).
 
-Per vedere lo stato delle impostazioni di rete nel computer, in sistemi `ubuntu` si utilizza il comando:
-```bash
-ip
-```
-> Usage: ip [ OPTIONS ] OBJECT { COMMAND | help }
->        ip [ -force ] -batch filename
-> where  OBJECT := { address | addrlabel | fou | help | ila | ioam | l2tp | link |
->                    macsec | maddress | monitor | mptcp | mroute | mrule |
->                    neighbor | neighbour | netconf | netns | nexthop | ntable |
->                    ntbl | route | rule | sr | stats | tap | tcpmetrics |
->                    token | tunnel | tuntap | vrf | xfrm }
->        OPTIONS := { -V[ersion] | -s[tatistics] | -d[etails] | -r[esolve] |
->                     -h[uman-readable] | -iec | -j[son] | -p[retty] |
->                     -f[amily] { inet | inet6 | mpls | bridge | link } |
->                     -4 | -6 | -M | -B | -0 |
->                     -l[oops] { maximum-addr-flush-attempts } | -echo | -br[ief] |
->                     -o[neline] | -t[imestamp] | -ts[hort] | -b[atch] [filename] |
->                     -rc[vbuf] [size] | -n[etns] name | -N[umeric] | -a[ll] |
->                     -c[olor]}
-
-
-Per vedere le interfacce si utilizza il comando:
+Per vedere lo stato delle impostazioni di rete nel computer, in sistemi `ubuntu` si utilizza il comando `ip`, che può prendere diversi argomenti. Ad esempio, per vedere le interfacce si utilizza il comando:
 ```bash
 ip addr show # ip a s
 ```
-Che stampa questo:
+
+L'output di questo comando è simile a quello riportato di seguito:
 
 <div class="grid2">
 <div class="">
 
-La prima è l'"interfaccia" di _loopback_.
+La prima interfaccia che viene mostrata è quella di _loopback_.
 
 Nel caso della prima riga abbiamo che:
 - `lo`: interfaccia di _loopback_
@@ -100,95 +79,95 @@ Nel caso della prima riga abbiamo che:
 - `mtu` (_maximum transission unit_): massima quantità di byte per singolo pacchetto trasmissibili
 - `qdisc noqueue` (_Queueing Discipline_): come gestisce l'accodamento dei pacchetti. Non ha coda (i pacchetti in questo caso non escono fisicamente)
 - `state UNKNOWN`: lo stato fisico non si applica, poiché non è una vera scheda
-- `group default`: indica il gruppo al quale possono far parte delle interfaccie. Questa interfaccia fa parte del gruppo standard,
+- `group default`: indica a quale gruppo di interfacce da parte, in questo caso è quello di _default_
 - `qlen 1000`: numero massimo di pacchetti che vengono tenuti in coda
 
-Nelle altre righe abbiamo:
+Successivamente sono mostrate altre informazioni:
 - Gli indirizzi indirizzabili (in questo caso nulli perché è un interfaccia interna)
 - Indirizzo `MAC` (in questo caso fittizio)
-- `inet`: indirizzo IPv4 di questo
-- `scope host lo`: valido sol ointerno al PC
+- `inet` e `inet6`: indirizzi IPv4 e IPv6 dell'interfaccia
+- `scope host lo`: indica che l'interfaccia è utilizzabile solo per comunicazioni interne, e non verso l'esterno.
 - `valid_lft forever preferredlft forever`: validità degli indirizzi `IP` associati all'interfaccia
 
-Se invece prendiamo la seconda interfaccia:
+Se invece andiamo ad analizzare la seconda interfaccia, che invece rappresenta l'interfaccia di comunicazione vera e propria:
 - `enpp0s3`: nome dell'interfaccia
-- `BROADCAST, MULTICAST`: supporta _broadcust_ e _multicast_
+- `BROADCAST, MULTICAST`: supporta _broadcast_ e _multicast_
 - `mtu 1500`: dimensione massima dei pacchetti in cavo _Ethernet_
 - `qdisc fq_codel`: disciplina specifica che fa si che, in caso di congestione, i pacchetti accodati più vecchi vengano scartati
 - `state UP`: scheda abilitata
-- `link/ether 08:00:27:4c:e2:d9 brd ff:ff:ff:ff:ff:ff`: indirizzo fisico (`MAC`) della scheda di rete, e indirizzo broadcast
+- `link/ether 08:00:27:4c:e2:d9 brd ff:ff:ff:ff:ff:ff`: indirizzo fisico (`MAC`) della scheda di rete e broadcast
+
 </div>
 <div class="">
 
-
 ```log
 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
-    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
-    inet 127.0.0.1/8 scope host lo
-       valid_lft forever preferred_lft forever
-    inet6 ::1/128 scope host noprefixroute
-       valid_lft forever preferred_lft forever
+	link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+	inet 127.0.0.1/8 scope host lo
+	   valid_lft forever preferred_lft forever
+	inet6 ::1/128 scope host noprefixroute
+	   valid_lft forever preferred_lft forever
 2: enp0s3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
-    link/ether 08:00:27:4c:e2:d9 brd ff:ff:ff:ff:ff:ff
-    inet 10.0.2.15/24 brd 10.0.2.255 scope global dynamic noprefixroute enp0s3
-       valid_lft 86327sec preferred_lft 86327sec
-    inet6 fd17:625c:f037:2:b9da:2e71:4d42:d0f2/64 scope global temporary dynamic
-       valid_lft 86328sec preferred_lft 14328sec
-    inet6 fd17:625c:f037:2:a00:27ff:fe4c:e2d9/64 scope global dynamic mngtmpaddr
-       valid_lft 86328sec preferred_lft 14328sec
-    inet6 fe80::a00:27ff:fe4c:e2d9/64 scope link
-       valid_lft forever preferred_lft forever
+	link/ether 08:00:27:4c:e2:d9 brd ff:ff:ff:ff:ff:ff
+	inet 10.0.2.15/24 brd 10.0.2.255 scope global dynamic noprefixroute enp0s3
+	   valid_lft 86327sec preferred_lft 86327sec
+	inet6 fd17:625c:f037:2:b9da:2e71:4d42:d0f2/64 scope global temporary dynamic
+	   valid_lft 86328sec preferred_lft 14328sec
+	inet6 fd17:625c:f037:2:a00:27ff:fe4c:e2d9/64 scope global dynamic mngtmpaddr
+	   valid_lft 86328sec preferred_lft 14328sec
+	inet6 fe80::a00:27ff:fe4c:e2d9/64 scope link
+	   valid_lft forever preferred_lft forever
 ```
 </div>
 </div>
 
-L'indirizzo `IP` di una rete più essere settato staticamente o configurato dinamicamente tramite `DHCP`.
+L'indirizzo `IP` di un dispositivo all'interno di una rete può essere assegnoato:
+- Staticamente dal progettista
+- Dinamicamente tramite protocollo `DHCP` opportunamente configurato
 
-Il campo `inet 10.0.2.15/24 brd 10.0.2.255 scope global dynamic noprefixroute enp0s3` specifica queste informazioni:
-- `inet`: indirizzo IP e maschera in forma compatta
-- `brd`: indirizzo di broadcast
-- `scope global`: l'indirizzo è **valido su internet**
-- `dynamic`: indirizzo assegnato da `DHCP` automaticamente. Poteva essere anche valere:
-  - `secondary`: indirizzo aggiunto ad un’interfaccia che ne ha già uno primario
-  - `deprecated`: l’indirizzo non deve più essere usato per nuove connessioni, ma resta valido per quelle già attive (legato a `preferred_lft scaduto`).
-  - `temporary (IPv6)`: indirizzo generato per motivi di privacy, cambia periodicamente per non
-tracciare il device.
+Il campo `inet 10.0.2.15/24 brd 10.0.2.255 scope global dynamic noprefixroute enp0s3` specifica quindi le seguenti informazioni:
+- `inet 10.0.2.15/24`: indirizzo IP e Prefusso della Maschera (indica il numero di bit settati ad `1`)
+- `brd 10.0.2.255`: indirizzo di broadcast nella rete
+- `scope global`: indica che l'indirizzo è **valido su internet**
+- `dynamic`: l'indirizzo è stato assegnato da `DHCP` automaticamente. Altri valori che possiamo trovare al suo posto sono
+  - `secondary`: indica che l'indirizzo è stato aggiunto ad un’interfaccia che ne ha già uno primario
+  - `deprecated`: indica che l’indirizzo specificato non deve più essere usato per nuove connessioni, ma resta comunque valido per quelle già attive (legato a `preferred_lft` scaduto).
+  - `temporary (IPv6)`: indirizzo generato per motivi di privacy, cambia periodicamente per non permettere di tracciare il device.
   - `tentative (IPv6)`: indirizzo in fase di verifica (Duplicate Address Detection, DAD).
   - `permanent`: indirizzo configurato staticamente e non soggetto a scadenza
 - `noprefixroute`: non è stata creata la rotta automatica per la rete
 
-Per configurare le interfacce si utilizza il comando `ip`.
-In realtà queste modifiche sono **_temporanee_**, e non sopravvivono al _reboot_ della macchina.
-Ecco alcuni comandi
+
+Per configurare le interfacce in modo **_temporaneo_** si utilizza il comando `ip`. Le modifiche fatte in questo modo **non sopravvivono al reboot**.
 ```bash
 # Per abilitare/disabilitare un'interfaccia si utilizza il comando:
 sudo ip link set <interface_name> up/down
 
 # Per aggiungere un indirizzo IP ad un interfaccia
-sudp ip addr add 10.0.3.17/24 brd 10.0.3.255 dev <interface_name>
+sudo ip addr add 10.0.3.17/24 brd 10.0.3.255 dev <interface_name>
 
 # Per rimuovere un indirizzo IP a un'interfaccia
-sudp ip addr del 10.0.3.17/24 brd 10.0.3.255 dev <interface_name>
+sudo ip addr del 10.0.3.17/24 brd 10.0.3.255 dev <interface_name>
 
 # Per rimuovere TUTTI gli indirizzi IP di un'interfaccia
-sudp ip addr flush  dev <interface_name>
+sudo ip addr flush  dev <interface_name>
 ```
 
 In `Ubuntu` la configurazione di rete è gestita da due tool:
 - `Netplan`
-- `Network Manager` (o `systemmd-networkd` per distribuzioni server o configurazioni di rete meno dinamiche)
+- `Network Manager` (o `systemd-networkd` per distribuzioni server o configurazioni di rete meno dinamiche)
 
 ## 3.1. Netplan
 
-Fornisce un interfaccia di configurazione per le interfacce basata su `YAML` (_Yet Another Markup Language_). `YAML` è un linguaggio di programmazione spesso impiegato per definire file di configurazione, avendo un formato leggibile sia dalle macchine che dagli esseri umani.
+`Netplan` fornisce un interfaccia di configurazione per le interfacce basata su `YAML` (_Yet-Another-Markup-Language_). n linguaggio di programmazione spesso impiegato per definire file di configurazione, per via del suo formato leggibile sia dalle macchine che dagli esseri umani.
 
-Genera file di configurazione di rete nel formato comprensibile dal "rendering" di rete sottostante.
+Per funzionare, genera dei file di configurazione di rete nel formato comprensibile dal "rendering" di rete sottostante all'interno della cartella `/etc/netplan`. 
 
-Nella cartella `/etc/netplan` si trovano i file di configurazione `.yaml`. Se non sono necessarie configurazioni di rete particolari, di default si trova `01-network-manager-all.yaml` che contiene la semplice configurazione di rete, che delega tutto al `NetworkManager`.
-Le configurazioni hanno un prefisso numerico che rappresenta la priorità rispetto alle modifiche.
+Se non sono necessarie configurazioni di rete particolari, di default si trova il file `01-network-manager-all.yaml` che contiene la semplice configurazione di rete: delegare tutto alle impostazioni di default del `NetworkManager`.
 
-È presente anche un file `50-cloud-init.yaml` è un tool usate per automatizzare la configurazione di rete al bootstrap.
-In questo file viene specificato al NetworkManager che l'interfaccia di rete `enp0sX` verrà configurata automaticamente dal `DHCP`.
+Aprendo la cartella, è possibile notare la presenza di un altro file, `50-cloud-init.yaml`. Questo è un tool usato per automatizzare la configurazione di rete al _bootstrap_. Leggendolo, possiamo notare che qui viene specificato al NetworkManager che l'interfaccia di rete `enp0sX` deve essere configurata automaticamente dal `DHCP`.
+
+Il prefisso che precede i due file rappresenta la priorità che devono avere le modifiche contenute in ogni file rispetto alle altre, così da riuscire a determinare uno stato nel caso due file ponessero regole diverse.
 
 Per vedere la configurazione complessiva di netplan è possibile utilizzare il comando:
 ```bash
@@ -208,15 +187,14 @@ Ad esempio potremmo aggiungere `51-enp0s3-interface.yaml`:0
 network:
    version: 2
    ethernets:
-      enp0s3:
-         addresses: [192.168.10.2/24]
+	  enp0s3:
+		 addresses: [192.168.10.2/24]
 ```
 
-I file di configurazione dovrebbero avere permessi esclusivi solo ai super utenti, perciò può essere necessario utilizzare il comando:
+Per questioni di sicruezza questi file dovrebbero avere permessi esclusivi solo ai super utenti. Per ottenere ciò utilizziamo il comando:
 ```bash
 sudo chmod 600 51-enp0s3-interface.yaml
 ```
-s
 
 Per applicare la configurazione, verificando eventuali errori possiamo applicare la configuraizone:
 ```bash
@@ -228,8 +206,8 @@ Per applicare direttamente la configurazione si utilizza:
 sudo netplan apply
 ```
 
-Aggiungere un indirizzo `IP` ad un interfaccia può essere utile in alcuni casi:
-- **Gestione di più reti**: in caso di maccchine che comunica con reti distinte, con più indirizzi `IP` è possibile per un singolo dispositivo essere visibile e accessibile da diverse reti
+Aggiungere un indirizzo `IP` statico ad un interfaccia può essere utile in alcuni casi:
+- **Gestione di più reti**: in caso di maccchine che comunicano con reti distinte, con più indirizzi `IP` è possibile per un singolo dispositivo essere visibile e accessibile da diverse reti
 - **Host Virtuali**: in ambienti web capita spesso che più siti web siano hostati sullo stesso server fisico. In questo modo gli si permette di accedere ai vari siti web da indirizzi `IP` dedicati
 - **NAT**: può essere utile configurare più indirizzi IP su una singola interfaccia per eseguire operazione di traduzione degli indirizzi di rete (`NAT`), dove un singolo server o dispositivo può rispondere a più reti
 - **Ridondanza e bilanciamento del carico**: più indirizzi `IP` possono essere utili per configurare meccanismi di bilanciamento del carico, cosicché se un indirizzo `IP` fosse irraggiungibile, il traffico può essere reindirizzato automaticamente ad un altro disponibile
@@ -237,22 +215,21 @@ Aggiungere un indirizzo `IP` ad un interfaccia può essere utile in alcuni casi:
 - **Migrazione**: può essere utile per assegnare un nuovo indirizzo IP ad un servizio in esecuzione su un server esistente.
 - **Segmentazione delle Reti**: può facilitare la segmentazione logica delle reti. Si può utilizzare per isolare diverse applicazioni o ambienti senza richiedere _hardware_ aggiuntivo.
 
-Per disabilitare l'assegnazione di indirizzi di un interfaccia, ad esempio epr evitare che un'interfaccia ottenga un indirizzo, si aggiunge `activation-mode: manual` nella configurazione dell'interfaccia:
+Per disabilitare l'assegnazione di indirizzi di un interfaccia, ad esempio per evitare che un'interfaccia ottenga un indirizzo, si aggiunge `activation-mode: manual` nella configurazione dell'interfaccia:
 ```yaml
 network:
    version: 2
    ethernets:
-      enp0s3:
-         activation-mode: manual
+	  enp0s3:
+		 activation-mode: manual
 ```
 
-In questo modo avremo che l'interfaccia avrà `state UP` ma non avrà assegnati alcun indirizzo `IP` assegnato al boot.
+Così facendo, al boot l'interfaccia sarà in `state UP` ma non avrà assegnato alcun indirizzo `IP`.
 
-Per disattivarlo fino al prossimo riavvio si utilizza:
+Per disattivare l'interfaccia fino al prossimo riavvio si utilizza:
 ```bash
-sudo ip link set enp0s3 down
+sudo ip link set <interface> down
 ```
-
 
 La configurazione delle interfacce può avvenire anche senza `Netplan`. Per farlo su sistemi ubuntu si:
 - Rimuovono tutti i file di configuraizone `/etc/netplan`
@@ -263,7 +240,7 @@ La configurazione si fa quindi:
 - `ifdown <interface_name>`: disabilita l'interfaccia
 - `ifup -a`: abilita tutte le interfacce specificate nella sezione auto del file di configurazione nello stesso ordine
 
-Le informazioni che abbiam oappena configurato vengono utilizzato in questo modo quando un _host_ invia un pacchetto ad un altro _host_:
+Le informazioni che abbiamo appena configurato vengono utilizzate in questo modo quando un _host_ invia un pacchetto ad un altro _host_:
 ```snippets
 dest_subnet = my_netmask & dest_addr
 
@@ -273,7 +250,7 @@ else
    forward-to-default_router
 ```
 
-Nel caso di host che si trovano sulla stessa rete, il pacchetto viene inoltrato **direttamente all'host di destinazione** tramite comunicazione di livello _data-link_ 2 attraverso _switch_ o _access point_.
+Nel caso di host che si trovano sulla stessa rete, il pacchetto viene inoltrato **direttamente all'host di destinazione** tramite comunicazione di livello _data-link_ 2 attraverso _switch_ o _access point_, altrimenti viene indirizzato al _default gateway_.
 
 # 4. Default Gateway
 
@@ -343,7 +320,7 @@ Se non trova corrispondenze all'interno del file utilizza il `DNS`, un database 
 
 Il _client_ effettua una richiesta a un server `DNS` che risponde con l'indirizzo `IP` se è di tipo **authorative** per quell'indirizzo, altrimenti inoltra la domanda ad un sevrer "più grande".
 
-Il file `/etc/resolv.conf` contiene gli indirizzi `IP` dei server `DNS` che l'host può contattare. All'interno della `VM`:
+Il file `/etc/resolv.conf` contiene gli indirizzi `IP` dei server `DNS` che l'host può contattare. All'interno della `VM` il file è così composto:
 ```log
 nameserver 127.0.0.53
 options edns0 trust-ad
@@ -357,7 +334,7 @@ nslookup nome_dominio
 
 Nei sistemi `Unix` è presente anche un meccanismo di **Name Service Switch** `NSS` che permette di ricavare i nomi di "cose" da diverse fonti, nel nostro caso i nomi di _host_.
 
-Le fondi da usare e l'ordine con cui usarle sono salvate nel file `/etc/nsswitch.conf`:
+Le fonti da usare e l'ordine con cui usarle sono salvate nel file `/etc/nsswitch.conf`:
 ```log
 ...
 hosts:      files mdns4_minimal [NOTFOUND=return] dns
@@ -369,14 +346,14 @@ Per configurare DNS speifici sull'interfaccia di rete con Netplan si aggiunge al
 network:
    version: 2
    ethernets:
-      enp0s3:
-         addresses: [10.10.10.2/24]
-         nameservers:
-            search:
-               - "mycompany.local"        # serve per completare le ricerche nelle reti locale
-            addresses:
-               - 10.10.10.253
-               - 8.8.8.8         # dns di google
+	  enp0s3:
+		 addresses: [10.10.10.2/24]
+		 nameservers:
+			search:
+			   - "mycompany.local"        # serve per completare le ricerche nelle reti locale
+			addresses:
+			   - 10.10.10.253
+			   - 8.8.8.8         # dns di google
 ```
 
 Lo schema per la risoluzione dei nomi è quindi questo:
@@ -438,30 +415,30 @@ Analizziamo il contenuto di `/etc/kea/kea-dhcp4.conf`:
 "Dhcp4": {
 	// Add names of your network interfaces to listen on.
 	"interfaces-config": {
-        // See section 8.2.4 for more details. You probably want to add just
-        // interface name (e.g. "eth0" or specific IPv4 address on that
-        // interface name (e.g. "eth0/192.0.2.1").
-        "interfaces": [ ]
+		// See section 8.2.4 for more details. You probably want to add just
+		// interface name (e.g. "eth0" or specific IPv4 address on that
+		// interface name (e.g. "eth0/192.0.2.1").
+		"interfaces": [ ]
 
-        // Kea DHCPv4 server by default listens using raw sockets. This ensures
-        // all packets, including those sent by directly connected clients
-        // that don't have IPv4 address yet, are received. However, if your
-        // traffic is always relayed, it is often better to use regular
-        // UDP sockets. If you want to do that, uncomment this line:
-        // "dhcp-socket-type": "udp"
-    },
+		// Kea DHCPv4 server by default listens using raw sockets. This ensures
+		// all packets, including those sent by directly connected clients
+		// that don't have IPv4 address yet, are received. However, if your
+		// traffic is always relayed, it is often better to use regular
+		// UDP sockets. If you want to do that, uncomment this line:
+		// "dhcp-socket-type": "udp"
+	},
 
-    // Kea supports control channel, which is a way to receive management
-    // commands while the server is running. This is a Unix domain socket that
-    // receives commands formatted in JSON, e.g. config-set (which sets new
-    // configuration), config-reload (which tells Kea to reload its
-    // configuration from file), statistic-get (to retrieve statistics) and many
-    // more. For detailed description, see Sections 8.8, 16 and 15.
-    "control-socket": {
-        "socket-type": "unix",
-        "socket-name": "/run/kea/kea4-ctrl-socket"
-    },
-    // .....
+	// Kea supports control channel, which is a way to receive management
+	// commands while the server is running. This is a Unix domain socket that
+	// receives commands formatted in JSON, e.g. config-set (which sets new
+	// configuration), config-reload (which tells Kea to reload its
+	// configuration from file), statistic-get (to retrieve statistics) and many
+	// more. For detailed description, see Sections 8.8, 16 and 15.
+	"control-socket": {
+		"socket-type": "unix",
+		"socket-name": "/run/kea/kea4-ctrl-socket"
+	},
+	// .....
 ```
 </div>
 <div class="">
@@ -471,7 +448,7 @@ La sezione `interfaces-config` è configura su quali interfacce di rete il serve
 - `["eth0/192.168.10.1"]`: per vincolare all'`IP`
 - `["*"]`: per tutte le interfacce (sconsigliato se si hanno molte interfacce)
 
-La sezione `control-socket` abilitai l canale di controllo locale per inviare comandi a runtime senza dover riavviare il _daemon_.
+La sezione `control-socket` abilita il canale di controllo locale per inviare comandi a runtime senza dover riavviare il _daemon_.
 </div>
 <div class="">
 
@@ -484,10 +461,10 @@ La sezione `control-socket` abilitai l canale di controllo locale per inviare co
    	// There are dedicated examples for each backend. See Section 7.2.2 "Lease
    	// Storage" for details.
    	"lease-database": {
-   	    // Memfile is the simplest and easiest backend to use. It's an in-memory
-   	    // C++ database that stores its state in CSV file.
-   	    "type": "memfile",
-   	    "lfc-interval": 3600
+   		// Memfile is the simplest and easiest backend to use. It's an in-memory
+   		// C++ database that stores its state in CSV file.
+   		"type": "memfile",
+   		"lfc-interval": 3600
    	},
    	// Kea allows storing host reservations in a database. If your network is
    	// small or you have few reservations, it's probably easier to keep them
@@ -513,12 +490,12 @@ La sezione `control-socket` abilitai l canale di controllo locale per inviare co
    	// not 0, when the client sends a release message the lease is expired
    	// instead of being deleted from the lease storage.
    	"expired-leases-processing": {
-       	"reclaim-timer-wait-time": 10,
-       	"flush-reclaimed-timer-wait-time": 25,
-       	"hold-reclaimed-time": 3600,
-       	"max-reclaim-leases": 100,
-       	"max-reclaim-time": 250,
-       	"unwarned-reclaim-cycles": 5,
+	   	"reclaim-timer-wait-time": 10,
+	   	"flush-reclaimed-timer-wait-time": 25,
+	   	"hold-reclaimed-time": 3600,
+	   	"max-reclaim-leases": 100,
+	   	"max-reclaim-time": 250,
+	   	"unwarned-reclaim-cycles": 5,
    	},
    // ...
 ```
@@ -530,7 +507,7 @@ La sezione `control-socket` abilitai l canale di controllo locale per inviare co
 
 È eventualmente possibile configurare anche un database.
 
-La sezione `expired-leases-processing` invece gestisce il comportamento dei _lease_:
+La sezione `expired-leases-processing` gestisce invece il comportamento dei _lease_:
 - `reclaim-timer-wait-time`: indica ogni quanto individuare i _lease_ scaduti
 - `flush-reclaimed-timer-wait-time`: indica ogni quanto rimuovere dal blocco i _lease_ scaduti dal file
 - `hold-reclaimed-time`: indica quanto tempo tenere scaduti i _lease_ prima di eliminarli
@@ -587,7 +564,7 @@ La sezione `expired-leases-processing` invece gestisce il comportamento dei _lea
 <div class="">
 
 In questa sezione troviamo subito dei timer che vengono notificati dal server al client:
-- `renew-timer`: indica il tmepo dopo il quale il _client_ deve rinnovare il lease con il server che glielo ha fornito
+- `renew-timer`: indica il tempo dopo il quale il _client_ deve rinnovare il lease con il server che glielo ha fornito
 - `rebind-timer`: indica il tempo dopo il quale il _client_ deve, nel caso non sia ancora riuscito a rinnovare il _lease_, ritentare in broadcast verso qualunque server
 - `valid-lifetime`: indica la durata del _lease_ in secondi
 
@@ -600,35 +577,35 @@ Le opzioni sono diverse qui ne vediamo solo alcune.
 
 ```json
    "client-classes": [
-        {
-            // This specifies a name of this class. It's useful if you need to
-            // reference this class.
-            "name": "voip",
+		{
+			// This specifies a name of this class. It's useful if you need to
+			// reference this class.
+			"name": "voip",
 
-            // This is a test. It is an expression that is being evaluated on
-            // each incoming packet. It is supposed to evaluate to either
-            // true or false. If it's true, the packet is added to specified
-            // class. See Section 12 for a list of available expressions. There
-            // are several dozens. Section 8.2.14 for more details for DHCPv4
-            // classification and Section 9.2.19 for DHCPv6.
-            "test": "substring(option[60].hex,0,6) == 'Aastra'",
+			// This is a test. It is an expression that is being evaluated on
+			// each incoming packet. It is supposed to evaluate to either
+			// true or false. If it's true, the packet is added to specified
+			// class. See Section 12 for a list of available expressions. There
+			// are several dozens. Section 8.2.14 for more details for DHCPv4
+			// classification and Section 9.2.19 for DHCPv6.
+			"test": "substring(option[60].hex,0,6) == 'Aastra'",
 
-            // If a client belongs to this class, you can define extra behavior.
-            // For example, certain fields in DHCPv4 packet will be set to
-            // certain values.
-            "next-server": "192.0.2.254",
-            "server-hostname": "hal9000",
-            "boot-file-name": "/dev/null"
+			// If a client belongs to this class, you can define extra behavior.
+			// For example, certain fields in DHCPv4 packet will be set to
+			// certain values.
+			"next-server": "192.0.2.254",
+			"server-hostname": "hal9000",
+			"boot-file-name": "/dev/null"
 
-            // You can also define option values here if you want devices from
-            // this class to receive special options.
-        }
-    ],
+			// You can also define option values here if you want devices from
+			// this class to receive special options.
+		}
+	],
 ```
 </div>
 <div class="">
 
-Qui troviamo le già nominate `classi` che osno utilizzate per applicare opzioni  comportamenti.
+Qui troviamo le già nominate `classi` che sono utilizzate per applicare opzioni  comportamenti.
 Si riferisono solamente a gruppi di client che soddisfano una condizione, **_valutata su ogni pacchetto_**.
 
 </div>
@@ -641,7 +618,7 @@ Si riferisono solamente a gruppi di client che soddisfano una condizione, **_val
    	// parameters. One of those parameters is "pools" that is also a list of
    	// structures.
 	"subnet4": [
-    	{
+		{
 			// This defines the whole subnet. Kea will use this information to
 			// determine where the clients are connected. This is the whole
 			// subnet in your network.
@@ -673,7 +650,7 @@ Si riferisono solamente a gruppi di client che soddisfano una condizione, **_val
 			],
 
 			//...
-    	}
+		}
    ],
 ```
 </div>
@@ -701,7 +678,7 @@ network:
 
 # 7. Test di Connettività
 
-Il protocllo della suite `IP` definito per lo scambio di messaggi di controllo ,errore e diagnostica è l'`ICMP` (_Internet Control Message Protocol_). Questi messaggi non trasportano dati applicativi, ma serve per il rilevamento dei malfunzionamenti **senza correggere alcun errore**.
+Il protocllo della suite `IP` definito per lo scambio di messaggi di controllo, errori e diagnostica è l'`ICMP` (_Internet Control Message Protocol_). Questi messaggi non trasportano dati applicativi, ma serve per il rilevamento dei malfunzionamenti **senza correggere alcun errore**.
 
 <div class="grid2">
 <div class="">
@@ -725,7 +702,7 @@ Un pacchetto `ICMP` è incapsulato in un pacchetto `IP` e contiene:
 
 I messaggi informativi sono usati per diagnosi e controllo:
 - `Echo Request` / `Echo Reply` sono utilizzati da `ping`
-- `Router Advertisement`/`Router Sollicitation` per l'autoconfigurazioen di rete. È più utilizzato in `ICMPv6`
+- `Router Advertisement`/`Router Sollicitation` per l'autoconfigurazione di rete. È più utilizzato in `ICMPv6`
 
 I messaggi i errore invece sono usati per segnalare problemi di consegna o instradamento:
 - `Destination Unreachble (Type 3)`
@@ -754,7 +731,7 @@ L'host locale attende un _timeout_ e successivamente lo segnala come perso.
 </figcaption>
 </figure>
 
-Il `ping` su `A` invia a `B` una serie di pacchetti `Echo Reqeust` (circa uno al secondo). Quando `B` riceve il pacchetto invia un `Echo Reply` a `A`. Il comando effettua un calcolo della percentiale dei pacchetti ricevuti e del `RTT` (_Round-Trip-Time_), mostrando le statistiche al termine del comando, ovvero quando l'utnete lo interrompe `Ctrl+C`.
+Il `ping` su `A` invia a `B` una serie di pacchetti `Echo Request` (circa uno al secondo). Quando `B` riceve il pacchetto invia un `Echo Reply` a `A`. Il comando effettua un calcolo della percentuale dei pacchetti ricevuti e del `RTT` (_Round-Trip-Time_), mostrando le statistiche al termine del comando, ovvero quando l'utente lo interrompe `Ctrl+C`.
 
 Alcuni possibili errori sono:
 - `Network Unreachable`: l'host locale non ha _route_ valide per raggiungere l'_host_ remoto
@@ -765,16 +742,17 @@ Il comando ha una serie di opzioni consultabili da `man ping`, alcuni sono:
 - `-c`: specifica il numero di richieste
 - `-i`: specifica l'intervallo tra le richieste
 - `-s`: specifica la dimensione del payload del pacchetto `ICMP`
-- `-f`: invia pacchetti `ICMP` _il più velocemente possiibile_ (utilizzare con cautela)
+- `-f`: invia pacchetti `ICMP` _il più velocemente possibile_ (utilizzare con cautela)
 - `-W`: specifica il _timeout_ dei pacchetti
 - `-t`: specifica il valore del _TTL_
 - `-q`: entra in _quiet mode_, mostrando solamente le statistiche finali
 
-Il comando ha dei limiti, in quanto può essere ploccato da servizi per prevenire _ping flood_ e `DoS`. Inoltre il comando misura **solo la raggiungibilità a livello `IP`** e non quella del servizio applicativo.
+Il comando ha dei limiti:
+- Può essere bloccato da servizi per prevenire _ping flood_ e `DoS`.
+- Misura **solo la raggiungibilità a livello `IP`** e non quella del servizio applicativo
+- Non distingue tra congestione di rete, filtri o host realmente spenti.
 
-Inoltre non distingue tra congestione di rete, filtri o host realmente spenti.
-
-Possiamo notare come:
+Per vedere in azione il filtro possiamo notare come:
 ```bash
 ping unipi.it			# Funziona
 ping www.unipi.it		# Non funziona perché le richieste sono filtrate
@@ -882,10 +860,10 @@ Alcune opzioni sono:
 
 Alcune espressioni per filtrare i pacchetti sono:
 - `port 80` specifica la porta
-- `host 192.168.4.2` specifica l'host 
+- `host 192.168.4.2` specifica l'host
 - `udp and port 5555` specifica di intercettare i pacchetti con protocollo **UDP** alla porta `5555`
 - `dst host google.it and port 80`: hanno come destinatario un host del dominio specificato che arrivano alla porta specificata
-- `src host 192.168.0.2 and port not 90`: hanno come sorgente un host specificato e che non arrivano alla porta 
+- `src host 192.168.0.2 and port not 90`: hanno come sorgente un host specificato e che non arrivano alla porta
 
 
 Per filtrare pacchetti di richiesta DHCP:
@@ -902,18 +880,18 @@ sudo tcpdump -i enp0s3 port 67 or port 68 -n -vv
   "lease-database":{"type":"memfile","persist":true},
   "subnet4":[
    {
-    "subnet": "192.168.56.0/24",
-    "pools":[ {"pool": "192.168.56.100 - 192.168.56.200" } ],
-    "option-data":[
-     {
+	"subnet": "192.168.56.0/24",
+	"pools":[ {"pool": "192.168.56.100 - 192.168.56.200" } ],
+	"option-data":[
+	 {
 	"name": "domain-name-servers",
 	"data": "1.1.1.1, 8.8.8.8"
-     },
-     {
+	 },
+	 {
 	"name": "routers",
 	"data": "192.168.56.1"
-     }
-    ]
+	 }
+	]
    }
   ]
  }

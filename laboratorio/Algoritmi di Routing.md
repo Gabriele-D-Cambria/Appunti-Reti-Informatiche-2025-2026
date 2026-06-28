@@ -8,7 +8,7 @@ title: Algoritmi di Routing
 - [2. Funzionalità del Network Layer](#2-funzionalità-del-network-layer)
 	- [2.1. Control Plane](#21-control-plane)
 - [3. Protocolli di Routing](#3-protocolli-di-routing)
-	- [3.1. Algoritmi di routing link-state - Dikkstra](#31-algoritmi-di-routing-link-state---dikkstra)
+	- [3.1. Algoritmi di routing link-state - Dijkstra](#31-algoritmi-di-routing-link-state---dijkstra)
 	- [3.2. Algoritmi di Distance Vector](#32-algoritmi-di-distance-vector)
 	- [3.3. Confronto Link-State e Distance-Vector](#33-confronto-link-state-e-distance-vector)
 - [4. Routing Scalabile](#4-routing-scalabile)
@@ -38,7 +38,7 @@ Infatti le _tabelle di routing_ sono frutto di un confronto continuo tra le altr
 L'obiettivo dei protocolli di routing è:
 > Determinare le rotte dall'host mittente all'host destinatario attraverso i router di rete.
 
-Le _rotte_ sono dei _percorsi buoni_, dove:
+Le _rotte_ sono dei _"percorsi buoni"_, dove definiamo:
 - **Percorso**: sequenza di router che i pacchetti devono attraversare dalla sorgente alla destinazione
 - **Buono**: metrica relativa che può indicare diversi aspetti, il _meno costoso_, il _più veloce_, il _meno congestionato_, ...
 
@@ -79,7 +79,7 @@ Per quanto riguarda gli algoritmi che cambiano velocemente le rotte abbiamo gli 
 
 L'altro tipo di algoritmi sono gli **_algoritmi statici_** che invece cambiano le rotte lentamente
 
-## 3.1. Algoritmi di routing link-state - Dikkstra
+## 3.1. Algoritmi di routing link-state - Dijkstra
 
 È un algoritmo **_centralizzato_**, dove tutti i nodi sono a conoscenza della topologia della rete, attraverso l'invio di messaggi _link-state broadcast_, attraverso i quali tutti i nodi ricevono le stesse informazioni.
 
@@ -120,7 +120,7 @@ Questo comporta l'effettuare $\frac{n(n+1)}{2}$ confronti, ovvero una complessit
 Se utilizziamo l'implementazione più efficiente, utilizzando lo _heap_, abbiamo comunque una complessità $O(n\log{n})$.
 
 Inoltre dobbiamo anche prendere in considerazione che ogni router manda il _broadcast_ le sue informazioni _link state_ agli altri $n-1$ router.
-Algoritmi di boradcasr efficienti permettono di diffondere un messaggio con $O(n)$ attraversamenti di _link_.
+Algoritmi di broadcast efficienti permettono di diffondere un messaggio con $O(n)$ attraversamenti di _link_.
 Il messaggio di ciascun router attraversa quindi $O(n)$ link, per una complessità complessiva di tutti i messaggi di $O(n^2)$.
 
 
@@ -128,18 +128,20 @@ Inoltre, se i costi dei link dipendono dal volume del traffico, è un algoritmo 
 
 ## 3.2. Algoritmi di Distance Vector
 
-Quasti algoritmi si basano sull'_**equazione di Bellmam-Ford**_ $BF$:
+Quasti algoritmi si basano sull'_**equazione di Bellman-Ford**_ $BF$:
 $$
-D_x(y): \text{costo del least-cost path } x \to y \\
-\Downarrow \\
-D_x(y) = \min_v{c_{x,v} + D_v(y)} \quad \wedge \quad c_{x,v} \ne \infty
+\begin{CD}
+	{D_x(y): \text{costo del least-cost path } x \to y }\\
+	@VVV \\
+	{D_x(y) = \min_v{c_{x,v} + D_v(y)} \quad \wedge \quad c_{x,v} \ne \infty}
+\end{CD}
 $$
 
 L'idea dell'algoritmo è quella di far inviare a ciascun nodo, occasionalmente, la propria stima del vettore delle distanze $D_v$ ai vicini.
 
 Quando un nodo $x$ riceve nuove stime per il $D_v$ per qualsiasi vicino, aggiorna anch'egli il proprio $D_v$ usando l'equazione $BF$:
 $$
-	D_x(y) = \min_v{c_{x,v} + D_v(y)} \quad \forally \in N
+	D_x(y) = \min_v{c_{x,v} + D_v(y)} \quad \forall y \in N
 $$
 
 In codizioni normali la stima $D_x(y) \to d_x(y)$, ovvero all'**_effettivo least cost_**.
@@ -147,7 +149,7 @@ In codizioni normali la stima $D_x(y) \to d_x(y)$, ovvero all'**_effettivo least
 Uno pseudocodice:
 ```pseudo
 wait(cambio costo link locale o messaggio da vicino)
-	D'_v stime di D_v usando i nuovi valori
+	ricalcolo le stime D'_v di D_v usando i nuovi valori
 
 	if D'_v != D_v
 		D_v = D'_v
@@ -167,14 +169,16 @@ Quando $y$ riceverà gli aggiornamenti dai propri vicini, il suo costo minimo no
 
 In questo modo con soli 3 comunicazioni i nodi hanno ricevuto tutte le informazioni.
 
-Se invece si avesse un **peggioramento** il primo nodo $y$ rileva un cambiamento, ma sa che uno dei nodi vicini $z$ ha un costo minore del cambiamento. Questo costo inferiore però potrebbe passare proprio dal _link_ che adesso è peggiorato.
-Notifica quindi il peggioramento inviando il valore del proprio vicino più il costo per arrivare dal vicino.
-A questo punto però il vicino $z$ aggiornerà il percorso per arrivare alla destinazione, consco del fatto che il vecchio miglior percorso adesso è peggiorato di $c_{y,z}$ e ritrasmetterà questo valore. E così via finché non otterremo il valore desiderato.
+Se invece si avesse un **peggioramento** possono avvenire situazioni particolari:
+1. Il primo nodo $y$ rileva un cambiamento su un nodo. Ricalcola quindi il percorso, e trova una strada migliore inoltrando al nodo vicino $z$.
+2. $z$ però ha questo costo minore passando **proprio per il link adiacente ad** $y$ **che è peggiorato**, ma $y$ non ha modo di saperlo, quindi lo considera valido e procede ad inoltrare il messaggio.
+3. Il vicino $z$ aggiorna quindi il percorso per arrivare alla destinazione, sapendo che il vecchio miglior percorso adesso è peggiorato di $c_{y,z}$ e ritrasmetterà questo valore
+4. $y$ vede solo adesso che il percorso che pensava migliore è anch'esso peggiorato, e procede a rimodificare il costo e ritrasmettere il messaggio
 
-Per risolvere questo problema, chiamato **_count-to-infinity_**, si utilizza la tecnica dell' **_inversione avvelenata_**.
+Questo processo, chiamato **_count-to-infinity_**, può provocare diversi rallentamenti nella propagazione delle informazioni. Per andare a mitigarne gli effetti si utilizza quindi la tecnica dell' **_inversione avvelenata_**:
+> Quando un nodo $z$ instrada verso $x$ passando da $y$, notificherà $y$ che la sua distanza verso $x$ è **_infinita_**
 
-Quando un nodo $z$ instrada verso $x$ passando da $y$, notificherà $y$ che la sua distanza verso $x$ è **_infinita_**, così da evitare problemi relativi alle modifiche dei link di $y$.
-In questo modo $y$ pensa che $z$ non abbia un percorso verso $x$, e non creerà il ciclo di scambio tra i nodi adiacenti.
+Così facendo, si evitano problemi relativi alle modifiche dei link di $y$, poiché $y$ pensa che $z$ non abbia un percorso verso $x$, evitando di creare il ciclo di scambio tra i nodi adiacenti.
 
 Questa tecnica funziona però solamente per risolvere cicli che si formano tra nodi adiacenti.
 
@@ -182,17 +186,17 @@ Questa tecnica funziona però solamente per risolvere cicli che si formano tra n
 
 <div class="flexbox" markdown="1">
 
-|                                                                       |                                                   LS                                                    |                                                                                DV                                                                                |
-| :-------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-|                       Complessità dei messaggi                        |                                  $n$ router, $O(n^2)$ messaggi inviati                                  |                                                     Scambi tra vicini, con un tempo di convergenza variabile                                                     |
-|                        Velocità di convergenza                        |                Algoritmo $O(n^2)$, $O(n^2)$ messaggi. <br> Susciettibile a oscillazioni                 |            Tempo di convergenza variabile per via di _cicli_ o per il problema del _count-to-infinity_ se non è predisposta l'_inversione avvelenata_            |
-| Robustezza <br><small>(rottura e/o compromissione dei router)</small> | I router possono comunicare costi di _link_ errati. <br> Ogni router costruisce solo la propria tabella | È possibile comunicare costi di _percorsi non corretti_ (_black-holing_). Se ogni $D_v$ di ogni router è usato anche dagli altri, l'errore si propaga nella rete |
+|                                                                       |                                                   LS                                                    |                                                                                DV                                                                                 |
+| :-------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+|                       Complessità dei messaggi                        |                                  $n$ router, $O(n^2)$ messaggi inviati                                  |                                                     Scambi tra vicini, con un tempo di convergenza variabile                                                      |
+|                        Velocità di convergenza                        |                Algoritmo $O(n^2)$, $O(n^2)$ messaggi. <br> Susciettibile a oscillazioni                 |            Tempo di convergenza variabile per via di _cicli_ o per il problema del _count-to-infinity_ se non è predisposta l'_inversione avvelenata_             |
+| Robustezza <br><small>(rottura e/o compromissione dei router)</small> | I router possono comunicare costi di _link_ errati. <br> Ogni router costruisce solo la propria tabella | È possibile comunicare costi di _percorsi non corretti_ (_black-holding_). Se ogni $D_v$ di ogni router è usato anche dagli altri, l'errore si propaga nella rete |
 
 </div>
 
 # 4. Routing Scalabile
 
-Fin'ora abbiamom fatto una trattazione sul routing puraemntepuramente teorico, dove tutti i _router_ sono uguali e la rete è "piatta".
+Fin'ora abbiamo fatto una trattazione sul routing puramente teorica, dove tutti i _router_ sono uguali e la rete è "piatta".
 
 Nella realtà invece abbiamo **miliardi di destinazioni**, non possiamo quindi salvare tutti gli indirizzi nelle tabelle di _routing_, poiché, oltre a necessitare un ingente disponibilità di memoria, il loro scambio  ingolferebbe i collegamenti.
 
@@ -222,9 +226,7 @@ I protocolli di routing intra-AS più comuni sono:
 - **Enhanced Interior Gateway Routing Protocol** (`EIGRP`): è anch'esso basato sui `DV` ed è stato proprietario di `Cisco` per decenni fino al 2013 quando diventò _open_ `[RFC 7868]`
 - **Open Shortest Path First** (`OSPF`): descritto in `RFC 2328`, è un _link-state routing_. Non è standard `RFC` ma è lo standard `ISO`, identico a `IS-IS protocol`.
 
-Il protocollo `OSPF`  si basa sul _link-state classico_, ogni router invia a tutti degli `OSPF link-state advertisements` **direttamente su IP** a tutti gli altri router nell'`AS`, conoscendo la topologia e calcolando la _tabella di forwarding_ attraverso l'algoritmo di _Dikstra_.
-Il costo di un link si basa su diverse metriche (_bandwidth_, _delay_, ...).
-I messaggi `OSPF` sono **autenticati**.
+Il protocollo `OSPF`  si basa sul _link-state classico_, ogni router invia a tutti degli `OSPF link-state advertisements` tramite messaggi _autenticati_ **direttamente su IP** a tutti gli altri router nell'`AS`, conoscendo la topologia e calcolando la _tabella di forwarding_ attraverso l'algoritmo di _Dijkstra_, prendendo costo di un link diverse metriche (_bandwidth_, _delay_, ...).
 
 Il protocollo può essere **gerarchico**:
 <div class="grid2">
@@ -264,9 +266,9 @@ Il protocollo fornisce quindi ad ogni `AS` un mezzo per:
 In una `BGP session` due router `BGP` si scambiano messaggi `BGP` su **connessioni `TCP` semi-permanenti**, con i quali pubblicizzano i _path_ verso diverse sottoreti di destinazione che sono in grado di raggiungere.
 
 I massaggi `BGP` (descritti in `[RFC 4371]`) pricipali sono:
-- `OPEN`: apre una connessione `TCP` con il _peer_ `BGP` remoto e autentica il _perr_ `BGP` mittente
+- `OPEN`: apre una connessione `TCP` con il _peer_ `BGP` remoto e autentica il _peer_ `BGP` mittente
 - `UPDATE`: pubblicizza un nuovo path o ne rimuove un nuovo vecchio
-- `KEEPALIVE`: tiene la connessione viva in assenza di `UPDATES`, è utilizzato anche come `ACK` alla `OPEN` _reqeust_.
+- `KEEPALIVE`: tiene la connessione viva in assenza di `UPDATES`, è utilizzato anche come `ACK` alla `OPEN` _request_.
 - `NOTIFICATION`: riporta errori precedenti. È utilizzato anche per chiudere le connessioni.
 
 Per pubblicizzare una rotta si costruisce un messaggio che segue il formato:
@@ -286,7 +288,9 @@ Il router `1c` di `AS1` riceve tramite `eBGP` entrambe le rotte, ma basandosi su
 </figure>
 
 Nell'immagine sopra i router di `AS1` conoscono tramite `iBGP` il percorso per `X` che passa da `1c`.
-Per il router `1d` andrànno inseriti i record `<1c, 1>`, attraverso _routing `OSPF` intra-domain_ e `<X, 1>` (ipotizzando che l'interfaccia 1 sia quella che lo collega corretta).
+Ipotizzando che il router `1d` sia connesso tramite interfaccia `1`, andrà a salvere due record:
+- `<1c, 1>` attraverso _routing `OSPF` intra-domain_ 
+- `<X, 1>` attraverso _routing inter-domain_
 
 Un _local router_, quando deve scegliere un _gateway_ per inoltrare verso l'esterno un pacchetto sceglie quello che ha **_costo intra-domain minore_**, indipendentemente dal numero di `AS` che questo poi attraverserà, in un processo chiamato **_Hot Potato Routing_**.
 
@@ -295,8 +299,8 @@ Infatti un `ISP` potrebbe volere inoltrare il traffico solo da/verso le reti dei
 
 I router possono quindi conoscere più di una rotta per `AS` di destinazione, applicando le regole in ordine:
 - _Policy_: preferenze locali date dai valori di alcuni attributi
-- Shortest`AS-PATH`
-- _Hot Potato Routing_ scelta del `NEXT-HOP` router più vicin
+- Shortest `AS-PATH`
+- _Hot Potato Routing_ scelta del `NEXT-HOP` al router più vicino
 - Altro
 
 ## 4.3. Intra-AS vs. Inter-AS
